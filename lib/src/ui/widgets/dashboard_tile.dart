@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 
 Widget buildTile(IconData icon, String title, String subtitle,
     {Function() onTap}) {
   return Material(
       elevation: 10.0,
-      shadowColor: Colors.deepPurpleAccent,
+      shadowColor: dashBoardColor,
       borderRadius: BorderRadius.circular(12.0),
-      color: Colors.deepPurpleAccent,
+      color: dashBoardColor,
       child: InkWell(
         // Do onTap() if it isn't null, otherwise do print()
         onTap: onTap != null

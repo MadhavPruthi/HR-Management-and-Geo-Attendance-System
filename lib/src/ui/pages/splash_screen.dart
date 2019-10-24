@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
 
-import 'package:geo_attendance_system/src/ui/pages/dashboard.dart';
+import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
 
 class SplashScreenWidget extends StatefulWidget {
   @override
@@ -13,7 +13,7 @@ class _SplashScreenState extends State<SplashScreenWidget> {
   Widget build(BuildContext context) {
     return new SplashScreen(
       seconds: 4,
-      navigateAfterSeconds: new Dashboard(),
+      navigateAfterSeconds: HomePage(),
       image: Image(
         image: AssetImage("assets/icons/Logo-splash.png"),
       ),
