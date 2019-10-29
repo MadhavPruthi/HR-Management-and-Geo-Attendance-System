@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geo_attendance_system/src/ui/pages/login.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
@@ -13,7 +14,7 @@ class _SplashScreenState extends State<SplashScreenWidget> {
   Widget build(BuildContext context) {
     return new SplashScreen(
       seconds: 4,
-      navigateAfterSeconds: HomePage(),
+      navigateAfterSeconds: Login(),
       image: Image(
         image: AssetImage("assets/icons/Logo-splash.png"),
       ),
