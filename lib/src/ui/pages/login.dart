@@ -1,22 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../widgets/form_card.dart';
-import '../widgets/socialicons.dart';
+import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
+import '../../services/authentication.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class Login extends StatefulWidget {
+
+  Login({this.auth});
+  final BaseAuth auth;
+
   @override
   _LoginState createState() => _LoginState();
 }
 
-
 class _LoginState extends State<Login> {
-  bool _isSelected = false;
 
-  void _radio() {
-    setState(() {
-      _isSelected = !_isSelected;
-    });
+  final _formKey = new GlobalKey<FormState>();
+  FirebaseDatabase db = new FirebaseDatabase();
+  DatabaseReference _empIdRef;
+
+  String _username;
+  String _password;
+  String _errorMessage = "";
+  String _userID;
+
+  @override
+  void initState() {
+    _empIdRef = db.reference().child('EmployeeID');
+    super.initState();
+  }
+
+  bool validateAndSave() {
+    final form = _formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      setState(() {
+       _errorMessage = "" ;
+      });
+      return true;
+    }
+    return false;
+  }
+
+  void validateandSubmit() async {
+    if (validateAndSave()) {
+      String email;
+
+      try {
+        _empIdRef.child(_username).once().then((DataSnapshot snapshot) {
+          if (snapshot == null)
+            _errorMessage = "Invalid Login Details";
+          else {
+            email = snapshot.value;
+          }
+
+          loginUser(email);
+          
+        });
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  void loginUser(String email) async {
+    if (email != null) {
+            print("gkng");
+            try {
+              _userID = await widget.auth.signIn(email, _password);
+              print(_userID);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            } catch (e) {
+              print("Error" + e.toString());
+              _errorMessage = e.toString();
+              _formKey.currentState.reset();
+            }
+          } else {
+            setState(() {
+              _errorMessage = "Invalid Login Details";
+              _formKey.currentState.reset();
+            });
+          }
   }
 
   Widget radioButton(bool isSelected) => Container(
@@ -56,7 +123,7 @@ class _LoginState extends State<Login> {
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-         /* Column(
+          /* Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Padding(
@@ -76,11 +143,11 @@ class _LoginState extends State<Login> {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Image.asset(
-                        "assets/logo.png",
-                        width: ScreenUtil.getInstance().setWidth(110),
-                        height: ScreenUtil.getInstance().setHeight(110),
-                      ),
+                      // Image.asset(
+                      //   "assets/logo.png",
+                      //   width: ScreenUtil.getInstance().setWidth(110),
+                      //   height: ScreenUtil.getInstance().setHeight(110),
+                      // ),
                       Text("LOGO",
                           style: TextStyle(
                               fontFamily: "Poppins-Bold",
@@ -92,7 +159,7 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     height: ScreenUtil.getInstance().setHeight(180),
                   ),
-                  FormCard(),
+                  formCard(),
                   SizedBox(height: ScreenUtil.getInstance().setHeight(40)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -133,9 +200,9 @@ class _LoginState extends State<Login> {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () {},
+                              onTap: validateandSubmit,
                               child: Center(
-                                child: Text("SIGNIN",
+                                child: Text("LOGIN",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: "Poppins-Bold",
@@ -164,44 +231,6 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     height: ScreenUtil.getInstance().setHeight(40),
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: <Widget>[
-                  //     SocialIcon(
-                  //       colors: [
-                  //         Color(0xFF102397),
-                  //         Color(0xFF187adf),
-                  //         Color(0xFF00eaf8),
-                  //       ],
-                  //       iconData: CustomIcons.facebook,
-                  //       onPressed: () {},
-                  //     ),
-                  //     SocialIcon(
-                  //       colors: [
-                  //         Color(0xFFff4f38),
-                  //         Color(0xFFff355d),
-                  //       ],
-                  //       iconData: CustomIcons.googlePlus,
-                  //       onPressed: () {},
-                  //     ),
-                  //     SocialIcon(
-                  //       colors: [
-                  //         Color(0xFF17ead9),
-                  //         Color(0xFF6078ea),
-                  //       ],
-                  //       iconData: CustomIcons.twitter,
-                  //       onPressed: () {},
-                  //     ),
-                  //     SocialIcon(
-                  //       colors: [
-                  //         Color(0xFF00c6fb),
-                  //         Color(0xFF005bea),
-                  //       ], 
-                  //       iconData: CustomIcons.linkedin,
-                  //       onPressed: () {},
-                  //     )
-                  //   ],
-                  // ),
                   SizedBox(
                     height: ScreenUtil.getInstance().setHeight(30),
                   ),
@@ -226,6 +255,86 @@ class _LoginState extends State<Login> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget formCard() {
+    return new Container(
+      width: double.infinity,
+      height: ScreenUtil.getInstance().setHeight(520),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0.0, 15.0),
+                blurRadius: 15.0),
+            BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0.0, -10.0),
+                blurRadius: 10.0),
+          ]),
+      child: Padding(
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text("Login",
+                  style: TextStyle(
+                      fontSize: ScreenUtil.getInstance().setSp(45),
+                      fontFamily: "Poppins-Bold",
+                      letterSpacing: .6)),
+              SizedBox(
+                height: ScreenUtil.getInstance().setHeight(30),
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                    icon: Icon(Icons.person),
+                    hintText: "Username",
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
+                validator: (value) =>
+                    value.isEmpty ? 'Username can\'t be empty' : null,
+                onSaved: (value) => _username = value.trim(),
+              ),
+              SizedBox(
+                height: ScreenUtil.getInstance().setHeight(30),
+              ),
+              TextFormField(
+                obscureText: true,
+                decoration: InputDecoration(
+                    icon: Icon(Icons.lock),
+                    hintText: "Password",
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
+                validator: (value) =>
+                    value.isEmpty ? 'Password can\'t be empty' : null,
+                onSaved: (value) => _password = value,
+              ),
+              SizedBox(
+                height: ScreenUtil.getInstance().setHeight(35),
+              ),
+              Text(
+                _errorMessage,
+                style: TextStyle(color: Colors.red),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    "Forgot Password?",
+                    style: TextStyle(
+                        color: Colors.blue,
+                        fontFamily: "Poppins-Medium",
+                        fontSize: ScreenUtil.getInstance().setSp(28)),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -45,7 +45,7 @@ class FormCard extends StatelessWidget {
             SizedBox(
               height: ScreenUtil.getInstance().setHeight(30),
             ),
-            Text("PassWord",
+            Text("Password",
                 style: TextStyle(
                     fontFamily: "Poppins-Medium",
                     fontSize: ScreenUtil.getInstance().setSp(26))),

@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:geo_attendance_system/src/services/authentication.dart';
 import 'package:geo_attendance_system/src/ui/pages/login.dart';
 import 'package:splashscreen/splashscreen.dart';
-
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
 
+enum AuthStatus {
+  NOT_DETERMINED,
+  NOT_LOGGED_IN,
+  LOGGED_IN,
+}
+
 class SplashScreenWidget extends StatefulWidget {
+
+  SplashScreenWidget({this.auth});
+
+  final BaseAuth auth;
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -13,8 +24,9 @@ class _SplashScreenState extends State<SplashScreenWidget> {
   @override
   Widget build(BuildContext context) {
     return new SplashScreen(
+
       seconds: 4,
-      navigateAfterSeconds: Login(),
+      navigateAfterSeconds: Login(auth: new Auth()),
       image: Image(
         image: AssetImage("assets/icons/Logo-splash.png"),
       ),
