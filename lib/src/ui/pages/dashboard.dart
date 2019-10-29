@@ -79,7 +79,7 @@ class DashboardMainPanel extends StatelessWidget {
   List<Widget> _listWidget() {
     List<Widget> widgets = new List();
     tileData.forEach((tile) {
-      widgets.add(buildTile(tile[0], tile[1], tile[2]));
+      widgets.add(buildTile(tile[0], tile[1], tile[2], tile[3]));
     });
 
     return widgets;
