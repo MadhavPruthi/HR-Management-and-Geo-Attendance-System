@@ -12,7 +12,7 @@ class _SplashScreenState extends State<SplashScreenWidget> {
   @override
   Widget build(BuildContext context) {
     return new SplashScreen(
-      seconds: 4,
+      seconds: 1,
       navigateAfterSeconds: HomePage(),
       image: Image(
         image: AssetImage("assets/icons/Logo-splash.png"),

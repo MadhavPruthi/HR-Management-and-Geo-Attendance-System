@@ -24,7 +24,7 @@ dependencies:
   splashscreen: any
   flutter_sparkline: any
   flutter_staggered_grid_view: any
-  calendarro: ^1.0.0
+  table_calendar: any
 
 dev_dependencies:
   flutter_test:

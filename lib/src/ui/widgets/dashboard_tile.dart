@@ -2,19 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 
 Widget buildTile(IconData icon, String title, String subtitle,
-    {Function() onTap}) {
+    [Function(BuildContext) onTap]) {
   return Material(
       elevation: 10.0,
       shadowColor: dashBoardColor,
       borderRadius: BorderRadius.circular(12.0),
       color: dashBoardColor,
       child: InkWell(
-        // Do onTap() if it isn't null, otherwise do print()
         onTap: onTap != null
-            ? () => onTap()
-            : () {
-                print('Not set yet');
-              },
+            ? () => print("PUSHED bUTOOn") //  Implement here onTap function
+            : () => print("Not yet set"),
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -36,12 +33,13 @@ Widget buildTile(IconData icon, String title, String subtitle,
                       fontSize: 18.0),
                   textAlign: TextAlign.center,
                 ),
-                Text(subtitle,
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14.0,
-                    ),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.0,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ]),
