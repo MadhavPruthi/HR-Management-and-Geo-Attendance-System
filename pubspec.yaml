@@ -29,6 +29,7 @@ dependencies:
   flutter_screenutil: ^0.4.2
   table_calendar: any
   firebase_database: any
+  google_maps_flutter: ^0.5.21+8
 
 dev_dependencies:
   flutter_test:
