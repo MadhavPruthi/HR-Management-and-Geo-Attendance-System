@@ -76,10 +76,10 @@ class _DashboardState extends State<Dashboard> {
 class DashboardMainPanel extends StatelessWidget {
   final List tileData = infoAboutTiles;
 
-  List<Widget> _listWidget() {
+  List<Widget> _listWidget(BuildContext context) {
     List<Widget> widgets = new List();
     tileData.forEach((tile) {
-      widgets.add(buildTile(tile[0], tile[1], tile[2], tile[3]));
+      widgets.add(buildTile(tile[0], tile[1], tile[2], context, tile[3]));
     });
 
     return widgets;
@@ -103,7 +103,7 @@ class DashboardMainPanel extends StatelessWidget {
         crossAxisSpacing: 12.0,
         mainAxisSpacing: 12.0,
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        children: _listWidget(),
+        children: _listWidget(context),
         staggeredTiles: _staggeredTiles(),
       ),
     );

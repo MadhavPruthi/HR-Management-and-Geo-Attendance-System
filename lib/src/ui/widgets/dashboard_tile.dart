@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 
-Widget buildTile(IconData icon, String title, String subtitle,
+Widget buildTile(IconData icon, String title, String subtitle, BuildContext context,
     [Function(BuildContext) onTap]) {
   return Material(
       elevation: 10.0,
@@ -10,7 +10,9 @@ Widget buildTile(IconData icon, String title, String subtitle,
       color: dashBoardColor,
       child: InkWell(
         onTap: onTap != null
-            ? () => print("PUSHED bUTOOn") //  Implement here onTap function
+            ? (){
+          onTap(context);
+        } //  Implement here onTap function
             : () => print("Not yet set"),
         child: Padding(
           padding: const EdgeInsets.all(24.0),

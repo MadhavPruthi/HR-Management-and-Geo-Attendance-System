@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class HomePage extends StatefulWidget {
+class AttendanceRecorderWidget extends StatefulWidget {
   @override
-  HomePageState createState() => HomePageState();
+  AttendanceRecorderWidgetState createState() => AttendanceRecorderWidgetState();
 }
 
-class HomePageState extends State<HomePage> {
+class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   Completer<GoogleMapController> _controller = Completer();
 
   @override
