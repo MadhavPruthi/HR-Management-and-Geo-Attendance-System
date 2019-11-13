@@ -30,6 +30,10 @@ dependencies:
   table_calendar: any
   firebase_database: any
   google_maps_flutter: ^0.5.21+8
+  device_id: ^0.2.0
+
+  geofencing:
+    path: geofencing
 
 dev_dependencies:
   flutter_test:
