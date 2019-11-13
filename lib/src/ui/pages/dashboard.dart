@@ -33,15 +33,7 @@ class _DashboardState extends State<Dashboard> {
     return new Container(
       child: new Stack(
         children: <Widget>[
-          new Container(
-            color: dashBoardColor,
-            child: new Center(
-              child: new Text(
-                "Navigation Panel",
-                style: new TextStyle(fontSize: 24.0, color: Colors.white),
-              ),
-            ),
-          ),
+          new NavigationPanel(),
           new PositionedTransition(
             rect: getPanelAnimation(constraints),
             child: new Material(
@@ -105,6 +97,33 @@ class DashboardMainPanel extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         children: _listWidget(context),
         staggeredTiles: _staggeredTiles(),
+      ),
+    );
+  }
+}
+
+class NavigationPanel extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5.0),
+      color: dashBoardColor,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            child: FlatButton(
+              child: Text(
+                "Logout",
+                style: TextStyle(color: Colors.white, fontSize: 25.0,fontWeight: FontWeight.w400),
+              ),
+              onPressed: () {
+//                signOut();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

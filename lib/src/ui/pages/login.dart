@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
 
 import '../../services/authentication.dart';
@@ -44,9 +45,7 @@ class _LoginState extends State<Login> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: new CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                ),
+                child: SpinKitWave(color: Colors.black, type: SpinKitWaveType.center, size: 50.0,)
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

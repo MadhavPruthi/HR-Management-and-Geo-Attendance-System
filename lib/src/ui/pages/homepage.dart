@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     controller = new AnimationController(
-        vsync: this, duration: new Duration(milliseconds: 100), value: 1.0);
+        vsync: this, duration: new Duration(milliseconds: 300), value: 1.0);
   }
 
   @override
@@ -45,7 +45,8 @@ class _HomePageState extends State<HomePage>
         backgroundColor: dashBoardColor,
         leading: new IconButton(
           onPressed: () {
-            controller.fling(velocity: isPanelVisible ? -1.0 : 1.0);
+            double velocity = 2.0;
+            controller.fling(velocity: isPanelVisible ? -velocity : velocity);
           },
           icon: new AnimatedIcon(
             icon: AnimatedIcons.close_menu,
