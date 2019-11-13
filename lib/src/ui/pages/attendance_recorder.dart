@@ -1,128 +1,78 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 class AttendanceRecorderWidget extends StatefulWidget {
   @override
-  AttendanceRecorderWidgetState createState() => AttendanceRecorderWidgetState();
+  AttendanceRecorderWidgetState createState() =>
+      AttendanceRecorderWidgetState();
 }
 
 class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   Completer<GoogleMapController> _controller = Completer();
 
+  double zoomVal = 5.0;
+
+  // ignore: unused_field
+  StreamSubscription<LocationData> _locationSubscription;
+  LocationData _currentLocation;
+  LocationData _startLocation;
+  Set<Marker> _markers = {};
+
+  Location _locationService = new Location();
+  bool _permission = false;
+  String error;
+
+  CameraPosition _currentCameraPosition;
+
   @override
   void initState() {
     super.initState();
+    initPlatformState();
   }
 
-  double zoomVal = 5.0;
+  @override
+  void dispose() {
+    super.dispose();
+    _locationSubscription.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: Icon(Icons.accessibility), onPressed: () {}),
-        title: Text("Offices"),
-        backgroundColor: Colors.purple,
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.search), onPressed: () {}),
-        ],
+        leading: IconButton(icon: Icon(Icons.location_on), onPressed: () {}),
+        title: Text("Mark Your Attendance"),
+        backgroundColor: dashBoardColor,
       ),
       body: Stack(
         children: <Widget>[
           googleMap(context),
-          buildContainer(),
+//          buildContainer(),
         ],
-      ),
-    );
-  }
-
-  Widget buildContainer() {
-    return Align(
-        alignment: Alignment.bottomLeft,
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 20.0),
-          height: 150.0,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              SizedBox(width: 10.0),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: boxes(30.744600, 76.652496, "Office 7"),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: boxes(30.744600, 76.652496, "Office 5"),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: boxes(30.744600, 76.652496, "Office 1"),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: boxes(30.744600, 76.652496, "Office 2"),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: boxes(30.744600, 76.652496, "Office 3"),
-              ),
-            ],
-          ),
-        ));
-  }
-
-  Widget boxes(double lat, double long, String officeName) {
-    return GestureDetector(
-      onTap: () {
-        _gotoLocation(lat, long);
-      },
-      child: Container(
-        child: new FittedBox(
-          child: Material(
-            color: Colors.white,
-            elevation: 14.0,
-            borderRadius: BorderRadius.circular((24.0)),
-            shadowColor: Colors.purple,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  width: 180,
-                  height: 200,
-                  child: ClipRRect(
-                    borderRadius: new BorderRadius.circular(24.0),
-                    child: Image(
-                      fit: BoxFit.fill,
-                      image: new AssetImage('assets/office1.jpg'),
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(officeName),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
 
   Widget googleMap(BuildContext context) {
+    double _initialLat = 30.677515;
+    double _initialLong = 76.743902;
+    double _initialZoom = 15;
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: GoogleMap(
         mapType: MapType.normal,
-        initialCameraPosition:
-            CameraPosition(target: LatLng(20.5937, 78.9629), zoom: 12),
+        initialCameraPosition: CameraPosition(
+            target: LatLng(_initialLat, _initialLong), zoom: _initialZoom),
+        markers: _markers,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
+          _goToCurrentLocation();
         },
         //markers: {
         //office1Marker
@@ -131,15 +81,71 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
     );
   }
 
+  Future<void> _goToCurrentLocation() async {}
+
   Future<void> _gotoLocation(double lat, double long) async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(lat, long), zoom: 15, tilt: 50.0, bearing: 45.0)));
   }
-}
 
-Marker office1Marker = Marker(
-  markerId: MarkerId('office1'),
-  position: LatLng(30.744600, 76.652496),
-  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
-);
+  initPlatformState() async {
+    await _locationService.changeSettings(
+        accuracy: LocationAccuracy.HIGH, interval: 1000);
+
+    LocationData location;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      bool serviceStatus = await _locationService.serviceEnabled();
+      print("Service status: $serviceStatus");
+      if (serviceStatus) {
+        _permission = await _locationService.requestPermission();
+        print("Permission: $_permission");
+        if (_permission) {
+          location = await _locationService.getLocation();
+
+          _locationSubscription = _locationService
+              .onLocationChanged()
+              .listen((LocationData result) async {
+            _currentCameraPosition = CameraPosition(
+                target: LatLng(result.latitude, result.longitude),
+                zoom: 16,
+                tilt: 50.0,
+                bearing: 45.0);
+
+            final GoogleMapController controller = await _controller.future;
+            controller.animateCamera(
+                CameraUpdate.newCameraPosition(_currentCameraPosition));
+            if (mounted) {
+              setState(() {
+                _currentLocation = result;
+                _markers.clear();
+                _markers.add(Marker(
+                    markerId: MarkerId("Current Location"),
+                    position: LatLng(result.latitude, result.longitude)));
+              });
+            }
+          });
+        }
+      } else {
+        bool serviceStatusResult = await _locationService.requestService();
+        print("Service status activated after request: $serviceStatusResult");
+        if (serviceStatusResult) {
+          initPlatformState();
+        }
+      }
+    } on PlatformException catch (e) {
+      print(e);
+      if (e.code == 'PERMISSION_DENIED') {
+        error = e.message;
+      } else if (e.code == 'SERVICE_STATUS_ERROR') {
+        error = e.message;
+      }
+      location = null;
+    }
+
+    setState(() {
+      _startLocation = location;
+    });
+  }
+}

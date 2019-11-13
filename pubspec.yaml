@@ -31,6 +31,7 @@ dependencies:
   firebase_database: any
   google_maps_flutter: ^0.5.21+8
   device_id: ^0.2.0
+  location: ^2.3.5
 
   geofencing:
     path: geofencing

@@ -1,12 +1,13 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
+
 import '../../services/authentication.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 class Login extends StatefulWidget {
-
   Login({this.auth});
+
   final BaseAuth auth;
 
   @override
@@ -14,7 +15,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   final _formKey = new GlobalKey<FormState>();
   FirebaseDatabase db = new FirebaseDatabase();
   DatabaseReference _empIdRef;
@@ -23,6 +23,7 @@ class _LoginState extends State<Login> {
   String _password;
   String _errorMessage = "";
   String _userID;
+  bool formSubmit = false;
 
   @override
   void initState() {
@@ -30,32 +31,68 @@ class _LoginState extends State<Login> {
     super.initState();
   }
 
+  void _onLoading() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          child: new Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: new CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: new Text(
+                  "LOADING",
+                  style: TextStyle(
+                      fontFamily: "Poppins-Bold",
+                      fontSize: ScreenUtil.getInstance().setSp(46),
+                      letterSpacing: .6,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
       setState(() {
-       _errorMessage = "" ;
+        _errorMessage = "";
       });
       return true;
     }
     return false;
   }
 
-  void validateandSubmit() async {
+  void validateAndSubmit() async {
     if (validateAndSave()) {
+      FocusScope.of(context).unfocus();
+      _onLoading();
       String email;
-
       try {
         _empIdRef.child(_username).once().then((DataSnapshot snapshot) {
-          if (snapshot == null)
+          if (snapshot == null) {
+            print("popped");
             _errorMessage = "Invalid Login Details";
-          else {
+
+          } else {
             email = snapshot.value;
           }
-
           loginUser(email);
-          
         });
       } catch (e) {
         print(e);
@@ -65,25 +102,26 @@ class _LoginState extends State<Login> {
 
   void loginUser(String email) async {
     if (email != null) {
-            print("gkng");
-            try {
-              _userID = await widget.auth.signIn(email, _password);
-              print(_userID);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-            } catch (e) {
-              print("Error" + e.toString());
-              _errorMessage = e.toString();
-              _formKey.currentState.reset();
-            }
-          } else {
-            setState(() {
-              _errorMessage = "Invalid Login Details";
-              _formKey.currentState.reset();
-            });
-          }
+      try {
+        _userID = await widget.auth.signIn(email, _password);
+        print(_userID);
+        Navigator.of(context).pop();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } catch (e) {
+        print("Error" + e.toString());
+        _errorMessage = e.toString();
+        _formKey.currentState.reset();
+      }
+    } else {
+      setState(() {
+        _errorMessage = "Invalid Login Details";
+        _formKey.currentState.reset();
+        Navigator.of(context).pop();
+      });
+    }
   }
 
   Widget radioButton(bool isSelected) => Container(
@@ -200,7 +238,7 @@ class _LoginState extends State<Login> {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: validateandSubmit,
+                              onTap: validateAndSubmit,
                               child: Center(
                                 child: Text("LOGIN",
                                     style: TextStyle(
