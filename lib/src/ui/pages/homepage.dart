@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geo_attendance_system/src/services/authentication.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/pages/dashboard.dart';
 
@@ -56,6 +57,7 @@ class _HomePageState extends State<HomePage>
       ),
       body: new Dashboard(
         controller: controller,
+        auth: new Auth(),
       ),
     );
   }

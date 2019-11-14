@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:geo_attendance_system/src/services/authentication.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/constants/dashboard_tile_info.dart';
 import 'package:geo_attendance_system/src/ui/widgets/dashboard_tile.dart';
 
+import 'login.dart';
+
 class Dashboard extends StatefulWidget {
   final AnimationController controller;
+  final BaseAuth auth;
 
-  Dashboard({this.controller});
+  Dashboard({this.controller, this.auth});
 
   @override
   _DashboardState createState() => new _DashboardState();
@@ -119,7 +123,10 @@ class NavigationPanel extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 25.0,fontWeight: FontWeight.w400),
               ),
               onPressed: () {
-//                signOut();
+                Auth auth = new Auth();
+                auth.signOut();
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                      Login()), (Route<dynamic> route) => false);
               },
             ),
           ),

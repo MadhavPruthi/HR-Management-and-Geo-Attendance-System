@@ -299,7 +299,7 @@ class _LoginState extends State<Login> {
   Widget formCard() {
     return new Container(
       width: double.infinity,
-      height: ScreenUtil.getInstance().setHeight(520),
+      height: ScreenUtil.getInstance().setHeight(600),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
