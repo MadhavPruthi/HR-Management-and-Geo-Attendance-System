@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:geo_attendance_system/src/models/office.dart';
 import 'package:geo_attendance_system/src/services/authentication.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/constants/dashboard_tile_info.dart';
@@ -106,7 +107,14 @@ class DashboardMainPanel extends StatelessWidget {
   }
 }
 
-class NavigationPanel extends StatelessWidget {
+class NavigationPanel extends StatefulWidget {
+  @override
+  _NavigationPanelState createState() => _NavigationPanelState();
+}
+
+class _NavigationPanelState extends State<NavigationPanel> {
+  Office _selected = null;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -119,14 +127,31 @@ class NavigationPanel extends StatelessWidget {
             width: double.infinity,
             child: FlatButton(
               child: Text(
+                "Edit Your Profile",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w400),
+              ),
+              onPressed: () {},
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            child: FlatButton(
+              child: Text(
                 "Logout",
-                style: TextStyle(color: Colors.white, fontSize: 25.0,fontWeight: FontWeight.w400),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w400),
               ),
               onPressed: () {
                 Auth auth = new Auth();
                 auth.signOut();
-                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                      Login()), (Route<dynamic> route) => false);
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => Login()),
+                    (Route<dynamic> route) => false);
               },
             ),
           ),

@@ -15,9 +15,7 @@ class FetchDeviceDetails {
     return _singleton;
   }
 
-  FetchDeviceDetails._internal() {
-    fetchDeviceID();
-  }
+  FetchDeviceDetails._internal();
 
   Future<void> fetchDeviceID() async {
     String _deviceID;

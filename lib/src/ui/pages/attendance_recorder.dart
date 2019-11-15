@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geo_attendance_system/src/services/fetch_offices.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -15,6 +16,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   Completer<GoogleMapController> _controller = Completer();
 
   double zoomVal = 5.0;
+  OfficeDatabase officeDatabase = new OfficeDatabase();
 
   // ignore: unused_field
   StreamSubscription<LocationData> _locationSubscription;
@@ -46,6 +48,20 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
       body: Stack(
         children: <Widget>[
           googleMap(context),
+          Padding(
+            padding: const EdgeInsets.only(top: 40.0),
+            child: FlatButton(
+              shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(100.0)),
+              child: Icon(
+                Icons.arrow_back,
+                size: 30,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
           buildContainer(context),
         ],
       ),
@@ -68,22 +84,23 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
           _controller.complete(controller);
           _goToCurrentLocation();
         },
-        //markers: {
-        //office1Marker
-        //},
       ),
     );
   }
 
   buildContainer(BuildContext context) {
-    TextStyle textStyle = TextStyle(fontSize: 22, color: Colors.blueGrey, fontWeight: FontWeight.w900);
+    TextStyle textStyle = TextStyle(
+        fontSize: 22, color: Colors.blueGrey, fontWeight: FontWeight.w900);
     return Positioned(
       top: 5 * (MediaQuery.of(context).size.height) / 6,
       left: MediaQuery.of(context).size.width / 4,
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(30.0),
-        boxShadow: <BoxShadow>[BoxShadow(offset:Offset(0, 3),blurRadius: 10, spreadRadius: 0.2)]),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30.0),
+            boxShadow: <BoxShadow>[
+              BoxShadow(offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0.2)
+            ]),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -94,9 +111,14 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
                   "IN",
                   style: textStyle,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  print(officeDatabase.getOfficeList());
+                },
               ),
-              Text("|", style: textStyle,),
+              Text(
+                "|",
+                style: textStyle,
+              ),
               FlatButton(
                 child: Text(
                   "OUT",
