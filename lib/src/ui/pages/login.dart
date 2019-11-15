@@ -1,7 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
 
 import '../../services/authentication.dart';
@@ -37,30 +36,34 @@ class _LoginState extends State<Login> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
-          child: new Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SpinKitWave(color: Colors.black, type: SpinKitWaveType.center, size: 50.0,)
+        return Container(
+            height: 30,
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              child: new Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Image.asset(
+                        "assets/gif/loading-gif.gif",
+                        width: 70,
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: new Text(
+                      "LOADING",
+                      style: TextStyle(
+                          fontFamily: "Poppins-Bold",
+                          fontSize: ScreenUtil.getInstance().setSp(46),
+                          letterSpacing: .6,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: new Text(
-                  "LOADING",
-                  style: TextStyle(
-                      fontFamily: "Poppins-Bold",
-                      fontSize: ScreenUtil.getInstance().setSp(46),
-                      letterSpacing: .6,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-        );
+            ));
       },
     );
   }
@@ -87,7 +90,6 @@ class _LoginState extends State<Login> {
           if (snapshot == null) {
             print("popped");
             _errorMessage = "Invalid Login Details";
-
           } else {
             email = snapshot.value;
           }

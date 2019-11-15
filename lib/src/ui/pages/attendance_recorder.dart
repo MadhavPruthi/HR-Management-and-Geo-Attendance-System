@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -44,15 +43,10 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(icon: Icon(Icons.location_on), onPressed: () {}),
-        title: Text("Mark Your Attendance"),
-        backgroundColor: dashBoardColor,
-      ),
       body: Stack(
         children: <Widget>[
           googleMap(context),
-//          buildContainer(),
+          buildContainer(context),
         ],
       ),
     );
@@ -77,6 +71,42 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
         //markers: {
         //office1Marker
         //},
+      ),
+    );
+  }
+
+  buildContainer(BuildContext context) {
+    TextStyle textStyle = TextStyle(fontSize: 22, color: Colors.blueGrey, fontWeight: FontWeight.w900);
+    return Positioned(
+      top: 5 * (MediaQuery.of(context).size.height) / 6,
+      left: MediaQuery.of(context).size.width / 4,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(30.0),
+        boxShadow: <BoxShadow>[BoxShadow(offset:Offset(0, 3),blurRadius: 10, spreadRadius: 0.2)]),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              FlatButton(
+                child: Text(
+                  "IN",
+                  style: textStyle,
+                ),
+                onPressed: () {},
+              ),
+              Text("|", style: textStyle,),
+              FlatButton(
+                child: Text(
+                  "OUT",
+                  style: textStyle,
+                ),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
