@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/services/authentication.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
@@ -8,9 +9,9 @@ import '../../services/geofence.dart';
 
 class HomePage extends StatefulWidget {
 
-  final BaseAuth auth;
+  final FirebaseUser user;
 
-  HomePage({this.auth});
+  HomePage({this.user});
   
   @override
   _HomePageState createState() => new _HomePageState();
@@ -70,7 +71,7 @@ class _HomePageState extends State<HomePage>
       ),
       body: new Dashboard(
         controller: controller,
-        auth: new Auth(),
+        user: user,
       ),
     );
   }

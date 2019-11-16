@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
@@ -11,8 +12,8 @@ import 'login.dart';
 class Dashboard extends StatefulWidget {
   final AnimationController controller;
   final BaseAuth auth;
-
-  Dashboard({this.controller, this.auth});
+  final FirebaseUser user;
+  Dashboard({this.controller, this.auth, this.user});
 
   @override
   _DashboardState createState() => new _DashboardState();

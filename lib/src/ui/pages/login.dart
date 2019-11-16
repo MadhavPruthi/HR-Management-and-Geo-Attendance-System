@@ -28,7 +28,7 @@ class _LoginState extends State<Login> {
   String _username;
   String _password;
   String _errorMessage = "";
-  String _userID;
+  FirebaseUser _user;
   bool formSubmit = false;
   Auth authObject;
 
@@ -77,12 +77,12 @@ class _LoginState extends State<Login> {
   void loginUser(String email) async {
     if (email != null) {
       try {
-        _userID = await authObject.signIn(email, _password);
+        _user = await authObject.signIn(email, _password);
 
         Navigator.of(context).pop();
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => HomePage(user: _user)),
         );
 
         /*_userRef.child(_userID).once().then((DataSnapshot snapshot) {
