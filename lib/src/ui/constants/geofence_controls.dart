@@ -11,4 +11,4 @@ final AndroidGeofencingSettings androidSettings = AndroidGeofencingSettings(
       GeofenceEvent.exit,
       GeofenceEvent.dwell
     ],
-    loiteringDelay: 10*1000);
+    loiteringDelay: 60*1000);
