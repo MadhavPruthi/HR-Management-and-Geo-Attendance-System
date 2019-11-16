@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
+import 'package:flutter/services.dart';
 
 import '../../services/authentication.dart';
 
@@ -17,7 +19,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _formKey = new GlobalKey<FormState>();
   FirebaseDatabase db = new FirebaseDatabase();
-  DatabaseReference _empIdRef;
+  DatabaseReference _empIdRef, _userRef;
 
   String _username;
   String _password;
@@ -27,6 +29,7 @@ class _LoginState extends State<Login> {
 
   @override
   void initState() {
+    _userRef = db.reference().child("users");
     _empIdRef = db.reference().child('EmployeeID');
     super.initState();
   }
@@ -105,7 +108,8 @@ class _LoginState extends State<Login> {
     if (email != null) {
       try {
         _userID = await widget.auth.signIn(email, _password);
-        print(_userID);
+        
+
         Navigator.of(context).pop();
         Navigator.pushReplacement(
           context,
@@ -153,10 +157,16 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]
+    );
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
     return new Scaffold(
+
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
       body: Stack(
@@ -301,7 +311,7 @@ class _LoginState extends State<Login> {
   Widget formCard() {
     return new Container(
       width: double.infinity,
-      height: ScreenUtil.getInstance().setHeight(600),
+      height: 260,
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
@@ -330,38 +340,48 @@ class _LoginState extends State<Login> {
               SizedBox(
                 height: ScreenUtil.getInstance().setHeight(30),
               ),
-              TextFormField(
-                decoration: InputDecoration(
-                    icon: Icon(Icons.person),
-                    hintText: "Username",
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
-                validator: (value) =>
-                    value.isEmpty ? 'Username can\'t be empty' : null,
-                onSaved: (value) => _username = value.trim(),
+              Container(
+                height: 60,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.person),
+                      hintText: "Username",
+                      hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
+                  validator: (value) =>
+                      value.isEmpty ? 'Username can\'t be empty' : null,
+                  onSaved: (value) => _username = value.trim(),
+                ),
               ),
-              SizedBox(
-                height: ScreenUtil.getInstance().setHeight(30),
-              ),
-              TextFormField(
-                obscureText: true,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.lock),
-                    hintText: "Password",
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
-                validator: (value) =>
-                    value.isEmpty ? 'Password can\'t be empty' : null,
-                onSaved: (value) => _password = value,
-              ),
-              SizedBox(
-                height: ScreenUtil.getInstance().setHeight(35),
+              Container(
+                height: 60,
+                child: TextFormField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.lock),
+                      hintText: "Password",
+                      hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
+                  validator: (value) =>
+                      value.isEmpty ? 'Password can\'t be empty' : null,
+                  onSaved: (value) => _password = value,
+                ),
               ),
               Text(
                 _errorMessage,
                 style: TextStyle(color: Colors.red),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
+                  FlatButton(
+                    onPressed: () => _formKey.currentState.reset(),
+                    child: Text(
+                      "Reset",
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontFamily: "Poppins-Medium",
+                          fontSize: ScreenUtil.getInstance().setSp(28)),
+                    ),
+                  ),
                   Text(
                     "Forgot Password?",
                     style: TextStyle(

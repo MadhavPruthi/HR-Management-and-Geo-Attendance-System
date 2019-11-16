@@ -4,6 +4,11 @@ import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/pages/dashboard.dart';
 
 class HomePage extends StatefulWidget {
+
+  final BaseAuth auth;
+
+  HomePage({this.auth});
+  
   @override
   _HomePageState createState() => new _HomePageState();
 }
