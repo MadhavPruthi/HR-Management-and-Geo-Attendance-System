@@ -33,6 +33,7 @@ dependencies:
   device_id: ^0.2.0
   location: ^2.3.5
   flutter_spinkit: ^3.1.0
+  imei_plugin: any
 
   geofencing:
     path: geofencing

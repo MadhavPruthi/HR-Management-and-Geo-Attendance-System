@@ -7,6 +7,11 @@ import 'package:geofencing/geofencing.dart';
 import '../../services/geofence.dart';
 
 class HomePage extends StatefulWidget {
+
+  final BaseAuth auth;
+
+  HomePage({this.auth});
+  
   @override
   _HomePageState createState() => new _HomePageState();
 }

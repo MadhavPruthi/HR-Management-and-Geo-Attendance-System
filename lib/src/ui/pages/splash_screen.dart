@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreenWidget> {
           MaterialPageRoute loginRoute = new MaterialPageRoute(
               builder: (BuildContext context) => Login(auth: new Auth()));
           MaterialPageRoute homePageRoute = new MaterialPageRoute(
-              builder: (BuildContext context) => HomePage());
+              builder: (BuildContext context) => HomePage(auth: new Auth()));
 
           if (authStatus == AuthStatus.LOGGED_IN) {
             Navigator.pushReplacement(context, homePageRoute);
