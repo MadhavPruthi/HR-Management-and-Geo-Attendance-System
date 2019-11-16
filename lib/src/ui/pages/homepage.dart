@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/services/authentication.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/pages/dashboard.dart';
+import 'package:geofencing/geofencing.dart';
+
+import '../../services/geofence.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -20,6 +23,11 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    GeofencingManager.initialize().then((_) {
+      print("Called");
+      GeoFenceClass.startListening(30.6775392, 76.7438784);
+    });
+
     controller = new AnimationController(
         vsync: this, duration: new Duration(milliseconds: 300), value: 1.0);
   }

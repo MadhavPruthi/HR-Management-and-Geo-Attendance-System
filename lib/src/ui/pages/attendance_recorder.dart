@@ -1,13 +1,11 @@
 import 'dart:async';
-import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geo_attendance_system/src/models/office.dart';
+import 'package:geo_attendance_system/src/services/attendance_mark.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
-import 'package:geo_attendance_system/src/ui/constants/geofence_controls.dart';
-import 'package:geo_attendance_system/src/ui/constants/strings.dart';
-import 'package:geofencing/geofencing.dart' as geofence_lib;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location_lib;
 
@@ -32,45 +30,18 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   location_lib.Location _locationService = new location_lib.Location();
   bool _permission = false;
   String error;
-
   CameraPosition _currentCameraPosition;
-  ReceivePort port = ReceivePort();
-  String geofenceState = 'N/A';
-  double latitude = 31.1471305;
-  double longitude = 75.34121789999999;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
-    IsolateNameServer.registerPortWithName(port.sendPort, geofence_port_name);
-    port.listen((dynamic data) {
-      print('Event: $data');
-      setState(() {
-        geofenceState = data;
-      });
-    });
-  }
-
-  static void callback(List<String> ids, geofence_lib.Location l,
-      geofence_lib.GeofenceEvent e) async {
-    print('Fences: $ids Location $l Event: $e');
-    final SendPort send =
-        IsolateNameServer.lookupPortByName(geofence_port_name);
-    send?.send(e.toString());
-  }
-
-  Future<void> initGeoFencePlatformState() async {
-    print('Initializing Geofencing');
-    await geofence_lib.GeofencingManager.initialize();
-    print('Initialization done');
   }
 
   @override
   void dispose() {
     super.dispose();
-    _locationSubscription.cancel();
-    geofence_lib.GeofencingManager.removeGeofenceById(fence_id);
+    if (_locationSubscription != null) _locationSubscription.cancel();
   }
 
   @override
@@ -94,7 +65,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
             ),
           ),
           Text(
-            geofenceState,
+            "HELLO",
             style: TextStyle(fontSize: 40.0, color: Colors.black),
           ),
           buildContainer(context),
@@ -112,14 +83,14 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
       width: MediaQuery.of(context).size.width,
       child: GoogleMap(
         mapType: MapType.normal,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
         initialCameraPosition: CameraPosition(
             target: LatLng(_initialLat, _initialLong), zoom: _initialZoom),
         markers: _markers,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
-          _goToCurrentLocation();
-          print("Reached Here");
-          _registerForGeoFence();
+//          _goToCurrentLocation();
         },
       ),
     );
@@ -144,12 +115,13 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               FlatButton(
-                child: Text(
-                  "IN",
-                  style: textStyle,
-                ),
-                onPressed: () {},
-              ),
+                  child: Text(
+                    "IN",
+                    style: textStyle,
+                  ),
+                  onPressed: () {
+                    markInAttendance(context, Office(), _currentLocation);
+                  }),
               Text(
                 "|",
                 style: textStyle,
@@ -168,25 +140,15 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
     );
   }
 
-  Future<void> _goToCurrentLocation() async {}
-
   Future<void> _gotoLocation(double lat, double long) async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(lat, long), zoom: 15, tilt: 50.0, bearing: 45.0)));
   }
 
-  void _registerForGeoFence() {
-    geofence_lib.GeofencingManager.registerGeofence(
-        geofence_lib.GeofenceRegion(
-            fence_id, latitude, longitude, radius_geofence, triggers,
-            androidSettings: androidSettings),
-        callback);
-  }
-
   initPlatformState() async {
     await _locationService.changeSettings(
-        accuracy: location_lib.LocationAccuracy.HIGH, interval: 1000);
+        accuracy: location_lib.LocationAccuracy.BALANCED, interval: 1000);
 
     location_lib.LocationData location;
     // Platform messages may fail, so we use a try/catch PlatformException.
