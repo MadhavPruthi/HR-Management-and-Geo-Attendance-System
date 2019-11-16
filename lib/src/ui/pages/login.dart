@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
+import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 
 import '../../services/authentication.dart';
 
@@ -31,43 +32,6 @@ class _LoginState extends State<Login> {
     super.initState();
   }
 
-  void _onLoading() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Container(
-            height: 30,
-            child: Dialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
-              child: new Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Image.asset(
-                        "assets/gif/loading-gif.gif",
-                        width: 70,
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: new Text(
-                      "LOADING",
-                      style: TextStyle(
-                          fontFamily: "Poppins-Bold",
-                          fontSize: ScreenUtil.getInstance().setSp(46),
-                          letterSpacing: .6,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ));
-      },
-    );
-  }
-
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -83,7 +47,7 @@ class _LoginState extends State<Login> {
   void validateAndSubmit() async {
     if (validateAndSave()) {
       FocusScope.of(context).unfocus();
-      _onLoading();
+      onLoadingDialog(context);
       String email;
       try {
         _empIdRef.child(_username).once().then((DataSnapshot snapshot) {

@@ -49,6 +49,7 @@ flutter:
     - assets/icons/Logo-splash.png
     - assets/icons/navigation-drawer.png
     - assets/gif/loading-gif.gif
+    - assets/gif/tick.gif
   
   fonts:
 

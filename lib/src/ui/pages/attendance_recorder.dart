@@ -6,8 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
 import 'package:geo_attendance_system/src/services/attendance_mark.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
+import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart' as location_lib;
+import 'package:location/location.dart';
 
 class AttendanceRecorderWidget extends StatefulWidget {
   @override
@@ -22,12 +23,13 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   OfficeDatabase officeDatabase = new OfficeDatabase();
 
   // ignore: unused_field
-  StreamSubscription<location_lib.LocationData> _locationSubscription;
-  location_lib.LocationData _currentLocation;
-  location_lib.LocationData _startLocation;
+  StreamSubscription<LocationData> _locationSubscription;
+  LocationData _currentLocation;
+  LocationData _startLocation;
   Set<Marker> _markers = {};
+  Set<Circle> _circles = {};
 
-  location_lib.Location _locationService = new location_lib.Location();
+  Location _locationService = new Location();
   bool _permission = false;
   String error;
   CameraPosition _currentCameraPosition;
@@ -64,10 +66,6 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
               },
             ),
           ),
-          Text(
-            "HELLO",
-            style: TextStyle(fontSize: 40.0, color: Colors.black),
-          ),
           buildContainer(context),
         ],
       ),
@@ -84,13 +82,12 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
       child: GoogleMap(
         mapType: MapType.normal,
         myLocationEnabled: true,
-        myLocationButtonEnabled: true,
+        circles: _circles,
         initialCameraPosition: CameraPosition(
             target: LatLng(_initialLat, _initialLong), zoom: _initialZoom),
         markers: _markers,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
-//          _goToCurrentLocation();
         },
       ),
     );
@@ -120,7 +117,11 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
                     style: textStyle,
                   ),
                   onPressed: () {
-                    markInAttendance(context, Office(), _currentLocation);
+                    onLoadingDialog(context);
+                    Future.delayed(Duration(seconds: 3), () {
+                      Navigator.pop(context);
+                      markInAttendance(context, Office(), _currentLocation);
+                    });
                   }),
               Text(
                 "|",
@@ -148,9 +149,9 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
 
   initPlatformState() async {
     await _locationService.changeSettings(
-        accuracy: location_lib.LocationAccuracy.BALANCED, interval: 1000);
+        accuracy: LocationAccuracy.BALANCED, interval: 1000);
 
-    location_lib.LocationData location;
+    LocationData location;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       bool serviceStatus = await _locationService.serviceEnabled();
@@ -163,7 +164,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
 
           _locationSubscription = _locationService
               .onLocationChanged()
-              .listen((location_lib.LocationData result) async {
+              .listen((LocationData result) async {
             _currentCameraPosition = CameraPosition(
                 target: LatLng(result.latitude, result.longitude),
                 zoom: 16,
