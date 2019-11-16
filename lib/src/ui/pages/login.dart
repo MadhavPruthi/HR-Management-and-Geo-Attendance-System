@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
 import 'package:flutter/services.dart';
-
+import 'package:imei_plugin/imei_plugin.dart';
 import '../../services/authentication.dart';
 
 class Login extends StatefulWidget {
@@ -26,11 +26,14 @@ class _LoginState extends State<Login> {
   String _errorMessage = "";
   String _userID;
   bool formSubmit = false;
+  Auth authObject;
 
   @override
   void initState() {
     _userRef = db.reference().child("users");
     _empIdRef = db.reference().child('EmployeeID');
+    authObject = new Auth();
+
     super.initState();
   }
 
@@ -107,14 +110,36 @@ class _LoginState extends State<Login> {
   void loginUser(String email) async {
     if (email != null) {
       try {
-        _userID = await widget.auth.signIn(email, _password);
-        
+        _userID = await authObject.signIn(email, _password);
 
         Navigator.of(context).pop();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
+
+        /*_userRef.child(_userID).once().then((DataSnapshot snapshot) {
+          print(snapshot);
+
+          if (snapshot == null) {
+            try {
+              ImeiPlugin.getImei(shouldShowRequestPermissionRationale: false).then((String IMEI) {
+                _userRef.child(_userID).set({
+                  "IMEI": IMEI,
+                  "email": email,
+                });
+
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+              });
+            } catch (e) {
+              print(e.message);
+            }
+          }
+        });*/
       } catch (e) {
         print("Error" + e.toString());
         _errorMessage = e.toString();
@@ -157,16 +182,12 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown
-    ]
-    );
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
     return new Scaffold(
-
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
       body: Stack(
