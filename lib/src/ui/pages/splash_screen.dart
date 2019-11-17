@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/services/authentication.dart';
-import 'package:geo_attendance_system/src/ui/pages/login.dart';
-import 'package:splashscreen/splashscreen.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
+import 'package:geo_attendance_system/src/ui/pages/login.dart';
 
 enum AuthStatus {
   NOT_DETERMINED,
@@ -45,7 +43,7 @@ class _SplashScreenState extends State<SplashScreenWidget> {
           MaterialPageRoute loginRoute = new MaterialPageRoute(
               builder: (BuildContext context) => Login(auth: new Auth()));
           MaterialPageRoute homePageRoute = new MaterialPageRoute(
-              builder: (BuildContext context) => HomePage(auth: new Auth()));
+              builder: (BuildContext context) => HomePage(user: user));
 
           if (authStatus == AuthStatus.LOGGED_IN) {
             Navigator.pushReplacement(context, homePageRoute);

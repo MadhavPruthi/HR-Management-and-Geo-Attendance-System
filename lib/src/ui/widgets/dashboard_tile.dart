@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 
-Widget buildTile(IconData icon, String title, String subtitle, BuildContext context,
-    [Function(BuildContext) onTap]) {
+Widget buildTile(IconData icon, String title, String subtitle,
+    BuildContext context, FirebaseUser user,
+    [Function(BuildContext,FirebaseUser) onTap]) {
   return Material(
       elevation: 10.0,
       shadowColor: dashBoardColor,
@@ -10,9 +12,9 @@ Widget buildTile(IconData icon, String title, String subtitle, BuildContext cont
       color: dashBoardColor,
       child: InkWell(
         onTap: onTap != null
-            ? (){
-          onTap(context);
-        } //  Implement here onTap function
+            ? () {
+                onTap(context,user);
+              } //  Implement here onTap function
             : () => print("Not yet set"),
         child: Padding(
           padding: const EdgeInsets.all(24.0),

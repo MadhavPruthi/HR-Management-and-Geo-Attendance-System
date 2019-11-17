@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/attendance_recorder.dart';
 import '../pages/calendar.dart';
 
-void attendanceSummaryCallback(BuildContext context) {
+void attendanceSummaryCallback(BuildContext context, FirebaseUser user) {
   Navigator.push(
     context,
     MaterialPageRoute(
@@ -13,9 +14,9 @@ void attendanceSummaryCallback(BuildContext context) {
   );
 }
 
-void attendanceRecorderCallback(BuildContext context) {
+void attendanceRecorderCallback(BuildContext context, FirebaseUser user) {
   Navigator.push(context,
-      MaterialPageRoute(builder: (context) => AttendanceRecorderWidget()));
+      MaterialPageRoute(builder: (context) => AttendanceRecorderWidget(user:user)));
 }
 
 List<List> infoAboutTiles = [

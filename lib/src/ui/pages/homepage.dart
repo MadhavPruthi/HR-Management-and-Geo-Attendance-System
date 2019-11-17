@@ -1,18 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:geo_attendance_system/src/services/authentication.dart';
+import 'package:geo_attendance_system/src/services/fetch_offices.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
+import 'package:geo_attendance_system/src/ui/constants/strings.dart';
 import 'package:geo_attendance_system/src/ui/pages/dashboard.dart';
 import 'package:geofencing/geofencing.dart';
 
 import '../../services/geofence.dart';
 
 class HomePage extends StatefulWidget {
-
   final FirebaseUser user;
 
   HomePage({this.user});
-  
+
   @override
   _HomePageState createState() => new _HomePageState();
 }
@@ -21,12 +21,15 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
 
+  OfficeDatabase officeDatabase = new OfficeDatabase();
+
   @override
   void initState() {
     super.initState();
     GeofencingManager.initialize().then((_) {
-      print("Called");
-      GeoFenceClass.startListening(30.6775392, 76.7438784);
+      officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+        GeoFenceClass.startListening(office.latitude, office.longitude);
+      });
     });
 
     controller = new AnimationController(
@@ -37,6 +40,7 @@ class _HomePageState extends State<HomePage>
   void dispose() {
     super.dispose();
     controller.dispose();
+    GeofencingManager.removeGeofenceById(fence_id);
   }
 
   bool get isPanelVisible {
@@ -71,7 +75,7 @@ class _HomePageState extends State<HomePage>
       ),
       body: new Dashboard(
         controller: controller,
-        user: user,
+        user: widget.user,
       ),
     );
   }

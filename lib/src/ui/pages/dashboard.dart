@@ -51,7 +51,7 @@ class _DashboardState extends State<Dashboard> {
                 children: <Widget>[
                   new Expanded(
                     child: new Center(
-                      child: DashboardMainPanel(),
+                      child: DashboardMainPanel(user: widget.user,),
                     ),
                   )
                 ],
@@ -72,12 +72,15 @@ class _DashboardState extends State<Dashboard> {
 }
 
 class DashboardMainPanel extends StatelessWidget {
+
+  final FirebaseUser user;
+  DashboardMainPanel({this.user});
   final List tileData = infoAboutTiles;
 
   List<Widget> _listWidget(BuildContext context) {
     List<Widget> widgets = new List();
     tileData.forEach((tile) {
-      widgets.add(buildTile(tile[0], tile[1], tile[2], context, tile[3]));
+      widgets.add(buildTile(tile[0], tile[1], tile[2], context, user, tile[3]));
     });
 
     return widgets;

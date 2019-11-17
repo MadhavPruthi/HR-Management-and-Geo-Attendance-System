@@ -1,14 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
-
 import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 
-
-import 'package:flutter/services.dart';
-import 'package:imei_plugin/imei_plugin.dart';
 import '../../services/authentication.dart';
 
 class Login extends StatefulWidget {

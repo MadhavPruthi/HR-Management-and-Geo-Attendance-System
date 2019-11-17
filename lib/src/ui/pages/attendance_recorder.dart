@@ -1,16 +1,21 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
 import 'package:geo_attendance_system/src/services/attendance_mark.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
-import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
+import 'package:geo_attendance_system/src/ui/widgets/attendance_Marker_buttons.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class AttendanceRecorderWidget extends StatefulWidget {
+  final FirebaseUser user;
+
+  AttendanceRecorderWidget({this.user});
+
   @override
   AttendanceRecorderWidgetState createState() =>
       AttendanceRecorderWidgetState();
@@ -49,23 +54,32 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        leading: new IconButton(
+          icon: new Icon(Icons.arrow_back_ios, color: Colors.black87),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        title: Text(
+          "Mark your Attendance",
+          style: TextStyle(
+              color: Colors.black87,
+              fontFamily: "Poppins-Medium",
+              fontSize: 22,
+              letterSpacing: .6,
+              fontWeight: FontWeight.bold),
+        ),
+        elevation: 0.8,
+        centerTitle: true,
+        bottomOpacity: 0,
+      ),
       body: Stack(
         children: <Widget>[
           googleMap(context),
-          Padding(
-            padding: const EdgeInsets.only(top: 40.0),
-            child: FlatButton(
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(100.0)),
-              child: Icon(
-                Icons.arrow_back,
-                size: 30,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
           buildContainer(context),
         ],
       ),
@@ -94,51 +108,28 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   }
 
   buildContainer(BuildContext context) {
-    TextStyle textStyle = TextStyle(
-        fontSize: 22, color: Colors.blueGrey, fontWeight: FontWeight.w900);
-    return Positioned(
-      top: 5 * (MediaQuery.of(context).size.height) / 6,
-      left: MediaQuery.of(context).size.width / 4,
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30.0),
-            boxShadow: <BoxShadow>[
-              BoxShadow(offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0.2)
-            ]),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              FlatButton(
-                  child: Text(
-                    "IN",
-                    style: textStyle,
-                  ),
-                  onPressed: () {
-                    onLoadingDialog(context);
-                    Future.delayed(Duration(seconds: 3), () {
-                      Navigator.pop(context);
-                      markInAttendance(context, Office(), _currentLocation);
-                    });
-                  }),
-              Text(
-                "|",
-                style: textStyle,
-              ),
-              FlatButton(
-                child: Text(
-                  "OUT",
-                  style: textStyle,
-                ),
-                onPressed: () {},
-              ),
-            ],
-          ),
+    return Padding(
+      padding: const EdgeInsets.all(80.0),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            inOutButton("IN", Colors.green, _callMarkInFunction),
+            Spacer(flex: 20),
+            inOutButton("OUT", Colors.orangeAccent, _callMarkOutFunction),
+          ],
         ),
       ),
     );
+  }
+
+  void _callMarkInFunction() {
+    markInAttendance(context, Office(), _currentLocation, widget.user);
+  }
+
+  void _callMarkOutFunction() {
+    markOutAttendance(context, Office(), _currentLocation, widget.user);
   }
 
   Future<void> _gotoLocation(double lat, double long) async {
