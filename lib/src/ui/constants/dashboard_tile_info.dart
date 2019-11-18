@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/attendance_recorder.dart';
@@ -7,9 +8,9 @@ import '../pages/attendance_summary.dart';
 void attendanceSummaryCallback(BuildContext context, FirebaseUser user) {
   Navigator.push(
     context,
-    MaterialPageRoute(
+    CupertinoPageRoute(
         builder: (context) => AttendanceSummary(
-              title: "Calendar",
+              title: "Attendance Summary",
               user: user,
             )),
   );
@@ -18,7 +19,7 @@ void attendanceSummaryCallback(BuildContext context, FirebaseUser user) {
 void attendanceRecorderCallback(BuildContext context, FirebaseUser user) {
   Navigator.push(
       context,
-      MaterialPageRoute(
+      CupertinoPageRoute(
           builder: (context) => AttendanceRecorderWidget(user: user)));
 }
 

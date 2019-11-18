@@ -11,7 +11,7 @@ final Map<DateTime, List> _holidays = {
   DateTime(2019, 1, 6): ['Epiphany'],
   DateTime(2019, 2, 14): ['Valentine\'s Day'],
   DateTime(2019, 4, 21): ['Easter Sunday'],
-  DateTime(2019, 4, 22): ['Easter Monday'],
+  DateTime(2019, 11, 18): ['Easter Monday'],
 };
 
 class AttendanceSummary extends StatefulWidget {
@@ -215,9 +215,9 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
 
   Widget _buildHolidaysMarker() {
     return Icon(
-      Icons.add_box,
+      Icons.weekend,
       size: 20.0,
-      color: Colors.blueGrey[800],
+      color: Colors.blueGrey,
     );
   }
 
