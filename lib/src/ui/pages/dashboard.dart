@@ -100,15 +100,24 @@ class DashboardMainPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: StaggeredGridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12.0,
-        mainAxisSpacing: 12.0,
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        children: _listWidget(context),
-        staggeredTiles: _staggeredTiles(),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: const [splashScreenColorBottom, splashScreenColorTop],
+          begin: Alignment.bottomCenter,
+          end: Alignment.topRight,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: StaggeredGridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12.0,
+          mainAxisSpacing: 12.0,
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          children: _listWidget(context),
+          staggeredTiles: _staggeredTiles(),
+        ),
       ),
     );
   }

@@ -82,17 +82,33 @@ class _HomePageState extends State<HomePage>
           ),
         ),
         body: geoFenceActive == false
-            ? Column(children: <Widget>[
-                LinearProgressIndicator(),
-                Padding(
-                  padding: const EdgeInsets.all(40.0),
-                  child: Text(
-                    "Please Wait..\nwhile we are setting up things",
-                    style: TextStyle(color: Colors.blueGrey,fontSize: 22,  fontWeight: FontWeight.w700),
-                    textAlign: TextAlign.center,
+            ? Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: const [
+                      splashScreenColorBottom,
+                      splashScreenColorTop
+                    ],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topRight,
                   ),
-                )
-              ])
+                ),
+                child: Column(children: <Widget>[
+                  LinearProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(splashScreenColorBottom),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(40.0),
+                    child: Text(
+                      "Please Wait..\nwhile we are setting up things",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ]))
             : new Dashboard(
                 controller: controller,
                 user: widget.user,

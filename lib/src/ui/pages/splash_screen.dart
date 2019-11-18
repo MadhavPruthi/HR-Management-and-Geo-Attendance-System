@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geo_attendance_system/src/services/authentication.dart';
+import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
 import 'package:geo_attendance_system/src/ui/pages/login.dart';
 
@@ -29,8 +31,6 @@ class _SplashScreenState extends State<SplashScreenWidget> {
 
     Timer(Duration(seconds: 3), () {
       widget.auth.getCurrentUser().then((user) {
-        print(user);
-
         setState(() {
           if (user != null) {
             _userId = user?.uid;
@@ -59,24 +59,22 @@ class _SplashScreenState extends State<SplashScreenWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //Login(auth: new Auth()),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: const [Color(0xffB7F8DB), Color(0xff50A7D7)],
+            colors: const [splashScreenColorBottom, splashScreenColorTop],
             begin: Alignment.bottomCenter,
             end: Alignment.topRight,
           ),
         ),
         child: Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Image(
-              image: AssetImage("assets/icons/Logo-splash.png"),
-              height: 175,
-            ),
             Container(
               padding: const EdgeInsets.only(top: 80),
-              child: CircularProgressIndicator(),
+              child: SpinKitThreeBounce(
+                color: Colors.white,
+                size: 30.0,
+              ),
             ),
           ]),
         ),
