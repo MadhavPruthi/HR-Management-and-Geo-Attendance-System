@@ -22,15 +22,23 @@ class _HomePageState extends State<HomePage>
   AnimationController controller;
 
   OfficeDatabase officeDatabase = new OfficeDatabase();
+  var geoFenceActive = false;
+
+  Future<void> _initializeGeoFence() async {
+    return GeofencingManager.initialize().then((_) {
+      officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+        GeoFenceClass.startListening(office.latitude, office.longitude);
+        setState(() {
+          geoFenceActive = true;
+        });
+      });
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    GeofencingManager.initialize().then((_) {
-      officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-        GeoFenceClass.startListening(office.latitude, office.longitude);
-      });
-    });
+    _initializeGeoFence();
 
     controller = new AnimationController(
         vsync: this, duration: new Duration(milliseconds: 300), value: 1.0);
@@ -52,31 +60,42 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: Padding(
-          padding: const EdgeInsets.only(left: 65.0),
-          child: new Text(
-            "Dashboard",
-            style: TextStyle(fontSize: 25.0),
+        appBar: new AppBar(
+          title: Padding(
+            padding: const EdgeInsets.only(left: 65.0),
+            child: new Text(
+              "Dashboard",
+              style: TextStyle(fontSize: 25.0),
+            ),
+          ),
+          elevation: 0.0,
+          backgroundColor: dashBoardColor,
+          leading: new IconButton(
+            onPressed: () {
+              double velocity = 2.0;
+              controller.fling(velocity: isPanelVisible ? -velocity : velocity);
+            },
+            icon: new AnimatedIcon(
+              icon: AnimatedIcons.close_menu,
+              progress: controller.view,
+            ),
           ),
         ),
-        elevation: 0.0,
-        backgroundColor: dashBoardColor,
-        leading: new IconButton(
-          onPressed: () {
-            double velocity = 2.0;
-            controller.fling(velocity: isPanelVisible ? -velocity : velocity);
-          },
-          icon: new AnimatedIcon(
-            icon: AnimatedIcons.close_menu,
-            progress: controller.view,
-          ),
-        ),
-      ),
-      body: new Dashboard(
-        controller: controller,
-        user: widget.user,
-      ),
-    );
+        body: geoFenceActive == false
+            ? Column(children: <Widget>[
+                LinearProgressIndicator(),
+                Padding(
+                  padding: const EdgeInsets.all(40.0),
+                  child: Text(
+                    "Please Wait..\nwhile we are setting up things",
+                    style: TextStyle(color: Colors.blueGrey,fontSize: 22,  fontWeight: FontWeight.w700),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              ])
+            : new Dashboard(
+                controller: controller,
+                user: widget.user,
+              ));
   }
 }

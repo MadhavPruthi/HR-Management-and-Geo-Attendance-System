@@ -27,7 +27,7 @@ Widget buildTile(IconData icon, String title, String subtitle,
                     shape: CircleBorder(),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Icon(icon, color: Colors.deepPurple, size: 30.0),
+                      child: Icon(icon, color: dashBoardColor, size: 30.0),
                     )),
                 Text(
                   title,

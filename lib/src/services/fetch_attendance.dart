@@ -1,6 +1,16 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:geo_attendance_system/src/models/AttendaceList.dart';
+
+String getFormattedDate(DateTime day) {
+  String formattedDate = day.day.toString() +
+      "-" +
+      day.month.toString() +
+      "-" +
+      day.year.toString();
+  return formattedDate;
+}
 
 class AttendanceDatabase {
   static final _databaseReference = FirebaseDatabase.instance.reference();
@@ -14,16 +24,25 @@ class AttendanceDatabase {
 
   static Future<DataSnapshot> getAttendanceBasedOnUID(String uid) async {
     DataSnapshot dataSnapshot =
-    await _databaseReference.child("Attendance").child(uid).once();
+        await _databaseReference.child("Attendance").child(uid).once();
     return dataSnapshot;
   }
 
-  static Future<dynamic> getAttendanceOfParticularDateBasedOnUID(String uid,
-      DateTime dateTime) async {
+  static Future<dynamic> getAttendanceOfParticularDateBasedOnUID(
+      String uid, DateTime dateTime) async {
     DataSnapshot snapshot = await getAttendanceBasedOnUID(uid);
-    String formattedDate = dateTime.day.toString() + "-" +
-        dateTime.month.toString() + "-" + dateTime.year.toString();
+    String formattedDate = getFormattedDate(dateTime);
     return snapshot.value[formattedDate];
+  }
+
+  static Future<AttendanceList> getAttendanceListOfParticularDateBasedOnUID(
+      String uid, DateTime dateTime) async {
+    var snapshot = await getAttendanceOfParticularDateBasedOnUID(uid, dateTime);
+    AttendanceList attendanceList =
+        AttendanceList.fromJson(snapshot, getFormattedDate(dateTime));
+    attendanceList.dateTime = dateTime;
+
+    return attendanceList != null ? attendanceList : [];
   }
 
 //  Future<List<Office>> getOfficeList() async {

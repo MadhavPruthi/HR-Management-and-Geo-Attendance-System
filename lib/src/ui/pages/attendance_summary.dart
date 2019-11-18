@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geo_attendance_system/src/models/AttendaceList.dart';
+import 'package:geo_attendance_system/src/services/fetch_attendance.dart';
+import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-// Example holidays
 final Map<DateTime, List> _holidays = {
   DateTime(2019, 1, 1): ['New Year\'s Day'],
   DateTime(2019, 1, 6): ['Epiphany'],
@@ -11,33 +14,18 @@ final Map<DateTime, List> _holidays = {
   DateTime(2019, 4, 22): ['Easter Monday'],
 };
 
-void main() {
-  initializeDateFormatting().then((_) => runApp(MyApp()));
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Table Calendar Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Table Calendar Demo'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class AttendanceSummary extends StatefulWidget {
+  AttendanceSummary({Key key, this.title, this.user}) : super(key: key);
 
   final String title;
+  final FirebaseUser user;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _AttendanceSummaryState createState() => _AttendanceSummaryState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+class _AttendanceSummaryState extends State<AttendanceSummary>
+    with TickerProviderStateMixin {
   Map<DateTime, List> _events;
   List _selectedEvents;
   AnimationController _animationController;
@@ -49,12 +37,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     initializeDateFormatting();
     final _selectedDay = DateTime.now();
 
-    _events = {
-      _selectedDay.subtract(Duration(days: 30)): ['Event A0', 'Event B0', 'Event C0'],
-      _selectedDay.subtract(Duration(days: 27)): ['Event A1'],
-      _selectedDay.subtract(Duration(days: 20)): ['Event A2', 'Event B2', 'Event C2', 'Event D2'],
-
-    };
+    _events = {};
 
     _selectedEvents = _events[_selectedDay] ?? [];
     _calendarController = CalendarController();
@@ -75,14 +58,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   void _onDaySelected(DateTime day, List events) {
-    print('CALLBACK: _onDaySelected');
-    setState(() {
-      _selectedEvents = events;
+    onLoadingDialog(context);
+    AttendanceDatabase.getAttendanceListOfParticularDateBasedOnUID(
+            widget.user.uid, day)
+        .then((AttendanceList attendanceList) {
+      Navigator.of(context, rootNavigator: true).pop('dialog');
+      setState(() {
+        attendanceList.attendanceList.forEach((Attendance attendance) {
+          events.add(
+              "${attendance.type.toString().split('.').last}: ${attendance.time.hour}-${attendance.time.minute} - ${attendance.office}");
+        });
+        _selectedEvents = events;
+      });
     });
   }
 
-  void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
+  void _onVisibleDaysChanged(
+      DateTime first, DateTime last, CalendarFormat format) {
+    print('$first $last');
   }
 
   @override
@@ -94,10 +87,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          // Switch out 2 lines below to play with TableCalendar's settings
-          //-----------------------
 //          _buildTableCalendar(),
-           _buildTableCalendarWithBuilders(),
+          _buildTableCalendarWithBuilders(),
           const SizedBox(height: 8.0),
           _buildButtons(),
           const SizedBox(height: 8.0),
@@ -107,32 +98,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-  // Simple TableCalendar configuration (using Styles)
-  Widget _buildTableCalendar() {
-    return TableCalendar(
-      calendarController: _calendarController,
-      events: _events,
-      holidays: _holidays,
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
-        todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],
-        outsideDaysVisible: false,
-      ),
-      headerStyle: HeaderStyle(
-        formatButtonTextStyle: TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-        formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-      ),
-      onDaySelected: _onDaySelected,
-      onVisibleDaysChanged: _onVisibleDaysChanged,
-    );
-  }
-
-  // More advanced TableCalendar configuration (using Builders & Styles)
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
       locale: 'en_US',
@@ -230,7 +195,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         shape: BoxShape.rectangle,
         color: _calendarController.isSelected(date)
             ? Colors.brown[500]
-            : _calendarController.isToday(date) ? Colors.brown[300] : Colors.blue[400],
+            : _calendarController.isToday(date)
+                ? Colors.brown[300]
+                : Colors.blue[400],
       ),
       width: 16.0,
       height: 16.0,
@@ -255,7 +222,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildButtons() {
-    final dateTime = _events.keys.elementAt(_events.length - 2);
+//    final dateTime = _events.keys.elementAt(_events.length - 2);
 
     return Column(
       children: <Widget>[
@@ -275,7 +242,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               child: Text('2 weeks'),
               onPressed: () {
                 setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.twoWeeks);
+                  _calendarController
+                      .setCalendarFormat(CalendarFormat.twoWeeks);
                 });
               },
             ),
@@ -290,15 +258,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ],
         ),
         const SizedBox(height: 8.0),
-        RaisedButton(
-          child: Text('Set day ${dateTime.day}-${dateTime.month}-${dateTime.year}'),
-          onPressed: () {
-            _calendarController.setSelectedDay(
-              DateTime(dateTime.year, dateTime.month, dateTime.day),
-              runCallback: true,
-            );
-          },
-        ),
       ],
     );
   }
@@ -307,16 +266,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return ListView(
       children: _selectedEvents
           .map((event) => Container(
-        decoration: BoxDecoration(
-          border: Border.all(width: 0.8),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-        child: ListTile(
-          title: Text(event.toString()),
-          onTap: () => print('$event tapped!'),
-        ),
-      ))
+                decoration: BoxDecoration(
+                  border: Border.all(width: 0.8),
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: ListTile(
+                  title: Text(event.toString()),
+                  onTap: () => print('$event tapped!'),
+                ),
+              ))
           .toList(),
     );
   }

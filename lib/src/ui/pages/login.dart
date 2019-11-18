@@ -105,9 +105,12 @@ class _LoginState extends State<Login> {
           }
         });*/
       } catch (e) {
+        Navigator.of(context).pop();
         print("Error" + e.toString());
-        _errorMessage = e.toString();
-        _formKey.currentState.reset();
+        setState(() {
+          _errorMessage = e.message.toString();
+          _formKey.currentState.reset();
+        });
       }
     } else {
       setState(() {

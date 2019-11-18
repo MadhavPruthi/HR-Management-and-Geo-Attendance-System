@@ -20,8 +20,8 @@ class GeoFenceClass {
     return _singleton;
   }
 
-  static void startListening(double latitude, double longitude) {
-    GeofencingManager.registerGeofence(
+  static Future<void> startListening(double latitude, double longitude) async{
+    await GeofencingManager.registerGeofence(
         GeofenceRegion(fence_id, latitude, longitude, radius_geofence, triggers,
             androidSettings: androidSettings),
         callback);
@@ -29,7 +29,6 @@ class GeoFenceClass {
     port.listen((dynamic data) {
       GeoFenceClass.geofenceState = data;
       print('Event: $data');
-      print("DATAAAAAA " + data.toString());
     });
   }
 
