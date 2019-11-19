@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:geo_attendance_system/src/services/authentication.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/constants/dashboard_tile_info.dart';
+import 'package:geo_attendance_system/src/ui/pages/profile_page.dart';
 import 'package:geo_attendance_system/src/ui/widgets/dashboard_tile.dart';
 
 import 'login.dart';
@@ -102,12 +103,13 @@ class DashboardMainPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: const [splashScreenColorBottom, splashScreenColorTop],
-          begin: Alignment.bottomCenter,
-          end: Alignment.topRight,
-        ),
-      ),
+          gradient: LinearGradient(
+            colors: const [splashScreenColorBottom, splashScreenColorTop],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topRight,
+          ),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16), topRight: Radius.circular(16))),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: StaggeredGridView.count(
@@ -169,7 +171,10 @@ class _NavigationPanelState extends State<NavigationPanel> {
         color: dashBoardColor,
         child: ListView(
           children: <Widget>[
-            drawerTile("Edit your Profile", () {}, Icons.perm_identity),
+            drawerTile("Edit your Profile", () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => ContactsDemo()));
+            }, Icons.perm_identity),
             drawerTile("Logout", () {
               Auth auth = new Auth();
               auth.signOut();

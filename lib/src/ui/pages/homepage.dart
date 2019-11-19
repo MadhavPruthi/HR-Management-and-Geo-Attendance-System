@@ -62,10 +62,14 @@ class _HomePageState extends State<HomePage>
     return new Scaffold(
         appBar: new AppBar(
           title: Padding(
-            padding: const EdgeInsets.only(left: 65.0),
+            padding: const EdgeInsets.only(left: 55.0),
             child: new Text(
-              "Dashboard",
-              style: TextStyle(fontSize: 25.0),
+              "DASHBOARD",
+              style: TextStyle(
+                fontSize: 25.0,
+                fontFamily: "Poppins-Medium",
+                fontWeight: FontWeight.w200
+              ),
             ),
           ),
           elevation: 0.0,
@@ -95,7 +99,8 @@ class _HomePageState extends State<HomePage>
                 ),
                 child: Column(children: <Widget>[
                   LinearProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(splashScreenColorBottom),
+                    valueColor: new AlwaysStoppedAnimation<Color>(
+                        splashScreenColorBottom),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(40.0),
