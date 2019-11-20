@@ -24,6 +24,8 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
   bool medical_leave = false;
   bool annual_leave = false;
   bool casual_leave = false;
+  final _formKey = GlobalKey<FormState>();
+
 
   @override
   void initState() {
@@ -49,6 +51,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
                     vertical: 16.0, horizontal: 16.0),
                 child: Builder(
                     builder: (context) => Form(
+                        key: _formKey,
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
@@ -56,13 +59,16 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
                                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
                                 child: TextFormField( readOnly: true,
 
+
                                   decoration: InputDecoration(
+                                    labelText: 'Manager',
 
                                       border: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: Colors.redAccent, width: 5.0),
                                       ),
                                       ),
+                                  onTap: (){_showDialog(context);}
                                 ),
                               ),
                               Text('Today'),
@@ -77,6 +83,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
                                                 color: Colors.redAccent, width: 5.0),
                                           ),
                                           ),
+                                      onTap: (){_showDialog1(context);}
 
                                     ),
                                   ),
@@ -277,7 +284,9 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
                                   activeColor: Colors.redAccent,
                                   checkColor: Colors.white,
                                   onChanged: (value) {
-                                    setState(() => casual_leave = value);
+                                    setState(() => casual_leave = value
+                                    );
+
                                   }),
                                   TextField(
                                     decoration: new InputDecoration(
@@ -301,4 +310,51 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
                                       child: Text('Submit',style: TextStyle(color: Colors.white)))),
                             ]))))));
   }
+}
+void _showDialog(context) {
+  // flutter defined function
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      // return object of type Dialog
+      return AlertDialog(
+        title: new Text("Editing"),
+        content: new Text("Contact your Manager"),
+        actions: <Widget>[
+          // usually buttons at the bottom of the dialog
+          new FlatButton(
+            child: new Text("Close"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
+
+void _showDialog1(context) {
+  // flutter defined function
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      // return object of type Dialog
+      return AlertDialog(
+        title: new Text("Date"),
+        content: new Text("Cannot edit"),
+        actions: <Widget>[
+          // usually buttons at the bottom of the dialog
+          new FlatButton(
+            child: new Text("Close"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
