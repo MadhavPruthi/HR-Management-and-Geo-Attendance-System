@@ -2,39 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
+import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:grouped_buttons/grouped_buttons.dart';
 
 class LeaveApplicationWidget extends StatefulWidget {
   LeaveApplicationWidget({Key key, this.title, this.user}) : super(key: key);
   final String title;
   final FirebaseUser user;
+  FirebaseDatabase db = new FirebaseDatabase();
+
   @override
   LeaveApplicationWidgetState createState() => LeaveApplicationWidgetState();
 }
 
-class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
+class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
+    with SingleTickerProviderStateMixin {
   String _fromdate = "Select";
+  int currentState = 0;
+
 
   String _todate = "Select";
-  var date=DateTime.now();
+  var date = DateTime.now();
 
   bool ishalfday = false;
   String leave_type;
   int nofdays;
-  bool monVal=false;
-  bool medical_leave = false;
-  bool annual_leave = false;
-  bool casual_leave = false;
-  final _formKey = GlobalKey<FormState>();
+  bool monVal = false;
 
+  List<String> _checked = [];
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
@@ -47,46 +54,54 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
         ),
         body: SingleChildScrollView(
             child: Container(
+                /*decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                      colors: const [splashScreenColorBottom, splashScreenColorTop],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topRight,
+                      ),),*/
                 padding: const EdgeInsets.symmetric(
                     vertical: 16.0, horizontal: 16.0),
                 child: Builder(
                     builder: (context) => Form(
                         key: _formKey,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                child: TextFormField( readOnly: true,
-
-
-                                  decoration: InputDecoration(
-                                    labelText: 'Manager',
-
+                                child: TextFormField(
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      labelText: 'Baba Tera',
                                       border: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Colors.redAccent, width: 5.0),
+                                            color: Colors.redAccent,
+                                            width: 5.0),
                                       ),
-                                      ),
-                                  onTap: (){_showDialog(context);}
-                                ),
+                                    ),
+                                    onTap: () {
+                                      _showDialog(context);
+                                    }),
                               ),
                               Text('Today'),
-                                  Container(
-                                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                    child: TextFormField( readOnly: true,
-
-                                      decoration: InputDecoration(
-                                        labelText: '${date.year} - ${date.month} - ${date.day}',
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.redAccent, width: 5.0),
-                                          ),
-                                          ),
-                                      onTap: (){_showDialog1(context);}
-
+                              Container(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                child: TextFormField(
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      labelText:
+                                          '${date.year} - ${date.month} - ${date.day}',
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.redAccent,
+                                            width: 5.0),
+                                      ),
                                     ),
-                                  ),
+                                    onTap: () {
+                                      _showDialog1(context);
+                                    }),
+                              ),
                               Text('From'),
                               Container(
                                   padding:
@@ -106,6 +121,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
                                           minTime: DateTime(2000, 1, 1),
                                           maxTime: DateTime(2022, 12, 31),
                                           onConfirm: (date) {
+
                                         print('confirm $date');
                                         _fromdate =
                                             '${date.year} - ${date.month} - ${date.day}';
@@ -129,12 +145,10 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
                                                     Text(
                                                       "$_fromdate",
                                                       style: TextStyle(
-                                                        color: Colors
-                                                            .redAccent,
+                                                        color: Colors.redAccent,
                                                         fontSize: 18.0,
                                                       ),
                                                     ),
-
                                                   ],
                                                 ),
                                               )
@@ -186,8 +200,8 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
                                                     Text(
                                                       "$_todate",
                                                       style: TextStyle(
-                                                          color: Colors
-                                                              .redAccent,
+                                                          color:
+                                                              Colors.redAccent,
                                                           fontSize: 18.0),
                                                     ),
                                                   ],
@@ -254,63 +268,73 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget> {
                               ),
                               Container(
                                 padding:
-                                    const EdgeInsets.fromLTRB(0, 50, 0, 20),
+                                    const EdgeInsets.fromLTRB(0, 20, 0, 20),
                                 child: Text('Type of leave'),
                               ),
-                                  CheckboxListTile(
-                                    title:const Text('Meidcal Leave'),
-                                    value: medical_leave,
-                                    activeColor: Colors.redAccent,
-                                    checkColor: Colors.white,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        medical_leave = value;
-                                      });
-                                    },
+                              CheckboxGroup(
+                                labels: <String>[
+                                  "Medical Leave",
+                                  "Annual Leave",
+                                  "Casual Leave"
+                                ],
+
+                                checked: _checked,
+                                activeColor: Colors.redAccent,
+
+                                onChange: (bool isChecked, String label, int index) =>
+                                    print("isChecked: $isChecked   label: $label  index: $index"),
+                                onSelected: (List selected) => setState(() {
+                                  if (selected.length > 1) {
+                                    selected.removeAt(0);
+                                    print('selected length  ${selected.length}');
+                                  } else {
+                                    print("only one");
+                                  }
+                                  _checked = selected;
+                                }),
+                              ),
+
+
+                              TextField(
+                                decoration: new InputDecoration(
+                                  labelText: "Message for Management",
+                                  labelStyle:
+                                      new TextStyle(color: Colors.redAccent),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.redAccent),
                                   ),
-
-                              CheckboxListTile(
-                                  title: const Text('Annual Leave'),
-                                  value: annual_leave,
-                                  activeColor: Colors.redAccent,
-                                  checkColor: Colors.white,
-
-                                  onChanged: (value) {
-                                    setState(() => annual_leave = value);
-                                  }),
-                              CheckboxListTile(
-                                  title: const Text('Casual Leave'),
-                                  value: casual_leave,
-                                  activeColor: Colors.redAccent,
-                                  checkColor: Colors.white,
-                                  onChanged: (value) {
-                                    setState(() => casual_leave = value
-                                    );
-
-                                  }),
-                                  TextField(
-                                    decoration: new InputDecoration(
-
-                                        labelText: "Message for Management",
-                                        labelStyle: new TextStyle(color: Colors.redAccent),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.redAccent),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.redAccent),
-                                      ),
-                                    ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.redAccent),
                                   ),
+                                ),
+                              ),
+
                               Container(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 16.0, horizontal: 16.0),
-                                  child: RaisedButton(
-                                      color: splashScreenColorTop,
-                                      onPressed: () {},
-                                      child: Text('Submit',style: TextStyle(color: Colors.white)))),
+                                  child: FloatingActionButton(
+                                      backgroundColor: splashScreenColorTop,
+                                      hoverColor: splashScreenColorBottom,
+                                      hoverElevation: 40.0,
+                                      onPressed: () {
+                                        onLoadingDialog(context);
+                                        if (_formKey.currentState.validate()) {
+                                          Scaffold.of(context).showSnackBar(
+                                              SnackBar(
+                                                  content:
+                                                      Text('Processing Data')));
+                                        }
+                                        ;
+                                      },
+                                      child: Text('Submit',
+                                          style:
+                                              TextStyle(color: Colors.white)))),
                             ]))))));
   }
 }
+
 void _showDialog(context) {
   // flutter defined function
   showDialog(
@@ -318,8 +342,8 @@ void _showDialog(context) {
     builder: (BuildContext context) {
       // return object of type Dialog
       return AlertDialog(
-        title: new Text("Editing"),
-        content: new Text("Contact your Manager"),
+        title: new Text("Change Manager"),
+        content: new Text("Contact Admin"),
         actions: <Widget>[
           // usually buttons at the bottom of the dialog
           new FlatButton(
@@ -333,8 +357,6 @@ void _showDialog(context) {
     },
   );
 }
-
-
 
 void _showDialog1(context) {
   // flutter defined function
