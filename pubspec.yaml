@@ -32,8 +32,11 @@ dependencies:
   google_maps_flutter: ^0.5.21+8
   device_id: ^0.2.0
   location: ^2.3.5
+  flutter_spinkit: ^3.1.0
+  flutter_datetime_picker: ^1.2.5
+  grouped_buttons: ^1.0.3
+
   imei_plugin: any
-  flutter_spinkit: ^4.0.0
 
   geofencing:
     path: geofencing

@@ -60,7 +60,7 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
   void _onDaySelected(DateTime day, List events) {
     onLoadingDialog(context);
     AttendanceDatabase.getAttendanceListOfParticularDateBasedOnUID(
-            widget.user.uid, day)
+        widget.user.uid, day)
         .then((AttendanceList attendanceList) {
       Navigator.of(context, rootNavigator: true).pop('dialog');
       setState(() {
@@ -196,8 +196,8 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
         color: _calendarController.isSelected(date)
             ? Colors.brown[500]
             : _calendarController.isToday(date)
-                ? Colors.brown[300]
-                : Colors.blue[400],
+            ? Colors.brown[300]
+            : Colors.blue[400],
       ),
       width: 16.0,
       height: 16.0,
@@ -266,17 +266,17 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
     return ListView(
       children: _selectedEvents
           .map((event) => Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 0.8),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: ListTile(
-                  title: Text(event.toString()),
-                  onTap: () => print('$event tapped!'),
-                ),
-              ))
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.8),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        margin:
+        const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        child: ListTile(
+          title: Text(event.toString()),
+          onTap: () => print('$event tapped!'),
+        ),
+      ))
           .toList(),
     );
   }
