@@ -1,10 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geo_attendance_system/src/models/office.dart';
+import 'package:geo_attendance_system/src/services/fetch_IMEI.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/constants/strings.dart';
 import 'package:geo_attendance_system/src/ui/pages/dashboard.dart';
 import 'package:geofencing/geofencing.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../services/geofence.dart';
 
@@ -23,21 +27,58 @@ class _HomePageState extends State<HomePage>
 
   OfficeDatabase officeDatabase = new OfficeDatabase();
   var geoFenceActive = false;
+  var result;
+  String error;
+  Office allottedOffice;
+  final PermissionHandler _permissionHandler = PermissionHandler();
 
   Future<void> _initializeGeoFence() async {
-    return GeofencingManager.initialize().then((_) {
-      officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-        GeoFenceClass.startListening(office.latitude, office.longitude);
-        setState(() {
-          geoFenceActive = true;
-        });
-      });
-    });
+    try {
+      var x = await getDeviceDetails();
+      print(x);
+      result = await _permissionHandler
+          .requestPermissions([PermissionGroup.location]);
+      switch (result[PermissionGroup.location]) {
+        case PermissionStatus.granted:
+          GeofencingManager.initialize().then((_) {
+            officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+              GeoFenceClass.startListening(
+                  office.latitude, office.longitude, office.radius);
+              setState(() {
+                geoFenceActive = true;
+                allottedOffice = office;
+              });
+            });
+          });
+          break;
+        case PermissionStatus.denied:
+          print("DENIED");
+          break;
+        case PermissionStatus.disabled:
+          // do something
+          break;
+        case PermissionStatus.restricted:
+          // do something
+          break;
+        case PermissionStatus.unknown:
+          // do something
+          break;
+        default:
+      }
+    } on PlatformException catch (e) {
+      print(e);
+      if (e.code == 'PERMISSION_DENIED') {
+        error = e.message;
+      } else if (e.code == 'SERVICE_STATUS_ERROR') {
+        error = e.message;
+      }
+    }
   }
 
   @override
   void initState() {
     super.initState();
+
     _initializeGeoFence();
 
     controller = new AnimationController(
@@ -66,10 +107,9 @@ class _HomePageState extends State<HomePage>
             child: new Text(
               "DASHBOARD",
               style: TextStyle(
-                fontSize: 25.0,
-                fontFamily: "Poppins-Medium",
-                fontWeight: FontWeight.w200
-              ),
+                  fontSize: 25.0,
+                  fontFamily: "Poppins-Medium",
+                  fontWeight: FontWeight.w200),
             ),
           ),
           elevation: 0.0,

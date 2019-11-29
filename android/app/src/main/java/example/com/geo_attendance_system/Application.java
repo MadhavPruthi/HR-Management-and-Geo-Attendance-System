@@ -1,6 +1,7 @@
 package example.com.geo_attendance_system;
 
 import io.flutter.app.FlutterApplication;
+import io.flutter.app.FlutterFragmentActivity;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 import io.flutter.plugins.geofencing.GeofencingService;

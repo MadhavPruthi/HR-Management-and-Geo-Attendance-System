@@ -1,3 +1,5 @@
+import 'package:firebase_database/firebase_database.dart';
+
 import 'office.dart';
 
 enum Gender { Male, Female, Other }
@@ -283,6 +285,7 @@ enum Role {
 }
 
 class Employee {
+  String uID;
   String employeeID;
   String firstName;
   String middleName;
@@ -343,4 +346,60 @@ class Employee {
       this.employeeType,
       this.reviewPerson,
       this.role});
+
+  Employee.fromSnapshot(DataSnapshot snapshot)
+      : uID = snapshot.key,
+        employeeID = snapshot.value["employeeID"],
+        firstName = snapshot.value["firstName"],
+        middleName = snapshot.value["middleName"],
+        lastName = snapshot.value["lastName"],
+        officeEmail = snapshot.value["officeEmail"],
+        alternateEmail = snapshot.value["alternateEmail"],
+        dateOfBirth = snapshot.value["dateOfBirth"],
+        joiningDate = snapshot.value["joiningDate"],
+        gender = snapshot.value["gender"],
+        retirementAge = snapshot.value["retirementAge"],
+        joiningUnit = snapshot.value["joiningUnit"],
+        skillCategory = snapshot.value["skillCategory"],
+        employeeFunction = snapshot.value["employeeFunction"],
+        employeeSubFunction = snapshot.value["employeeSubFunction"],
+        grade = snapshot.value["grade"],
+        designation = snapshot.value["designation"],
+        maritalStatus = snapshot.value["maritalStatus"],
+        religion = snapshot.value["religion"],
+        nationality = snapshot.value["nationality"],
+        entity = snapshot.value["entity"],
+        bloodGroup = snapshot.value["bloodGroup"],
+        employeeType = snapshot.value["employeeType"],
+        reviewPerson = snapshot.value["reviewPerson"],
+        role = snapshot.value["role"];
+
+  toJson() {
+    return {
+      "employeeID" : employeeID,
+      "firstName" : firstName,
+      "middleName" : middleName,
+      "lastName" : lastName,
+      "officeEmail" : officeEmail,
+      "alternateEmail" : alternateEmail,
+      "dateOfBirth" : dateOfBirth,
+      "joiningDate" : joiningDate,
+      "gender" : gender,
+      "retirementAge" : retirementAge,
+      "joiningUnit" : joiningUnit,
+      "skillCategory" : skillCategory,
+      "employeeFunction" : employeeFunction,
+      "employeeSubFunction" : employeeSubFunction,
+      "grade" : grade,
+      "designation" : designation,
+      "maritalStatus" : maritalStatus,
+      "religion" : religion,
+      "nationality" : nationality,
+      "entity" : entity,
+      "bloodGroup" : bloodGroup,
+      "employeeType" : employeeType,
+      "reviewPerson" : reviewPerson,
+      "role" : role,
+    };
+  }
 }

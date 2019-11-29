@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geo_attendance_system/src/models/office.dart';
 import 'package:geo_attendance_system/src/services/attendance_mark.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
 import 'package:geo_attendance_system/src/ui/widgets/attendance_Marker_buttons.dart';
@@ -125,11 +124,15 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   }
 
   void _callMarkInFunction() {
-    markInAttendance(context, Office(), _currentLocation, widget.user);
+    officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+      markInAttendance(context, office, _currentLocation, widget.user);
+    });
   }
 
   void _callMarkOutFunction() {
-    markOutAttendance(context, Office(), _currentLocation, widget.user);
+    officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+      markOutAttendance(context, office, _currentLocation, widget.user);
+    });
   }
 
   Future<void> _gotoLocation(double lat, double long) async {
