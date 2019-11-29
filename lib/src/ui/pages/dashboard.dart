@@ -111,7 +111,7 @@ class DashboardMainPanel extends StatelessWidget {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(16), topRight: Radius.circular(16))),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(4.0),
         child: StaggeredGridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 12.0,

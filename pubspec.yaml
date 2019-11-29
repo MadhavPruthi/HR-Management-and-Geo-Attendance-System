@@ -51,8 +51,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/icons/Logo-splash.png
-    - assets/icons/navigation-drawer.png
+    - assets/icons/
     - assets/gif/loading-gif.gif
     - assets/gif/tick.gif
     - assets/gif/close.gif

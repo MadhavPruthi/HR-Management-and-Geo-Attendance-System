@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
 
-const dashBoardColor = splashScreenColorBottom;
-const splashScreenColorBottom = Color(0xffc31432);
-const splashScreenColorTop= Color(0xff240b36);
+const dashBoardColor = Color.fromRGBO(105, 106, 183, 1);
+const splashScreenColorBottom = Color.fromRGBO(105, 106, 183, 1);
+const splashScreenColorTop= Color.fromRGBO(105, 106, 183, 1);

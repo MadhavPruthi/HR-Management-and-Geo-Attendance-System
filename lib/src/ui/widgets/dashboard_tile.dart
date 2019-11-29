@@ -2,14 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 
-Widget buildTile(IconData icon, String title, String subtitle,
+Widget buildTile(String icon, String title, String subtitle,
     BuildContext context, FirebaseUser user,
     [Function(BuildContext,FirebaseUser) onTap]) {
   return Material(
       elevation: 10.0,
       shadowColor: dashBoardColor,
       borderRadius: BorderRadius.circular(12.0),
-      color: dashBoardColor,
+      color: Color.fromRGBO(51, 51, 102, 1),
       child: InkWell(
         onTap: onTap != null
             ? () {
@@ -23,26 +23,25 @@ Widget buildTile(IconData icon, String title, String subtitle,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Material(
-                    color: Colors.white70,
-                    shape: CircleBorder(),
+                    
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Icon(icon, color: dashBoardColor, size: 30.0),
+                      child: Image.asset(icon, height: 40,),
                     )),
                 Text(
                   title,
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
-                      fontSize: 18.0),
+                      fontSize: 17.0),
                   textAlign: TextAlign.center,
                 ),
                 Text(
                   subtitle,
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: Colors.white60,
                     fontWeight: FontWeight.w700,
-                    fontSize: 14.0,
+                    fontSize: 13.0,
                   ),
                   textAlign: TextAlign.center,
                 ),
