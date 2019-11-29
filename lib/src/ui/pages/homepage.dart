@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
-import 'package:geo_attendance_system/src/services/fetch_IMEI.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/constants/strings.dart';
@@ -34,8 +33,6 @@ class _HomePageState extends State<HomePage>
 
   Future<void> _initializeGeoFence() async {
     try {
-      var x = await getDeviceDetails();
-      print(x);
       result = await _permissionHandler
           .requestPermissions([PermissionGroup.location]);
       switch (result[PermissionGroup.location]) {

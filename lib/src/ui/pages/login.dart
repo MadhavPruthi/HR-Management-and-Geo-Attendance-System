@@ -3,7 +3,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geo_attendance_system/src/services/fetch_IMEI.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
+import 'package:geo_attendance_system/src/ui/widgets/Info_dialog_box.dart';
 import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 
 import '../../services/authentication.dart';
@@ -71,39 +73,46 @@ class _LoginState extends State<Login> {
     }
   }
 
+  Future<List> checkForSingleSignOn(FirebaseUser _user) async {
+    DataSnapshot dataSnapshot = await _userRef.child(_user.uid).once();
+
+    if (dataSnapshot != null) {
+      var uuid = dataSnapshot.value["UUID"];
+      List listOfDetails = await getDeviceDetails();
+
+      if (uuid != null) {
+        if (listOfDetails[2] == uuid)
+          return List.from([true, listOfDetails[2]]);
+        else
+          return List.from([false, listOfDetails[2]]);
+      }
+      return List.from([true, listOfDetails[2]]);
+    }
+    return List.from([false, null]);
+  }
+
   void loginUser(String email) async {
     if (email != null) {
       try {
         _user = await authObject.signIn(email, _password);
 
-        Navigator.of(context).pop();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage(user: _user)),
-        );
-
-        /*_userRef.child(_userID).once().then((DataSnapshot snapshot) {
-          print(snapshot);
-
-          if (snapshot == null) {
-            try {
-              ImeiPlugin.getImei(shouldShowRequestPermissionRationale: false).then((String IMEI) {
-                _userRef.child(_userID).set({
-                  "IMEI": IMEI,
-                  "email": email,
-                });
-
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              });
-            } catch (e) {
-              print(e.message);
-            }
-          }
-        });*/
+        checkForSingleSignOn(_user).then((list) {
+          Navigator.of(context).pop();
+          print(list[1]);
+          if (list[0] == true)
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage(user: _user)),
+            );
+          else
+            showDialogTemplate(
+                context,
+                "ATTENTION!",
+                "\nUnauthorized Access Detected!\nIf you are a Legit user, Kindly Contact HR Dept for the Same",
+                "assets/gif/no_entry.gif",
+                Color.fromRGBO(170, 160, 160, 1.0),
+                "Ok");
+        });
       } catch (e) {
         Navigator.of(context).pop();
         print("Error" + e.toString());

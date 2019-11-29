@@ -54,6 +54,7 @@ flutter:
     - assets/gif/loading-gif.gif
     - assets/gif/tick.gif
     - assets/gif/close.gif
+    - assets/gif/no_entry.gif
   
   fonts:
 
