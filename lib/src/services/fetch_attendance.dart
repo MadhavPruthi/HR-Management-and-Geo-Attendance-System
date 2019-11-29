@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:geo_attendance_system/src/models/AttendaceList.dart';
+import 'package:geo_attendance_system/src/models/office.dart';
 
 String getFormattedDate(DateTime day) {
   String formattedDate = day.day.toString() +
@@ -10,6 +11,16 @@ String getFormattedDate(DateTime day) {
       "-" +
       day.year.toString();
   return formattedDate;
+}
+
+String getFormattedTime(DateTime day) {
+  String time = day.hour.toString() +
+      ":" +
+      day.minute.toString() +
+      ":" +
+      day.second.toString();
+
+  return time;
 }
 
 class AttendanceDatabase {
@@ -45,17 +56,20 @@ class AttendanceDatabase {
     return attendanceList != null ? attendanceList : [];
   }
 
-//  Future<List<Office>> getOfficeList() async {
-//    DataSnapshot dataSnapshot = await _databaseReference.once();
-//    Completer<List<Office>> completer;
-//    final officeList = dataSnapshot.value["location"];
-//    List<Office> result = [];
-//
-//    var officeMap = officeList;
-//    officeMap.forEach((key, map) {
-//      result.add(Office.fromJson(key, map.cast<String, dynamic>()));
-//    });
-//
-//    return result;
-//  }
+  static Future markAttendance(
+      String uid, DateTime dateTime, Office office, String markType) async {
+    String time = getFormattedTime(dateTime);
+    String date = getFormattedDate(dateTime);
+    var json = {
+      "office": office.getKey,
+      "time": time,
+    };
+    return _databaseReference
+        .reference()
+        .child("Attendance")
+        .child(uid)
+        .child(date)
+        .child(markType)
+        .set(json);
+  }
 }

@@ -23,7 +23,13 @@ class OfficeDatabase {
     final name = findOffice["name"];
     final latitude = findOffice["latitude"];
     final longitude = findOffice["longitude"];
-    return Office(name: name, latitude: latitude, longitude: longitude);
+    final radius = findOffice["radius"].toDouble();
+    return Office(
+        key: office,
+        name: name,
+        latitude: latitude,
+        longitude: longitude,
+        radius: radius);
   }
 
   Future<List<Office>> getOfficeList() async {

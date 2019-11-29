@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geo_attendance_system/src/ui/constants/colors.dart';
-import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:geo_attendance_system/src/ui/constants/colors.dart';
+import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 
 class LeaveApplicationWidget extends StatefulWidget {
@@ -22,7 +21,6 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
   String _fromdate = "Select";
   int currentState = 0;
 
-
   String _todate = "Select";
   var date = DateTime.now();
 
@@ -38,7 +36,6 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
   void initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,36 +68,33 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
                                 child: TextFormField(
-                                    readOnly: true,
-                                    decoration: InputDecoration(
-                                      labelText: 'Baba Tera',
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.redAccent,
-                                            width: 5.0),
-                                      ),
+                                  readOnly: true,
+                                  decoration: InputDecoration(
+                                    labelText: 'Baba Tera',
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.redAccent, width: 5.0),
                                     ),
-                                    onTap: () {
-                                      _showDialog(context);
-                                    }),
+                                  ),
+                                ),
                               ),
                               Text('Today'),
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
                                 child: TextFormField(
-                                    readOnly: true,
-                                    decoration: InputDecoration(
-                                      labelText:
-                                          '${date.year} - ${date.month} - ${date.day}',
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.redAccent,
-                                            width: 5.0),
-                                      ),
+                                  readOnly: true,
+                                  decoration: InputDecoration(
+                                    labelText:
+                                        '${date.year} - ${date.month} - ${date.day}',
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.redAccent, width: 5.0),
                                     ),
-                                    onTap: () {
-                                      _showDialog1(context);
-                                    }),
+                                  ),
+                                  onTap: (){
+                                    showDialog(context: context);
+                                  },
+                                ),
                               ),
                               Text('From'),
                               Container(
@@ -121,7 +115,6 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                           minTime: DateTime(2000, 1, 1),
                                           maxTime: DateTime(2022, 12, 31),
                                           onConfirm: (date) {
-
                                         print('confirm $date');
                                         _fromdate =
                                             '${date.year} - ${date.month} - ${date.day}';
@@ -277,24 +270,23 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                   "Annual Leave",
                                   "Casual Leave"
                                 ],
-
                                 checked: _checked,
                                 activeColor: Colors.redAccent,
-
-                                onChange: (bool isChecked, String label, int index) =>
-                                    print("isChecked: $isChecked   label: $label  index: $index"),
+                                onChange: (bool isChecked, String label,
+                                        int index) =>
+                                    print(
+                                        "isChecked: $isChecked   label: $label  index: $index"),
                                 onSelected: (List selected) => setState(() {
                                   if (selected.length > 1) {
                                     selected.removeAt(0);
-                                    print('selected length  ${selected.length}');
+                                    print(
+                                        'selected length  ${selected.length}');
                                   } else {
                                     print("only one");
                                   }
                                   _checked = selected;
                                 }),
                               ),
-
-
                               TextField(
                                 decoration: new InputDecoration(
                                   labelText: "Message for Management",
@@ -310,7 +302,6 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                   ),
                                 ),
                               ),
-
                               Container(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 16.0, horizontal: 16.0),

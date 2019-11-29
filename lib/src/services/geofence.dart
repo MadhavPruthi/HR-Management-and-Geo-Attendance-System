@@ -16,13 +16,13 @@ class GeoFenceClass {
   GeoFenceClass._internal();
 
   factory GeoFenceClass() {
-
     return _singleton;
   }
 
-  static Future<void> startListening(double latitude, double longitude) async{
+  static Future<void> startListening(double latitude, double longitude,
+      [double radius = radius_geofence]) async {
     await GeofencingManager.registerGeofence(
-        GeofenceRegion(fence_id, latitude, longitude, radius_geofence, triggers,
+        GeofenceRegion(fence_id, latitude, longitude, radius, triggers,
             androidSettings: androidSettings),
         callback);
     print(isolateSpawn);

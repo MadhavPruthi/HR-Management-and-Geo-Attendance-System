@@ -73,13 +73,16 @@ void markInAttendance(BuildContext context, Office office,
       if (isFeasible &&
           (GeoFenceClass.geofenceState == "GeofenceEvent.dwell" ||
               GeoFenceClass.geofenceState == "GeofenceEvent.enter")) {
-        showDialogTemplate(
-            context,
-            "Attendance Info",
-            "Marked \nStatus: ${GeoFenceClass.geofenceState}",
-            "assets/gif/tick.gif",
-            Color.fromRGBO(51, 205, 187, 1.0),
-            "Great");
+        AttendanceDatabase.markAttendance(user.uid, dateToday, office, "in")
+            .then((_) {
+          showDialogTemplate(
+              context,
+              "Attendance Info",
+              "Marked \nStatus: ${GeoFenceClass.geofenceState}",
+              "assets/gif/tick.gif",
+              Color.fromRGBO(51, 205, 187, 1.0),
+              "Great");
+        });
       } else {
         if (isFeasible) errorMessage = "Out of the allotted Location!";
         showDialogTemplate(
@@ -119,13 +122,19 @@ void markOutAttendance(BuildContext context, Office office,
       if (isFeasible &&
           (GeoFenceClass.geofenceState == "GeofenceEvent.dwell" ||
               GeoFenceClass.geofenceState == "GeofenceEvent.enter")) {
-        showDialogTemplate(
-            context,
-            "Attendance Info",
-            "Marked \nStatus: ${GeoFenceClass.geofenceState}",
-            "assets/gif/tick.gif",
-            Color.fromRGBO(51, 205, 187, 1.0),
-            "Great");
+
+        AttendanceDatabase.markAttendance(user.uid, dateToday, office, "out")
+            .then((_) {
+          showDialogTemplate(
+              context,
+              "Attendance Info",
+              "Marked \nStatus: ${GeoFenceClass.geofenceState}",
+              "assets/gif/tick.gif",
+              Color.fromRGBO(51, 205, 187, 1.0),
+              "Great");
+        });
+
+
       } else {
         if (isFeasible) errorMessage = "Out of the allotted Location!";
         showDialogTemplate(
