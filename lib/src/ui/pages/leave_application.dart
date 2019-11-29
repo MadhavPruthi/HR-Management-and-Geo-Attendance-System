@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 
 class LeaveApplicationWidget extends StatefulWidget {
@@ -18,10 +18,16 @@ class LeaveApplicationWidget extends StatefulWidget {
 
 class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
     with SingleTickerProviderStateMixin {
+  FirebaseDatabase db = FirebaseDatabase();
+  DatabaseReference _userRef, _managerRef;
+  String _managerName, _managerDesignation;
+
   String _fromdate = "Select";
+  DateTime _fromDateInt;
   int currentState = 0;
 
   String _todate = "Select";
+  DateTime _toDateInt;
   var date = DateTime.now();
 
   bool ishalfday = false;
@@ -32,9 +38,45 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
   List<String> _checked = [];
   final _formKey = GlobalKey<FormState>();
 
+  String leavesCount = "-";
+
+  List<String> leaveType = [
+    "Medical Leave",
+    "Annual Leave",
+    "Casual Leave",
+  ];
+
+  List<String> leaveKeys = [
+    "ml",
+    "al",
+    "cl",
+  ];
+
+  int leaveIndex = -1;
+
+  String _errorMessage;
+
   @override
   void initState() {
     super.initState();
+    _userRef = db.reference().child("users");
+    _managerRef = db.reference().child("managers");
+    _getManager();
+  }
+
+  void _getManager() async {
+    _userRef
+        .child(widget.user.uid)
+        .child("manager")
+        .once()
+        .then((DataSnapshot managerID) {
+      _managerRef.child(managerID.value).once().then((DataSnapshot details) {
+        setState(() {
+          _managerName = details.value["name"];
+          _managerDesignation = details.value["designation"];
+        });
+      });
+    });
   }
 
   @override
@@ -43,7 +85,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           title: Text('Leave Application'),
-          backgroundColor: Colors.red,
+          backgroundColor: dashBoardColor,
           leading: new IconButton(
             icon: new Icon(Icons.arrow_back_ios),
             onPressed: () => Navigator.of(context).pop(),
@@ -65,41 +107,48 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
+                              Text("Your Manager"),
                               Container(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
                                 child: TextFormField(
-                                  readOnly: true,
-                                  decoration: InputDecoration(
-                                    labelText: 'Baba Tera',
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.redAccent, width: 5.0),
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      labelText: (_managerName == null)
+                                          ? ("Loading")
+                                          : (_managerName),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.redAccent,
+                                            width: 5.0),
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                    onTap: () {
+                                      _showDialog(context);
+                                    }),
                               ),
-                              Text('Today'),
+                              Text("Today's Date"),
                               Container(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                child: TextFormField(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
+                                child: TextField(
                                   readOnly: true,
+                                  enabled: false,
                                   decoration: InputDecoration(
                                     labelText:
-                                        '${date.year} - ${date.month} - ${date.day}',
-                                    border: OutlineInputBorder(
+                                        '${date.year}-${date.month}-${date.day}',
+                                    labelStyle:
+                                        TextStyle(color: Colors.black54),
+                                    disabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: Colors.redAccent, width: 5.0),
+                                          color: Colors.black45, width: 1.0),
                                     ),
                                   ),
-                                  onTap: (){
-                                    showDialog(context: context);
-                                  },
+                                  onTap: () {},
                                 ),
                               ),
                               Text('From'),
                               Container(
                                   padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                      const EdgeInsets.fromLTRB(0, 5, 0, 20),
                                   child: RaisedButton(
                                     color: Colors.white,
                                     shape: RoundedRectangleBorder(
@@ -109,7 +158,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                     onPressed: () {
                                       DatePicker.showDatePicker(context,
                                           theme: DatePickerTheme(
-                                            containerHeight: 210.0,
+                                            containerHeight: 250.0,
                                           ),
                                           showTitleActions: true,
                                           minTime: DateTime(2000, 1, 1),
@@ -117,8 +166,23 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                           onConfirm: (date) {
                                         print('confirm $date');
                                         _fromdate =
-                                            '${date.year} - ${date.month} - ${date.day}';
-                                        setState(() {});
+                                            '${date.year}-${date.month}-${date.day}';
+                                        setState(() {
+                                          _fromDateInt = date;
+
+                                          if (_toDateInt != null) {
+                                            setState(() {
+                                              int diffrence = _toDateInt
+                                                  .difference(_fromDateInt)
+                                                  .inDays;
+                                              if (diffrence <= 0)
+                                                leavesCount = "Invalid Dates";
+                                              else
+                                                leavesCount =
+                                                    diffrence.toString();
+                                            });
+                                          }
+                                        });
                                       },
                                           currentTime: DateTime.now(),
                                           locale: LocaleType.en);
@@ -138,8 +202,8 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                                     Text(
                                                       "$_fromdate",
                                                       style: TextStyle(
-                                                        color: Colors.redAccent,
-                                                        fontSize: 18.0,
+                                                        color: dashBoardColor,
+                                                        fontSize: 16.0,
                                                       ),
                                                     ),
                                                   ],
@@ -154,7 +218,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                               Text('To'),
                               Container(
                                   padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                      const EdgeInsets.fromLTRB(0, 5, 0, 20),
                                   child: RaisedButton(
                                     color: Colors.white,
                                     shape: RoundedRectangleBorder(
@@ -164,7 +228,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                     onPressed: () {
                                       DatePicker.showDatePicker(context,
                                           theme: DatePickerTheme(
-                                            containerHeight: 210.0,
+                                            containerHeight: 250.0,
                                           ),
                                           showTitleActions: true,
                                           minTime: DateTime(2000, 1, 1),
@@ -172,8 +236,23 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                           onConfirm: (date) {
                                         print('confirm $date');
                                         _todate =
-                                            '${date.year} - ${date.month} - ${date.day}';
-                                        setState(() {});
+                                            '${date.year}-${date.month}-${date.day}';
+                                        setState(() {
+                                          _toDateInt = date;
+
+                                          if (_fromDateInt != null) {
+                                            setState(() {
+                                              int diffrence = _toDateInt
+                                                  .difference(_fromDateInt)
+                                                  .inDays;
+                                              if (diffrence <= 0)
+                                                leavesCount = "Invalid Dates";
+                                              else
+                                                leavesCount =
+                                                    diffrence.toString();
+                                            });
+                                          }
+                                        });
                                       },
                                           currentTime: DateTime.now(),
                                           locale: LocaleType.en);
@@ -193,9 +272,8 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                                     Text(
                                                       "$_todate",
                                                       style: TextStyle(
-                                                          color:
-                                                              Colors.redAccent,
-                                                          fontSize: 18.0),
+                                                          color: dashBoardColor,
+                                                          fontSize: 16.0),
                                                     ),
                                                   ],
                                                 ),
@@ -210,54 +288,19 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
                                 child: Text('Number of days on leave'),
                               ),
-                              Container(
-                                child: DropdownButton<int>(
-                                  items: [
-                                    DropdownMenuItem<int>(
-                                      child: Row(
-                                        children: <Widget>[
-                                          SizedBox(width: 1),
-                                          Text(
-                                            "1",
-                                          ),
-                                        ],
-                                      ),
-                                      value: 1,
-                                    ),
-                                    DropdownMenuItem<int>(
-                                      child: Row(
-                                        children: <Widget>[
-                                          SizedBox(width: 1),
-                                          Text(
-                                            "2",
-                                            style: TextStyle(
-                                              fontFamily: "Poppins-medium",
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      value: 2,
-                                    ),
-                                    DropdownMenuItem<int>(
-                                      child: Row(
-                                        children: <Widget>[
-                                          SizedBox(width: 1),
-                                          Text(
-                                            "3",
-                                          ),
-                                        ],
-                                      ),
-                                      value: 3,
-                                    ),
-                                  ],
-                                  onChanged: (int value) {
-                                    setState(() {
-                                      nofdays = value;
-                                    });
-                                  },
-                                  hint: Text('Select Item'),
-                                  value: nofdays,
+                              TextFormField(
+                                readOnly: true,
+                                enabled: false,
+                                
+                                decoration: InputDecoration(
+                                  labelText: leavesCount,
+                                  labelStyle: TextStyle(color: Colors.black54),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.black45, width: 1.0),
+                                  ),
                                 ),
+                                onTap: () {},
                               ),
                               Container(
                                 padding:
@@ -266,16 +309,18 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                               ),
                               CheckboxGroup(
                                 labels: <String>[
-                                  "Medical Leave",
-                                  "Annual Leave",
-                                  "Casual Leave"
+                                  leaveType[0],
+                                  leaveType[1],
+                                  leaveType[2],
                                 ],
                                 checked: _checked,
-                                activeColor: Colors.redAccent,
+                                activeColor: dashBoardColor,
                                 onChange: (bool isChecked, String label,
-                                        int index) =>
+                                        int index) {
                                     print(
-                                        "isChecked: $isChecked   label: $label  index: $index"),
+                                        "isChecked: $isChecked   label: $label  index: $index");
+                                        leaveIndex = index;
+                                        },
                                 onSelected: (List selected) => setState(() {
                                   if (selected.length > 1) {
                                     selected.removeAt(0);
@@ -289,85 +334,123 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                               ),
                               TextField(
                                 decoration: new InputDecoration(
-                                  labelText: "Message for Management",
-                                  labelStyle:
-                                      new TextStyle(color: Colors.redAccent),
+                                  labelText: "Message for Management (Optional)",
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Colors.redAccent),
+                                        BorderSide(color: Colors.black54),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Colors.redAccent),
+                                        BorderSide(color: Colors.black54),
                                   ),
                                 ),
                               ),
                               Container(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 16.0, horizontal: 16.0),
-                                  child: FloatingActionButton(
-                                      backgroundColor: splashScreenColorTop,
+                                  child: RaisedButton(
+                                      color: splashScreenColorTop,
                                       hoverColor: splashScreenColorBottom,
                                       hoverElevation: 40.0,
                                       onPressed: () {
-                                        onLoadingDialog(context);
-                                        if (_formKey.currentState.validate()) {
-                                          Scaffold.of(context).showSnackBar(
-                                              SnackBar(
-                                                  content:
-                                                      Text('Processing Data')));
+                                        //onLoadingDialog(context);
+                                        if(_validateData(context)){
+                                          addLeave(context);
                                         }
-                                        ;
+                                        
                                       },
                                       child: Text('Submit',
                                           style:
                                               TextStyle(color: Colors.white)))),
-                            ]))))));
+                                              
+                            ]
+                          )
+                        )
+                    )
+                  )
+                  )
+              );
   }
-}
 
-void _showDialog(context) {
-  // flutter defined function
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      // return object of type Dialog
-      return AlertDialog(
-        title: new Text("Change Manager"),
-        content: new Text("Contact Admin"),
-        actions: <Widget>[
-          // usually buttons at the bottom of the dialog
-          new FlatButton(
-            child: new Text("Close"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+  void addLeave(BuildContext context){
 
-void _showDialog1(context) {
-  // flutter defined function
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      // return object of type Dialog
-      return AlertDialog(
-        title: new Text("Date"),
-        content: new Text("Cannot edit"),
-        actions: <Widget>[
-          // usually buttons at the bottom of the dialog
-          new FlatButton(
-            child: new Text("Close"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+    int request = int.parse(leavesCount);
+
+    _userRef.child(widget.user.uid).child("leaves").child(leaveKeys[leaveIndex]).once().then((DataSnapshot snapshot){
+
+      if(snapshot.value < request){
+        showDialog(
+          context: context,
+          builder: (BuildContext context){
+            return AlertDialog(
+              title: Text("Cannot Process Request"),
+              content: Text("Not enough leaves present"),
+            );
+          }
+        );
+      }
+      else
+      {
+        showDialog(
+          context: context,
+          builder: (BuildContext context){
+            return AlertDialog(
+              title: Text("Request sent to Manager"),
+              content: Text("You will get a notification once it is approved"),
+            );
+          }
+        );
+      }
+    
+    });
+
+  }
+  bool _validateData(BuildContext context) {
+    
+    bool returnVal = true;
+  
+    if(leavesCount == "-" || leavesCount == "Invalid Dates"){
+      SnackBar error = new SnackBar(content: Text("Please enter valid dates", style: TextStyle(color: Colors.white)),backgroundColor: Colors.red,);
+      Scaffold.of(context).showSnackBar(error);
+      returnVal = false;
+    }
+
+    if(leaveIndex == -1){
+       SnackBar error = new SnackBar(content: Text("Please select type of leave valid dates", style: TextStyle(color: Colors.white)),backgroundColor: Colors.red,);
+      Scaffold.of(context).showSnackBar(error);
+      returnVal = false;
+    }
+
+    return returnVal;
+  }
+  void _showDialog(context) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Center(child: Text("Manager Details")),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text((_managerName == null) ? ("Loading ..") : (_managerName)),
+              Text((_managerDesignation == null)
+                  ? ("Loading")
+                  : (_managerDesignation)),
+            ],
           ),
-        ],
-      );
-    },
-  );
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
