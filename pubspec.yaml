@@ -36,8 +36,7 @@ dependencies:
   flutter_datetime_picker: ^1.2.5
   grouped_buttons: ^1.0.3
   permission_handler: '^4.0.0'
-
-  imei_plugin: any
+  device_info: ^0.4.1+2
 
   geofencing:
     path: geofencing

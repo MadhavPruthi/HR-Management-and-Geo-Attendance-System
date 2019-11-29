@@ -1,37 +1,29 @@
-import 'dart:async';
+import 'dart:io';
 
-import 'package:device_id/device_id.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
 
-// Singleton Class
-class FetchDeviceDetails {
-  static final FetchDeviceDetails _singleton =
-      new FetchDeviceDetails._internal();
-  String deviceID = "Unknown";
-  String imei = "Unknown";
-  String meid = "Unknown";
-
-  factory FetchDeviceDetails() {
-    return _singleton;
-  }
-
-  FetchDeviceDetails._internal();
-
-  Future<void> fetchDeviceID() async {
-    String _deviceID;
-    String _IMEI;
-    String _MEID;
-
-    _deviceID = await DeviceId.getID;
-    try {
-      _IMEI = await DeviceId.getIMEI;
-      _MEID = await DeviceId.getMEID;
-    } on PlatformException catch (e) {
-      print(e.message);
+Future<List<String>> getDeviceDetails() async {
+  String deviceName;
+  String deviceVersion;
+  String identifier;
+  final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
+  try {
+    if (Platform.isAndroid) {
+      var build = await deviceInfoPlugin.androidInfo;
+      deviceName = build.model;
+      deviceVersion = build.version.toString();
+      identifier = build.androidId; //UUID for Android
+    } else if (Platform.isIOS) {
+      var data = await deviceInfoPlugin.iosInfo;
+      deviceName = data.name;
+      deviceVersion = data.systemVersion;
+      identifier = data.identifierForVendor; //UUID for iOS
     }
-
-    deviceID = _deviceID;
-    imei = _IMEI;
-    meid = _MEID;
+  } on PlatformException {
+    print('Failed to get platform version');
   }
+
+//if (!mounted) return;
+  return [deviceName, deviceVersion, identifier];
 }
