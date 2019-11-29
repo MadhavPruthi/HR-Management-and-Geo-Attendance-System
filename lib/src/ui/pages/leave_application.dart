@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 
 class LeaveApplicationWidget extends StatefulWidget {
@@ -122,9 +122,10 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                             width: 5.0),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              
+                                    onTap: () {
+                                      _showDialog(context);
+                                    }),
+                              ),
                               Text("Today's Date"),
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
@@ -415,7 +416,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
     }
 
     if(leaveIndex == -1){
-       SnackBar error = new SnackBar(content: Text("Please select type of leave", style: TextStyle(color: Colors.white)),backgroundColor: Colors.red,);
+       SnackBar error = new SnackBar(content: Text("Please select type of leave valid dates", style: TextStyle(color: Colors.white)),backgroundColor: Colors.red,);
       Scaffold.of(context).showSnackBar(error);
       returnVal = false;
     }
