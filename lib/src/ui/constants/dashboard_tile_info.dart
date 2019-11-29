@@ -30,17 +30,17 @@ void leaveApplicationCallback(BuildContext context,FirebaseUser user)
 }
 List<List> infoAboutTiles = [
   [
-    Icons.pin_drop,
+    "assets/icons/icons8-location-64.png",
     "Attendance Recorder",
     "Mark your In and Out Time",
     attendanceRecorderCallback
   ],
   [
-    Icons.subject,
+    "assets/icons/icons8-leave-64.png",
     "Attendance Summary",
     "Check your previous record",
     attendanceSummaryCallback
   ],
-  [Icons.time_to_leave, "Leaves Application/Withdrawal", "Management", leaveApplicationCallback],
-  [Icons.timeline, "Leaves Status", "Check pending status of leaves", null],
+  ["assets/icons/icons8-attendance-48.png", "Leaves Application/Withdrawal", "Management", leaveApplicationCallback],
+  ["assets/icons/icons8-process-100.png", "Leaves Status", "Check pending status of leaves", null],
 ];
