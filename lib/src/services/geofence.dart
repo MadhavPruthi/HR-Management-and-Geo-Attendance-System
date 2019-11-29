@@ -26,10 +26,15 @@ class GeoFenceClass {
             androidSettings: androidSettings),
         callback);
     print(isolateSpawn);
-    port.listen((dynamic data) {
-      GeoFenceClass.geofenceState = data;
-      print('Event: $data');
-    });
+
+    try {
+      port.listen((dynamic data) {
+        GeoFenceClass.geofenceState = data;
+        print('Event: $data');
+      });
+    } catch (e) {
+      print("Exception Occured: $e");
+    }
   }
 
   static void callback(List<String> ids, Location l, GeofenceEvent e) async {

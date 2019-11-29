@@ -82,13 +82,13 @@ class _LoginState extends State<Login> {
 
       if (uuid != null) {
         if (listOfDetails[2] == uuid)
-          return List.from([true, listOfDetails[2]]);
+          return List.from([true, listOfDetails[2], true]);
         else
-          return List.from([false, listOfDetails[2]]);
+          return List.from([false, listOfDetails[2], true]);
       }
-      return List.from([true, listOfDetails[2]]);
+      return List.from([true, listOfDetails[2], false]);
     }
-    return List.from([false, null]);
+    return List.from([false, null, false]);
   }
 
   void loginUser(String email) async {
@@ -98,20 +98,27 @@ class _LoginState extends State<Login> {
 
         checkForSingleSignOn(_user).then((list) {
           Navigator.of(context).pop();
-          print(list[1]);
-          if (list[0] == true)
+
+          // Adding UUID to database
+
+          if (list[0] == true && list[2] == false) {
+            _userRef.child(_user.uid).update({"UUID": list[1]});
+          }
+
+          if (list[0] == true) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => HomePage(user: _user)),
             );
-          else
+          } else {
             showDialogTemplate(
                 context,
                 "ATTENTION!",
-                "\nUnauthorized Access Detected!\nIf you are a Legit user, Kindly Contact HR Dept for the Same",
+                "\nUnauthorized Access Detected!\nIf you are a Legit user, Kindly Contact HR Dept for the same",
                 "assets/gif/no_entry.gif",
                 Color.fromRGBO(170, 160, 160, 1.0),
                 "Ok");
+          }
         });
       } catch (e) {
         Navigator.of(context).pop();
