@@ -41,6 +41,6 @@ List<List> infoAboutTiles = [
     "Check your previous record",
     attendanceSummaryCallback
   ],
-  ["assets/icons/icons8-attendance-48.png", "Leaves Application/Withdrawal", "Management", leaveApplicationCallback],
+  ["assets/icons/icons8-attendance-48.png", "Leaves Application", "Management", leaveApplicationCallback],
   ["assets/icons/icons8-process-100.png", "Leaves Status", "Check pending status of leaves", null],
 ];
