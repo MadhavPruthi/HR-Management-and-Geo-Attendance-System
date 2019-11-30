@@ -11,13 +11,13 @@ import 'geofence.dart';
 
 void markInAttendance(BuildContext context, Office office,
     LocationData currentPosition, FirebaseUser user) async {
-  onLoadingDialog(context);
+
   Future.delayed(Duration(seconds: 1), () {
     DateTime dateToday = getTodayDate();
     AttendanceDatabase.getAttendanceOfParticularDateBasedOnUID(
             user.uid, dateToday)
         .then((snapshot) {
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
       bool isFeasible = true;
       String errorMessage = "";
       if (snapshot != null) {
@@ -58,13 +58,13 @@ void markInAttendance(BuildContext context, Office office,
 
 void markOutAttendance(BuildContext context, Office office,
     LocationData currentPosition, FirebaseUser user) async {
-  onLoadingDialog(context);
+
   Future.delayed(Duration(seconds: 1), () {
     DateTime dateToday = getTodayDate();
     AttendanceDatabase.getAttendanceOfParticularDateBasedOnUID(
             user.uid, dateToday)
         .then((snapshot) {
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
       bool isFeasible = true;
       String errorMessage = "";
 
