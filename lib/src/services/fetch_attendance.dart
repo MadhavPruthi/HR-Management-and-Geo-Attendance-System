@@ -64,12 +64,13 @@ class AttendanceDatabase {
       "office": office.getKey,
       "time": time,
     };
+    String markChild = markType + "-" + time;
     return _databaseReference
         .reference()
         .child("Attendance")
         .child(uid)
         .child(date)
-        .child(markType)
-        .set(json);
+        .child(markChild)
+        .update(json);
   }
 }

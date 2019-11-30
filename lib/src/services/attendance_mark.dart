@@ -23,7 +23,7 @@ void markInAttendance(BuildContext context, Office office,
       if (snapshot != null) {
         var listOfAttendanceIterable = snapshot.keys;
         if (listOfAttendanceIterable.length > 0 &&
-            listOfAttendanceIterable.last.toString() == "in") {
+            listOfAttendanceIterable.last.toString().substring(0,2) == "in") {
           isFeasible = false;
           errorMessage = "Not Allowed to Mark In Successively";
         }
@@ -72,10 +72,16 @@ void markOutAttendance(BuildContext context, Office office,
         var listOfAttendanceIterable = snapshot.keys;
 
         if (listOfAttendanceIterable.length > 0 &&
-            listOfAttendanceIterable.last.toString() == "out") {
+            listOfAttendanceIterable.last.toString().substring(0,3) == "out") {
           isFeasible = false;
           errorMessage = "Not Allowed to Mark Out Successively";
         }
+        else
+          if(listOfAttendanceIterable.length == 0)
+            {
+              isFeasible = false;
+              errorMessage = "No IN-Entry Found!";
+            }
       }
 
       if (isFeasible &&

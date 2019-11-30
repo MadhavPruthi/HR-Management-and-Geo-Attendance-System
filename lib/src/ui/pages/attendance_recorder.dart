@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geo_attendance_system/src/services/attendance_mark.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
+import 'package:geo_attendance_system/src/services/geofence.dart';
 import 'package:geo_attendance_system/src/ui/widgets/attendance_Marker_buttons.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -124,15 +125,51 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   }
 
   void _callMarkInFunction() {
-    officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-      markInAttendance(context, office, _currentLocation, widget.user);
-    });
+    if (GeoFenceClass.geofenceState == 'Unknown') {
+      showDialog(
+          context: context,
+          child: Dialog(
+            child: Container(
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.blueGrey,
+              ),
+              child: Center(
+                  child: Text(
+                "Kindly retry after some time!",
+                style: TextStyle(color: Colors.white, fontSize: 22),
+              )),
+            ),
+          ));
+    } else {
+      officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+        markInAttendance(context, office, _currentLocation, widget.user);
+      });
+    }
   }
 
   void _callMarkOutFunction() {
-    officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-      markOutAttendance(context, office, _currentLocation, widget.user);
-    });
+    if (GeoFenceClass.geofenceState == 'Unknown') {
+      showDialog(
+          context: context,
+          child: Dialog(
+            child: Container(
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.blueGrey,
+              ),
+              child: Center(
+                  child: Text(
+                "Kindly retry after some time!",
+                style: TextStyle(color: Colors.white, fontSize: 22),
+              )),
+            ),
+          ));
+    } else {
+      officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+        markOutAttendance(context, office, _currentLocation, widget.user);
+      });
+    }
   }
 
   Future<void> _gotoLocation(double lat, double long) async {

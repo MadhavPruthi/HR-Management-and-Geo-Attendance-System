@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage>
         case PermissionStatus.granted:
           GeofencingManager.initialize().then((_) {
             officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+              print(office.latitude);
               GeoFenceClass.startListening(
                   office.latitude, office.longitude, office.radius);
               setState(() {
@@ -86,6 +87,7 @@ class _HomePageState extends State<HomePage>
   void dispose() {
     super.dispose();
     controller.dispose();
+    GeoFenceClass.closePort();
     GeofencingManager.removeGeofenceById(fence_id);
   }
 

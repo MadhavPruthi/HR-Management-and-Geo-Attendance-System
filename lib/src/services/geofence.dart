@@ -43,4 +43,8 @@ class GeoFenceClass {
         IsolateNameServer.lookupPortByName(geofence_port_name);
     send?.send(e.toString());
   }
+
+  static void closePort() {
+    port.close();
+  }
 }
