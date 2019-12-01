@@ -64,8 +64,8 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         //shape: RoundedRectangleBorder(
-         // borderRadius: BorderRadius.circular(20.0),
-      //  ),
+        // borderRadius: BorderRadius.circular(20.0),
+        //  ),
         title: Text(
           "Mark your Attendance",
           style: TextStyle(
