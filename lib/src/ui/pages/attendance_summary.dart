@@ -13,6 +13,7 @@ final Map<DateTime, List> _holidays = {
   DateTime(2019, 2, 14): ['Valentine\'s Day'],
   DateTime(2019, 4, 21): ['Easter Sunday'],
   DateTime(2019, 11, 18): ['Easter Monday'],
+  DateTime(2019, 12, 25): ['Christmas Eve'],
 };
 
 class AttendanceSummary extends StatefulWidget {
@@ -63,14 +64,17 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
     AttendanceDatabase.getAttendanceListOfParticularDateBasedOnUID(
             widget.user.uid, day)
         .then((AttendanceList attendanceList) {
-      Navigator.of(context, rootNavigator: true).pop('dialog');
-      setState(() {
-        attendanceList.attendanceList.forEach((Attendance attendance) {
-          events.add(
-              "${attendance.type.toString().split('.').last}: ${attendance.time.hour}-${attendance.time.minute} - ${attendance.office}");
+          print(attendanceList.attendanceList);
+      attendanceList.attendanceList.forEach((Attendance attendance) {
+        print(attendance.office);
+        events.add(
+            "Type: ${attendance.type.toString().split('.').last} Time: ${attendance.time.hour} hours ${attendance.time.minute} minutes at ${attendance.office} ");
+        setState(() {
+          _selectedEvents = events;
         });
-        _selectedEvents = events;
       });
+
+      Navigator.of(context, rootNavigator: true).pop('dialog');
     });
   }
 
@@ -266,8 +270,6 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
   }
 
   Widget _buildButtons() {
-//    final dateTime = _events.keys.elementAt(_events.length - 2);
-
     return Column(
       children: <Widget>[
         Row(
@@ -316,7 +318,10 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
         const SizedBox(height: 15.0),
         Text(
           "Attendance History Preview".toUpperCase(),
-          style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w700, letterSpacing: 3),
+          style: TextStyle(
+              color: Colors.white70,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 3),
         ),
         const SizedBox(height: 2.0),
       ],
