@@ -40,6 +40,10 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   bool _permission = false;
   String error;
   CameraPosition _currentCameraPosition;
+  var rMin;
+  var rMax;
+  var direction = 1;
+  var _radius;
 
   @override
   void initState() {
@@ -106,13 +110,37 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
           _controller.complete(controller);
           officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
             setState(() {
-              _circles.add(Circle(
-                circleId: CircleId("GeoFenceCircle"),
-                center: LatLng(office.latitude, office.longitude),
-                radius: office.radius,
-                strokeColor: Colors.blueGrey,
-                strokeWidth: 5,
-              ));
+              rMax = office.radius;
+              rMin = 3 * office.radius / 5;
+              _radius = office.radius;
+              Timer.periodic(new Duration(milliseconds: 100), (timer) {
+                var radius =
+                    _circles.isEmpty ? office.radius : _circles.first.radius;
+
+                if ((radius > rMax) || (radius < rMin)) {
+                  direction *= -1;
+                }
+                var _par = (radius / _radius) - 0.2;
+                var radiusFinal = radius + direction * 10;
+                if (!mounted) {
+                  timer.cancel();
+                  return;
+                }
+                setState(() {
+                  _circles.clear();
+                  _circles.add(Circle(
+                    circleId: CircleId("GeoFenceCircle"),
+                    center: LatLng(office.latitude, office.longitude),
+                    radius: radiusFinal,
+                    strokeColor: Colors.blueGrey,
+                    strokeWidth: 5,
+                    fillColor: Colors.blueGrey.withOpacity(0.6 * _par),
+                  ));
+                });
+//            circleOption.fillOpacity = 0.6 * _par;
+
+//                circle.setOptions(circleOption);
+              });
             });
           });
         },
