@@ -46,11 +46,23 @@ class AttendanceDatabase {
     return snapshot.value[formattedDate];
   }
 
+  static Future<Map<String, String>> getOfficeFromID() async {
+    DataSnapshot dataSnapshot =
+        await _databaseReference.child("location").once();
+    Map<String, String> map = new Map();
+
+    dataSnapshot.value.forEach((key, value) {
+      map[key] = value["name"];
+    });
+    return map;
+  }
+
   static Future<AttendanceList> getAttendanceListOfParticularDateBasedOnUID(
       String uid, DateTime dateTime) async {
     var snapshot = await getAttendanceOfParticularDateBasedOnUID(uid, dateTime);
+    var mapOfOffice = await getOfficeFromID();
     AttendanceList attendanceList =
-        AttendanceList.fromJson(snapshot, getFormattedDate(dateTime));
+        AttendanceList.fromJson(snapshot, getFormattedDate(dateTime), mapOfOffice);
     attendanceList.dateTime = dateTime;
 
     return attendanceList != null ? attendanceList : [];

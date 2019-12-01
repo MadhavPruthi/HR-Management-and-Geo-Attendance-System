@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
 import 'package:geo_attendance_system/src/ui/widgets/Info_dialog_box.dart';
-import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 import 'package:location/location.dart';
 
 import 'current_date.dart';
@@ -11,7 +10,6 @@ import 'geofence.dart';
 
 void markInAttendance(BuildContext context, Office office,
     LocationData currentPosition, FirebaseUser user) async {
-
   Future.delayed(Duration(seconds: 1), () {
     DateTime dateToday = getTodayDate();
     AttendanceDatabase.getAttendanceOfParticularDateBasedOnUID(
@@ -23,7 +21,7 @@ void markInAttendance(BuildContext context, Office office,
       if (snapshot != null) {
         var listOfAttendanceIterable = snapshot.keys;
         if (listOfAttendanceIterable.length > 0 &&
-            listOfAttendanceIterable.last.toString().substring(0,2) == "in") {
+            listOfAttendanceIterable.last.toString().substring(0, 2) == "in") {
           isFeasible = false;
           errorMessage = "Not Allowed to Mark In Successively";
         }
@@ -58,7 +56,6 @@ void markInAttendance(BuildContext context, Office office,
 
 void markOutAttendance(BuildContext context, Office office,
     LocationData currentPosition, FirebaseUser user) async {
-
   Future.delayed(Duration(seconds: 1), () {
     DateTime dateToday = getTodayDate();
     AttendanceDatabase.getAttendanceOfParticularDateBasedOnUID(
@@ -72,16 +69,13 @@ void markOutAttendance(BuildContext context, Office office,
         var listOfAttendanceIterable = snapshot.keys;
 
         if (listOfAttendanceIterable.length > 0 &&
-            listOfAttendanceIterable.last.toString().substring(0,3) == "out") {
+            listOfAttendanceIterable.last.toString().substring(0, 3) == "out") {
           isFeasible = false;
           errorMessage = "Not Allowed to Mark Out Successively";
+        } else if (listOfAttendanceIterable.length == 0) {
+          isFeasible = false;
+          errorMessage = "No IN-Entry Found!";
         }
-        else
-          if(listOfAttendanceIterable.length == 0)
-            {
-              isFeasible = false;
-              errorMessage = "No IN-Entry Found!";
-            }
       }
 
       if (isFeasible &&
