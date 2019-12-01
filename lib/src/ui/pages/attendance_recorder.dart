@@ -33,7 +33,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   LocationData _currentLocation;
   LocationData _startLocation;
   Set<Marker> _markers = {};
-  Set<Circle> _circles = {};
+  Set<Circle> _circles = new Set();
 
   Location _locationService = new Location();
   bool _permission = false;
@@ -103,6 +103,17 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
         markers: _markers,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
+          officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+            setState(() {
+              _circles.add(Circle(
+                circleId: CircleId("GeoFenceCircle"),
+                center: LatLng(office.latitude, office.longitude),
+                radius: office.radius,
+                strokeColor: Colors.blueGrey,
+                strokeWidth: 5,
+              ));
+            });
+          });
         },
       ),
     );

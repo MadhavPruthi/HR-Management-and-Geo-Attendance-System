@@ -8,6 +8,94 @@ import 'current_date.dart';
 import 'fetch_attendance.dart';
 import 'geofence.dart';
 
+String findLatestIn(listOfAttendanceIterable) {
+  List finalList = listOfAttendanceIterable
+      .where((attendance) => attendance.toString().substring(0, 2) == "in")
+      .toList();
+
+  if (finalList.length == 0) return "";
+
+  finalList.sort((a, b) {
+    String time1 = a.toString().split("-")[1];
+    String time2 = a.toString().split("-")[1];
+    return time2.compareTo(time1);
+  });
+
+  return finalList.last.toString().split("-")[1];
+}
+
+String findFirstIn(listOfAttendanceIterable) {
+  List finalList = listOfAttendanceIterable
+      .where((attendance) => attendance.toString().substring(0, 2) == "in")
+      .toList();
+
+  if (finalList.length == 0) return "";
+  finalList.sort((a, b) {
+    String time1 = a.toString().split("-")[1];
+    String time2 = a.toString().split("-")[1];
+    return time2.compareTo(time1);
+  });
+
+  return finalList.first.toString().split("-")[1];
+}
+
+String findLatestOut(listOfAttendanceIterable) {
+  List finalList = listOfAttendanceIterable
+      .where((attendance) => attendance.toString().substring(0, 3) == "out")
+      .toList();
+
+  if (finalList.length == 0) return "";
+
+  finalList.sort((a, b) {
+    String time1 = a.toString().split("-")[1];
+    String time2 = a.toString().split("-")[1];
+    return time2.compareTo(time1);
+  });
+
+  return finalList.last.toString().split("-")[1];
+}
+
+String findFirstOut(listOfAttendanceIterable) {
+  List finalList = listOfAttendanceIterable
+      .where((attendance) => attendance.toString().substring(0, 3) == "out")
+      .toList();
+
+  if (finalList.length == 0) return "";
+
+  finalList.sort((a, b) {
+    String time1 = a.toString().split("-")[1];
+    String time2 = a.toString().split("-")[1];
+    return time2.compareTo(time1);
+  });
+
+  return finalList.first.toString().split("-")[1];
+}
+
+bool checkSuccessiveIn(listOfAttendanceIterable) {
+  if (listOfAttendanceIterable.length > 0) {
+    String lastOut = findLatestOut(listOfAttendanceIterable);
+    String lastIn = findLatestIn(listOfAttendanceIterable);
+    if (lastIn == "" || (lastOut != "" && lastIn.compareTo(lastOut) <= 0))
+      return true;
+    else
+      return false;
+  }
+  return true;
+}
+
+bool checkSuccessiveOut(listOfAttendanceIterable) {
+  if (listOfAttendanceIterable.length > 0) {
+    String lastOut = findLatestOut(listOfAttendanceIterable);
+    String lastIn = findLatestIn(listOfAttendanceIterable);
+
+    if (lastOut == "" || (lastIn != "" && lastOut.compareTo(lastIn) <= 0))
+      return true;
+    else
+      return false;
+  }
+  return true;
+}
+
 void markInAttendance(BuildContext context, Office office,
     LocationData currentPosition, FirebaseUser user) async {
   Future.delayed(Duration(seconds: 1), () {
@@ -21,7 +109,7 @@ void markInAttendance(BuildContext context, Office office,
       if (snapshot != null) {
         var listOfAttendanceIterable = snapshot.keys;
         if (listOfAttendanceIterable.length > 0 &&
-            listOfAttendanceIterable.last.toString().substring(0, 2) == "in") {
+            !checkSuccessiveIn(listOfAttendanceIterable)) {
           isFeasible = false;
           errorMessage = "Not Allowed to Mark In Successively";
         }
@@ -67,15 +155,17 @@ void markOutAttendance(BuildContext context, Office office,
 
       if (snapshot != null) {
         var listOfAttendanceIterable = snapshot.keys;
-
         if (listOfAttendanceIterable.length > 0 &&
-            listOfAttendanceIterable.last.toString().substring(0, 3) == "out") {
+            !checkSuccessiveOut(listOfAttendanceIterable)) {
           isFeasible = false;
           errorMessage = "Not Allowed to Mark Out Successively";
         } else if (listOfAttendanceIterable.length == 0) {
           isFeasible = false;
           errorMessage = "No IN-Entry Found!";
         }
+      } else {
+        isFeasible = false;
+        errorMessage = "No IN-Entry Found!";
       }
 
       if (isFeasible &&
