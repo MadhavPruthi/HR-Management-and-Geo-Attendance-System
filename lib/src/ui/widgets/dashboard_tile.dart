@@ -4,16 +4,16 @@ import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 
 Widget buildTile(String icon, String title, String subtitle,
     BuildContext context, FirebaseUser user,
-    [Function(BuildContext,FirebaseUser) onTap]) {
+    [Function(BuildContext, FirebaseUser) onTap]) {
   return Material(
       elevation: 10.0,
       shadowColor: dashBoardColor,
       borderRadius: BorderRadius.circular(12.0),
-      color: Color.fromRGBO(51, 51, 102, 1),
+      color: Colors.white,/*Color.fromRGBO(51, 51, 102, 1),*/
       child: InkWell(
         onTap: onTap != null
             ? () {
-                onTap(context,user);
+                onTap(context, user);
               } //  Implement here onTap function
             : () => print("Not yet set"),
         child: Padding(
@@ -23,15 +23,17 @@ Widget buildTile(String icon, String title, String subtitle,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Material(
-                    
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Image.asset(icon, height: 40,),
-                    )),
+                  padding: const EdgeInsets.all(16.0),
+                  child: Image.asset(
+                    icon,
+                    height: 40,
+                  ),
+                )),
                 Text(
                   title,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontSize: 17.0),
                   textAlign: TextAlign.center,
@@ -39,7 +41,7 @@ Widget buildTile(String icon, String title, String subtitle,
                 Text(
                   subtitle,
                   style: TextStyle(
-                    color: Colors.white60,
+                    color: Colors.black38,
                     fontWeight: FontWeight.w700,
                     fontSize: 13.0,
                   ),

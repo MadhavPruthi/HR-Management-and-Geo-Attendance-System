@@ -1,24 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geo_attendance_system/src/ui/constants/colors.dart';
-import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:grouped_buttons/grouped_buttons.dart';
+import 'package:flutter/material.dart';
+import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 
 class LeaveStatusWidget extends StatefulWidget {
   LeaveStatusWidget({Key key, this.title, this.user}) : super(key: key);
   final String title;
   final FirebaseUser user;
-  FirebaseDatabase db = new FirebaseDatabase();
+  final FirebaseDatabase db = new FirebaseDatabase();
 
   @override
   LeaveStatusWidgetState createState() => LeaveStatusWidgetState();
 }
 
-class LeaveStatusWidgetState extends State<LeaveStatusWidget>
-    with SingleTickerProviderStateMixin {int y=4;
+class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
+  int y = 4;
+
   @override
   void initState() {
     super.initState();
@@ -28,8 +25,9 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Leave Status'),
-          backgroundColor: splashScreenColorTop,
+          centerTitle: true,
+          title: Text('Leave Status'.toUpperCase()),
+          backgroundColor: appbarcolor,
           leading: new IconButton(
             icon: new Icon(Icons.arrow_back_ios),
             onPressed: () => Navigator.of(context).pop(),
@@ -37,49 +35,72 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget>
         ),
         body: Column(
           children: <Widget>[
-            leavelist(),
+            leaveList(),
           ],
         ));
   }
 }
 
-Widget leavelist() {
+int y = 4;
+
+List<Icon> listOfIcons = [
+  Icon(
+    Icons.check,
+    size: 60,
+    color: Colors.green,
+  ),
+  Icon(
+    Icons.hourglass_empty,
+    size: 50,
+    color: Colors.orange,
+  ),
+  Icon(
+    Icons.cancel,
+    size: 40,
+    color: Colors.red,
+  )
+];
+
+List<Color> listOfColors = [Colors.green, Colors.orange, Colors.red];
+
+Widget leaveList() {
   return Flexible(
     child: new Container(
       color: Colors.white,
       child: ListView.builder(
           itemExtent: 170.0,
-          itemCount: 1,
+          itemCount: 10,
           itemBuilder: (_, index) => leaveRow(1)),
     ),
   );
 }
 
 Widget leaveRow(double x) {
-  int y=4;
   final thumbnail = new Container(
     alignment: new FractionalOffset(0.0, 0.5),
-    margin: const EdgeInsets.only(left: 24.0),
+    margin: const EdgeInsets.only(left: 15.0),
     child: new Hero(
-      tag: 'planet-icon-${y--}',
-      child: new Image(
-        image: new AssetImage('assets/icons/tick.png'),
-        height: 100.0,
-        width: 100.0,
-      ),
-    ),
+        tag: 'planet-icon-${y--}',
+        child: Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                border: Border.all(width: 5, color: listOfColors[1])),
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: listOfIcons[1],
+            ))),
   );
   final leaveCard = new Container(
-    margin: const EdgeInsets.only(left: 52.0, right: 14.0),
+    height: 200,
+    margin: const EdgeInsets.only(left: 45.0, right: 20.0),
     decoration: new BoxDecoration(
       color: Color(0xFF8685E5),
       shape: BoxShape.rectangle,
       borderRadius: new BorderRadius.circular(8.0),
       boxShadow: <BoxShadow>[
         new BoxShadow(
-            color: Colors.black,
-            blurRadius: 10.0,
-            offset: new Offset(0.0, 10.0))
+            color: Colors.black, blurRadius: 10.0, offset: new Offset(0.0, 2.0))
       ],
     ),
     child: new Container(
@@ -91,14 +112,14 @@ Widget leaveRow(double x) {
           new Text('Type of Leave',
               style: TextStyle(
                 color: Color(0xFFFFFFFF),
-                fontFamily: 'Poppins',
+                fontFamily: 'poppins-medium',
                 fontWeight: FontWeight.w600,
-                fontSize: 36.0,
+                fontSize: 20.0,
               )),
           new Text('Date',
               style: TextStyle(
                 color: Color(0x66FFFFFF),
-                fontFamily: 'Poppins',
+                fontFamily: 'poppins-medium',
                 fontWeight: FontWeight.w300,
                 fontSize: 14.0,
               )),
@@ -109,36 +130,43 @@ Widget leaveRow(double x) {
             margin: const EdgeInsets.symmetric(vertical: 8.0),
           ),
           new Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              new Icon(Icons.calendar_today,
-                  size: 14.0, color: Color(0x66FFFFFF)),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: new Icon(Icons.calendar_today,
+                    size: 14.0, color: Color(0x66FFFFFF)),
+              ),
               new Text(
                 'approved',
                 style: TextStyle(
                     color: Color(0x66FFFFFF),
-                    fontFamily: 'Poppins',
+                    fontFamily: 'poppins-medium',
                     fontWeight: FontWeight.w300,
                     fontSize: 12.0),
               ),
-              new Container(width: 24.0),
+              new Container(width: 70.0),
               new RaisedButton(
                 shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(18.0),
+                  borderRadius: new BorderRadius.circular(10.0),
                 ),
                 onPressed: null,
                 textColor: Color(0x66FFFFFF),
-                child: Column(children: <Widget>[
-                  new Icon(Icons.arrow_upward,
-                      size: 14.0, color: Color(0x66FFFFFF)),
-                  new Text(
-                    'Withdraw',
-                    style: TextStyle(
-                        color: Color(0x66FFFFFF),
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12.0),
-                  ),
-                ]),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Column(children: <Widget>[
+                    new Icon(Icons.arrow_upward,
+                        size: 20.0, color: Color(0x66FFFFFF)),
+                    new Text(
+                      'Withdraw',
+                      style: TextStyle(
+                          color: Color(0x66FFFFFF),
+                          fontFamily: 'poppins-medium',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12.0),
+                    ),
+                  ]),
+                ),
               )
               /*
             ,*/
@@ -149,7 +177,6 @@ Widget leaveRow(double x) {
     ),
   );
   return new Container(
-    height: 120.0,
     margin: const EdgeInsets.only(top: 16.0, bottom: 8.0),
     child: new Stack(
       children: <Widget>[
@@ -160,8 +187,4 @@ Widget leaveRow(double x) {
   );
 }
 
-
-void _removeleave()
-{
-
-}
+void _removeLeave() {}

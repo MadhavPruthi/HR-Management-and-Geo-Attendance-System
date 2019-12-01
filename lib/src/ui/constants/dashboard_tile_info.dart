@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../pages/leave_application.dart';
+
 import '../pages/attendance_recorder.dart';
 import '../pages/attendance_summary.dart';
+import '../pages/leave_application.dart';
 import '../pages/leave_status.dart';
 
 void attendanceSummaryCallback(BuildContext context, FirebaseUser user) {
@@ -24,17 +25,26 @@ void attendanceRecorderCallback(BuildContext context, FirebaseUser user) {
           builder: (context) => AttendanceRecorderWidget(user: user)));
 }
 
-void leaveApplicationCallback(BuildContext context,FirebaseUser user)
-{
-  Navigator.push(context,
-  MaterialPageRoute(builder: (context) => LeaveApplicationWidget(title: "leAVE", user: user,)));
+void leaveApplicationCallback(BuildContext context, FirebaseUser user) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => LeaveApplicationWidget(
+                title: "Leave Application",
+                user: user,
+              )));
 }
 
-void leaveStatusCallback(BuildContext context,FirebaseUser user)
-{
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => LeaveStatusWidget(title: "leAVE", user: user,)));
+void leaveStatusCallback(BuildContext context, FirebaseUser user) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => LeaveStatusWidget(
+                title: "Leave Status",
+                user: user,
+              )));
 }
+
 List<List> infoAboutTiles = [
   [
     "assets/icons/icons8-location-64.png",
@@ -48,6 +58,16 @@ List<List> infoAboutTiles = [
     "Check your previous record",
     attendanceSummaryCallback
   ],
-  ["assets/icons/icons8-attendance-48.png", "Leaves Application", "Management", leaveApplicationCallback],
-  ["assets/icons/icons8-process-100.png", "Leaves Status", "Check pending status of leaves", leaveStatusCallback],
+  [
+    "assets/icons/icons8-attendance-48.png",
+    "Leaves Application",
+    "Management",
+    leaveApplicationCallback
+  ],
+  [
+    "assets/icons/icons8-process-100.png",
+    "Leaves Status",
+    "Check pending status of leaves",
+    leaveStatusCallback
+  ],
 ];
