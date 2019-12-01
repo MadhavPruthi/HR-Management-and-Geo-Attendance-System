@@ -63,7 +63,6 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
     _managerRef = db.reference().child("managers");
     _getManager();
     _getLeaves().then((dataSnapshot) {
-      if (!mounted) return;
       setState(() {
         list = _generateListLeaves(dataSnapshot);
       });

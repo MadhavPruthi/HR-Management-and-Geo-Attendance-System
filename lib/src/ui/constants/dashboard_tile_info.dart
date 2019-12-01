@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../pages/leave_application.dart';
 import '../pages/attendance_recorder.dart';
 import '../pages/attendance_summary.dart';
+import '../pages/leave_status.dart';
 
 void attendanceSummaryCallback(BuildContext context, FirebaseUser user) {
   Navigator.push(
@@ -28,6 +29,12 @@ void leaveApplicationCallback(BuildContext context,FirebaseUser user)
   Navigator.push(context,
   MaterialPageRoute(builder: (context) => LeaveApplicationWidget(title: "leAVE", user: user,)));
 }
+
+void leaveStatusCallback(BuildContext context,FirebaseUser user)
+{
+  Navigator.push(context,
+      MaterialPageRoute(builder: (context) => LeaveStatusWidget(title: "leAVE", user: user,)));
+}
 List<List> infoAboutTiles = [
   [
     "assets/icons/icons8-location-64.png",
@@ -42,5 +49,5 @@ List<List> infoAboutTiles = [
     attendanceSummaryCallback
   ],
   ["assets/icons/icons8-attendance-48.png", "Leaves Application", "Management", leaveApplicationCallback],
-  ["assets/icons/icons8-process-100.png", "Leaves Status", "Check pending status of leaves", null],
+  ["assets/icons/icons8-process-100.png", "Leaves Status", "Check pending status of leaves", leaveStatusCallback],
 ];

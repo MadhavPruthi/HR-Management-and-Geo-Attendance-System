@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:geo_attendance_system/src/services/attendance_mark.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
 import 'package:geo_attendance_system/src/services/geofence.dart';
+import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/widgets/attendance_Marker_buttons.dart';
 import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -56,19 +57,19 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: appbarcolor,
         automaticallyImplyLeading: false,
         leading: new IconButton(
-          icon: new Icon(Icons.arrow_back_ios, color: Colors.black87),
+          icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
+        //shape: RoundedRectangleBorder(
+         // borderRadius: BorderRadius.circular(20.0),
+      //  ),
         title: Text(
           "Mark your Attendance",
           style: TextStyle(
-              color: Colors.black87,
+              color: Colors.white,
               fontFamily: "Poppins-Medium",
               fontSize: 22,
               letterSpacing: .6,

@@ -87,19 +87,17 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: appbarcolor,
         automaticallyImplyLeading: false,
         leading: new IconButton(
-          icon: new Icon(Icons.arrow_back_ios, color: Colors.black87),
+          icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
+
         title: Text(
           "Attendance History",
           style: TextStyle(
-              color: Colors.black87,
+              color: Colors.white,
               fontFamily: "Poppins-Medium",
               fontSize: 22,
               letterSpacing: .6,
