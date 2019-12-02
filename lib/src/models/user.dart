@@ -283,6 +283,43 @@ enum Role {
   // TODO
   ADD_HERE
 }
+class EmployeeProfile {
+
+  String Name;
+  String UID;
+  String Address;
+  String UUID;
+  String PhoneNumber;
+
+  //String allotted_office;
+  //String email
+
+  EmployeeProfile(
+      {this.UID, this.PhoneNumber, this.Address, this.Name, this.UUID});
+
+  EmployeeProfile.fromSnapshot(DataSnapshot snapshot)
+      : UID = snapshot.key,
+  //here it refers to employee ID
+        UUID = snapshot.value["UUID"],
+        Name = snapshot.value["Name"],
+        Address = snapshot.value["Address"],
+        PhoneNumber = snapshot.value["PhoneNumber"];
+
+  // allotted_office = snapshot.value["alloted_office"];
+  //email = snapshot.value["user"];
+
+  toJson() {
+    return {
+      "uid": UID,
+      "Name": Name,
+      "Address": Address,
+      "PhoneNumber": PhoneNumber,
+    };
+  }
+
+}
+
+
 
 class Employee {
   String uID;
