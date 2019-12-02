@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
+import 'package:geo_attendance_system/src/models/user.dart';
 
 enum AppBarBehavior { normal, pinned, floating, snapping }
 
@@ -94,12 +95,16 @@ class _ContactItem extends StatelessWidget {
 
 class ContactsDemo extends StatefulWidget {
   static const String routeName = '/contacts';
+   final EmployeeProfile employeeProfile;
+
 
   @override
   ContactsDemoState createState() => ContactsDemoState();
 }
 
 class ContactsDemoState extends State<ContactsDemo> {
+
+
   static final GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>();
   final double _appBarHeight = 256.0;

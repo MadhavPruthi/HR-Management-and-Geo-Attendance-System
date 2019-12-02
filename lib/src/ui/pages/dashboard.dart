@@ -6,6 +6,7 @@ import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/constants/dashboard_tile_info.dart';
 import 'package:geo_attendance_system/src/ui/pages/profile_page.dart';
 import 'package:geo_attendance_system/src/ui/widgets/dashboard_tile.dart';
+import 'package:geo_attendance_system/src/models/user.dart';
 
 import 'login.dart';
 
@@ -13,6 +14,7 @@ class Dashboard extends StatefulWidget {
   final AnimationController controller;
   final BaseAuth auth;
   final FirebaseUser user;
+  final EmployeeProfile employeeProfile;
 
   Dashboard({this.controller, this.auth, this.user});
 
