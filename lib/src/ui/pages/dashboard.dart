@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:geo_attendance_system/src/services/authentication.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/constants/dashboard_tile_info.dart';
+import 'package:geo_attendance_system/src/ui/pages/pending_approval_manager.dart';
 import 'package:geo_attendance_system/src/ui/pages/profile_page.dart';
 import 'package:geo_attendance_system/src/ui/widgets/dashboard_tile.dart';
 
@@ -137,6 +139,8 @@ class NavigationPanel extends StatefulWidget {
 }
 
 class _NavigationPanelState extends State<NavigationPanel> {
+  final _databaseReference = FirebaseDatabase.instance.reference();
+
   Widget drawerTile(String title, Function() onTap, [IconData icon]) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -177,6 +181,58 @@ class _NavigationPanelState extends State<NavigationPanel> {
         color: dashBoardColor,
         child: ListView(
           children: <Widget>[
+            FutureBuilder(
+              future: _databaseReference
+                  .child("users")
+                  .child(widget.user.uid)
+                  .child("isManager")
+                  .once(),
+              // ignore: missing_return
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return Text(
+                      'Press the button to fetch data',
+                      textAlign: TextAlign.center,
+                    );
+
+                  case ConnectionState.active:
+
+                  case ConnectionState.waiting:
+                    return Container();
+
+                  case ConnectionState.done:
+                    if (snapshot.hasError)
+                      return Text(
+                        'Error:\n\n${snapshot.error}',
+                        textAlign: TextAlign.center,
+                      );
+                    print(snapshot.data.value);
+                    if (snapshot.data.value == null || snapshot.data.value == 1)
+                      return Stack(children: [
+                        drawerTile("Review Pending Leaves", () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  LeaveApprovalByManagerWidget(
+                                    title: "Review Leaves",
+                                    user: widget.user,
+                                  )));
+                        }, Icons.perm_identity),
+                        Positioned(
+                          child: Icon(
+                            Icons.notifications,
+                            color: Colors.yellow,
+                            size: 30,
+                          ),
+                          right: 17,
+                          height: 40,
+                        ),
+                      ]);
+
+                    return Container();
+                }
+              },
+            ),
             drawerTile("Edit your Profile", () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ProfilePage(

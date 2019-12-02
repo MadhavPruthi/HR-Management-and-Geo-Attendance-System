@@ -40,8 +40,6 @@ class LeaveDatabase {
 
     var officeMap = dataSnapshot.value;
     officeMap.forEach((key, map) {
-      print(key);
-      print(map);
       result.add(Leave.fromJson(key, map.cast<String, dynamic>()));
     });
 

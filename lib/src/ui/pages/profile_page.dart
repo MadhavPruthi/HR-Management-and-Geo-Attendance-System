@@ -151,26 +151,45 @@ class ProfilePageState extends State<ProfilePage> {
                     pinned: _appBarBehavior == AppBarBehavior.pinned,
                     actions: <Widget>[
                       Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: FlatButton(
                             textColor: Colors.white,
                             child: Row(
                               children: <Widget>[
                                 Icon(Icons.edit),
-                                SizedBox(width: 10,),
+                                SizedBox(
+                                  width: 10,
+                                ),
                                 Text("Change Password".toUpperCase())
                               ],
-                            ), onPressed: () {},
+                            ),
+                            onPressed: () {},
                           )),
                     ],
                     flexibleSpace: FlexibleSpaceBar(
-                      title: Text("${employee.firstName}"),
+                      title: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.deepOrangeAccent.withOpacity(0.5),
+                            boxShadow: [BoxShadow(color: Colors.white30, blurRadius: 10)]),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 10),
+                          child: Text(
+                            "${employee.firstName} - ${employee.uID}",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                            fontSize: 16),
+                          ),
+                        ),
+                      ),
                       background: Stack(
                         fit: StackFit.expand,
                         children: <Widget>[
                           Image.asset(
-                            'people/ali_landscape.png',
-                            package: 'flutter_gallery_assets',
+                            'assets/logo/profile.jpg',
+//                            package: 'flutter_gallery_assets',
                             fit: BoxFit.cover,
                             height: _appBarHeight,
                           ),

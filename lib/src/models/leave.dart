@@ -9,19 +9,23 @@ class Leave {
   bool withdrawalStatus;
   String message;
   LeaveType type;
+  String name;
+  String userUid;
 
   Leave(
-      {this.key,
+      {this.name,
+      this.key,
       this.appliedDate,
       this.fromDate,
       this.toDate,
       this.type,
       this.status,
       this.withdrawalStatus,
-      this.message});
+      this.message,
+        this.userUid
+      });
 
   factory Leave.fromJson(String key, Map<String, dynamic> parsedJson) {
-    print(parsedJson['withdrawalStatus'].runtimeType);
     return Leave(
         key: key,
         appliedDate: formattedProperDateTime(parsedJson['appliedDate']),
@@ -30,7 +34,8 @@ class Leave {
         type: getType(parsedJson['type']),
         status: getStatus(parsedJson['status']),
         withdrawalStatus: (0 != parsedJson['withdrawalStatus']),
-        message: parsedJson['message'] == "" ? "none" : parsedJson['message']);
+        message: parsedJson['message'] == "" ? "none" : parsedJson['message'],
+        );
   }
 }
 

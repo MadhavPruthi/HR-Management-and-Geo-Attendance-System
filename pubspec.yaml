@@ -60,6 +60,7 @@ flutter:
     - assets/logo/logo.png
     - assets/back.jpg
     - assets/logo/logo-white.png
+    - assets/logo/profile.jpg
   
   fonts:
 

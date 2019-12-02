@@ -414,6 +414,40 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
 
                                             addLeave().then((check) {
                                               if (check == true) {
+                                                pushData(context).then((_) {
+                                                  Navigator.of(context,
+                                                          rootNavigator: true)
+                                                      .pop('dialog');
+                                                  SnackBar data = new SnackBar(
+                                                    action: SnackBarAction(
+                                                        textColor:
+                                                            Colors.white70,
+                                                        label: "View",
+                                                        onPressed: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            CupertinoPageRoute(
+                                                                builder: (context) =>
+                                                                    LeaveStatusWidget(
+                                                                        title:
+                                                                            "Leave Status",
+                                                                        user: widget
+                                                                            .user)),
+                                                          );
+                                                        }),
+                                                    content: Text(
+                                                        "Leave has been requested\nA notification will be sent to you once it is approved!",
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color:
+                                                                Colors.white)),
+                                                    backgroundColor:
+                                                        Colors.blue,
+//                                                duration: Duration(seconds: 1),
+                                                  );
+                                                  Scaffold.of(context)
+                                                      .showSnackBar(data);
+                                                });
                                               } else {
                                                 Navigator.of(context,
                                                         rootNavigator: true)
@@ -428,37 +462,6 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                                 Scaffold.of(context)
                                                     .showSnackBar(error);
                                               }
-                                            });
-                                            pushData(context).then((_) {
-                                              Navigator.of(context,
-                                                      rootNavigator: true)
-                                                  .pop('dialog');
-                                              SnackBar data = new SnackBar(
-                                                action: SnackBarAction(
-                                                  textColor: Colors.white70,
-                                                    label: "View",
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        CupertinoPageRoute(
-                                                            builder: (context) =>
-                                                                LeaveStatusWidget(
-                                                                    title:
-                                                                        "Leave Status",
-                                                                    user: widget
-                                                                        .user)),
-                                                      );
-                                                    }),
-                                                content: Text(
-                                                    "Leave has been requested\nA notification will be sent to you once it is approved!",
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Colors.white)),
-                                                backgroundColor: Colors.blue,
-//                                                duration: Duration(seconds: 1),
-                                              );
-                                              Scaffold.of(context)
-                                                  .showSnackBar(data);
                                             });
 //
                                             //msg =  msgManagement.text;
@@ -520,7 +523,8 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
         .child("leaves")
         .child(leaveKeys[leaveIndex])
         .once();
-
+//    print("Value" +  dataSnapshot.key.toString() + " " + dataSnapshot.value.toString());
+//    print(request);
     if (dataSnapshot.value < request) {
       return false;
     } else
