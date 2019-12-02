@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage>
   String error;
   Office allottedOffice;
   final PermissionHandler _permissionHandler = PermissionHandler();
+  FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
 
   Future<void> _initializeGeoFence() async {
     try {
@@ -77,6 +79,24 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
 
+    firebaseMessaging.configure(
+      onLaunch: (Map<String, dynamic> msg) {
+        print(" onLaunch called ${(msg)}");
+      },
+      onResume: (Map<String, dynamic> msg) {
+        print(" onResume called ${(msg)}");
+      },
+      onMessage: (Map<String, dynamic> msg) {
+//        showNotification(msg);
+        print(" onMessage called ${(msg)}");
+      },
+    );
+    firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, alert: true, badge: true));
+    firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings setting) {
+      print('IOS Setting Registed');
+    });
     _initializeGeoFence();
 
     controller = new AnimationController(

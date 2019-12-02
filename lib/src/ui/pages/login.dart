@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geo_attendance_system/src/services/fetch_IMEI.dart';
+import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
 import 'package:geo_attendance_system/src/ui/widgets/Info_dialog_box.dart';
 import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
@@ -173,141 +174,177 @@ class _LoginState extends State<Login> {
     return new Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          /* Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: 20.0),
-                child: Image.asset("assets/image_01.png"),
-              ),
-              Expanded(
-                child: Container(),
-              ),
-              Image.asset("assets/image_02.png")
-            ],
-          ),*/
-          SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 60.0),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      // Image.asset(
-                      //   "assets/logo.png",
-                      //   width: ScreenUtil.getInstance().setWidth(110),
-                      //   height: ScreenUtil.getInstance().setHeight(110),
-                      // ),
-                      Text("LOGO",
-                          style: TextStyle(
-                              fontFamily: "Poppins-Bold",
-                              fontSize: ScreenUtil.getInstance().setSp(46),
-                              letterSpacing: .6,
-                              fontWeight: FontWeight.bold))
-                    ],
-                  ),
-                  SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(180),
-                  ),
-                  formCard(),
-                  SizedBox(height: ScreenUtil.getInstance().setHeight(40)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      /*Row(
-                        children: <Widget>[
-                          SizedBox(
-                            width: 12.0,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: new AssetImage(
+                'assets/back.jpg'),
+            fit: BoxFit.fill,
+          ),
+//          gradient: LinearGradient(
+//            colors: <Color>[Colors.white, Colors.grey[350]],
+//            begin: Alignment.topCenter,
+//            end: Alignment.bottomCenter,
+//          ),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            /* Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top: 20.0),
+                  child: Image.asset("assets/image_01.png"),
+                ),
+                Expanded(
+                  child: Container(),
+                ),
+                Image.asset("assets/image_02.png")
+              ],
+            ),*/
+            SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 60.0),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                         Image.asset(
+                           "assets/logo/logo.png",
+                           width: ScreenUtil.getInstance().setWidth(220),
+                           height: ScreenUtil.getInstance().setHeight(220),
+                         ),
+                        SizedBox(
+                          width: ScreenUtil.getInstance().setWidth(40),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text("GATE",
+                                  style: TextStyle(
+                                      fontFamily: "Poppins-Bold",
+                                      color: appbarcolor,
+                                      fontSize: ScreenUtil.getInstance().setSp(110),
+                                      letterSpacing: .6,
+                                      fontWeight: FontWeight.bold)),
+                              Text("Geo-Attendance and Tracking for Employees",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontFamily: "Poppins-Bold",
+                                      color: Colors.black54,
+                                      fontSize: ScreenUtil.getInstance().setSp(25),
+                                      letterSpacing: 0.2,
+                                      fontWeight: FontWeight.bold)),
+                            ],
                           ),
-                          GestureDetector(
-                            onTap: _radio,
-                            child: radioButton(_isSelected),
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          ),
-                          Text("Remember me",
-                              style: TextStyle(
-                                  fontSize: 12, fontFamily: "Poppins-Medium"))
-                        ],
-                      ),*/
-                      InkWell(
-                        child: Container(
-                          width: ScreenUtil.getInstance().setWidth(330),
-                          height: ScreenUtil.getInstance().setHeight(100),
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(colors: [
-                                Color(0xFF17ead9),
-                                Color(0xFF6078ea)
-                              ]),
-                              borderRadius: BorderRadius.circular(6.0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Color(0xFF6078ea).withOpacity(.3),
-                                    offset: Offset(0.0, 8.0),
-                                    blurRadius: 8.0)
-                              ]),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: validateAndSubmit,
-                              child: Center(
-                                child: Text("LOGIN",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: "Poppins-Bold",
-                                        fontSize: 18,
-                                        letterSpacing: 1.0)),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: ScreenUtil.getInstance().setHeight(90),
+                    ),
+                    formCard(),
+                    SizedBox(height: ScreenUtil.getInstance().setHeight(40)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        /*Row(
+                          children: <Widget>[
+                            SizedBox(
+                              width: 12.0,
+                            ),
+                            GestureDetector(
+                              onTap: _radio,
+                              child: radioButton(_isSelected),
+                            ),
+                            SizedBox(
+                              width: 8.0,
+                            ),
+                            Text("Remember me",
+                                style: TextStyle(
+                                    fontSize: 12, fontFamily: "Poppins-Medium"))
+                          ],
+                        ),*/
+                        InkWell(
+                          child: Container(
+                            width: ScreenUtil.getInstance().setWidth(330),
+                            height: ScreenUtil.getInstance().setHeight(100),
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(colors: [
+                                  splashScreenColorBottom,
+                                  Color(0xFF6078ea)
+                                ]),
+                                borderRadius: BorderRadius.circular(6.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color(0xFF6078ea).withOpacity(.3),
+                                      offset: Offset(0.0, 8.0),
+                                      blurRadius: 8.0)
+                                ]),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: validateAndSubmit,
+                                child: Center(
+                                  child: Text("LOGIN",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: "Poppins-Bold",
+                                          fontSize: 18,
+                                          letterSpacing: 1.0)),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(40),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      horizontalLine(),
-                      Text("Other Options",
-                          style: TextStyle(
-                              fontSize: 16.0, fontFamily: "Poppins-Medium")),
-                      horizontalLine()
-                    ],
-                  ),
-                  SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(40),
-                  ),
-                  SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(30),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Don't have Login Details? ",
-                        style: TextStyle(fontFamily: "Poppins-Medium"),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Text("Contact Admin",
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: ScreenUtil.getInstance().setHeight(40),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        horizontalLine(),
+                        Text("Other Options",
                             style: TextStyle(
-                                color: Color(0xFF5d74e3),
-                                fontFamily: "Poppins-Bold")),
-                      )
-                    ],
-                  )
-                ],
+                                fontSize: 16.0, fontFamily: "Poppins-Medium")),
+                        horizontalLine()
+                      ],
+                    ),
+                    SizedBox(
+                      height: ScreenUtil.getInstance().setHeight(40),
+                    ),
+                    SizedBox(
+                      height: ScreenUtil.getInstance().setHeight(30),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Don't have Login Details? ",
+                          style: TextStyle(fontFamily: "Poppins-Medium"),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: Text("Contact Admin",
+                              style: TextStyle(
+                                  color: splashScreenColorTop,
+                                  fontFamily: "Poppins-Bold")),
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -348,8 +385,14 @@ class _LoginState extends State<Login> {
                 height: 60,
                 child: TextFormField(
                   decoration: InputDecoration(
-                      icon: Icon(Icons.person),
-                      hintText: "Username",
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: dashBoardColor),
+                      ),
+                      icon: Icon(
+                        Icons.person,
+                        color: dashBoardColor,
+                      ),
+                      hintText: "Employee ID",
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
                   validator: (value) =>
                       value.isEmpty ? 'Username can\'t be empty' : null,
@@ -361,7 +404,13 @@ class _LoginState extends State<Login> {
                 child: TextFormField(
                   obscureText: true,
                   decoration: InputDecoration(
-                      icon: Icon(Icons.lock),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: dashBoardColor),
+                      ),
+                      icon: Icon(
+                        Icons.lock,
+                        color: dashBoardColor,
+                      ),
                       hintText: "Password",
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
                   validator: (value) =>
@@ -381,7 +430,7 @@ class _LoginState extends State<Login> {
                     child: Text(
                       "Reset",
                       style: TextStyle(
-                          color: Colors.blue,
+                          color: dashBoardColor,
                           fontFamily: "Poppins-Medium",
                           fontSize: ScreenUtil.getInstance().setSp(28)),
                     ),
@@ -389,7 +438,7 @@ class _LoginState extends State<Login> {
                   Text(
                     "Forgot Password?",
                     style: TextStyle(
-                        color: Colors.blue,
+                        color: dashBoardColor,
                         fontFamily: "Poppins-Medium",
                         fontSize: ScreenUtil.getInstance().setSp(28)),
                   )
