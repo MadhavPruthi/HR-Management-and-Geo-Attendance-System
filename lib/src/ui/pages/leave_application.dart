@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
+import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 
 import 'leave_status.dart';
@@ -407,18 +409,58 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                         hoverColor: splashScreenColorBottom,
                                         hoverElevation: 40.0,
                                         onPressed: () {
-//                                          onLoadingDialog(context);
                                           if (_validateData(context)) {
-                                            addLeave(context);
-                                            pushData(context);
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      LeaveStatusWidget(
-                                                          title: "Leave Status",
-                                                          user: widget.user)),
-                                            );
+                                            onLoadingDialog(context);
+
+                                            addLeave().then((check) {
+                                              if (check == true) {
+                                              } else {
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .pop('dialog');
+                                                SnackBar error = new SnackBar(
+                                                  content: Text(
+                                                      "You don't have enough requested leaves",
+                                                      style: TextStyle(
+                                                          color: Colors.white)),
+                                                  backgroundColor: Colors.red,
+                                                );
+                                                Scaffold.of(context)
+                                                    .showSnackBar(error);
+                                              }
+                                            });
+                                            pushData(context).then((_) {
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .pop('dialog');
+                                              SnackBar data = new SnackBar(
+                                                action: SnackBarAction(
+                                                  textColor: Colors.white70,
+                                                    label: "View",
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        CupertinoPageRoute(
+                                                            builder: (context) =>
+                                                                LeaveStatusWidget(
+                                                                    title:
+                                                                        "Leave Status",
+                                                                    user: widget
+                                                                        .user)),
+                                                      );
+                                                    }),
+                                                content: Text(
+                                                    "Leave has been requested\nA notification will be sent to you once it is approved!",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.white)),
+                                                backgroundColor: Colors.blue,
+//                                                duration: Duration(seconds: 1),
+                                              );
+                                              Scaffold.of(context)
+                                                  .showSnackBar(data);
+                                            });
+//
                                             //msg =  msgManagement.text;
                                           }
                                         },
@@ -433,83 +475,56 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
     msg = controller.text;
   }
 
-  void pushData(BuildContext context) {
-    int request = int.parse(leavesCount);
-    int count;
-    _userRef
-        .child(widget.user.uid)
-        .child("leaves")
-        .child(leaveKeys[leaveIndex])
-        .once()
-        .then((DataSnapshot snapshot) {
-      count = snapshot.value - request;
-      if (leaveIndex == 0) {
+  Future<void> pushData(BuildContext context) async {
+    if (leaveIndex == 0) {
 //        _userRef.child(widget.user.uid).child("leaves").update({'ml': count});
-        _leaveRef.child(widget.user.uid).push().set({
-          'fromDate': '$_fromdate',
-          'toDate': '$_todate',
-          'status': 'pending',
-          'type': 'ml',
-          'withdrawalStatus': 0,
-          'appliedDate': getFormattedDate(date),
-          'message': 'none'
-        });
-      } else if (leaveIndex == 1) {
+      await _leaveRef.child(widget.user.uid).push().set({
+        'fromDate': '$_fromdate',
+        'toDate': '$_todate',
+        'status': 'pending',
+        'type': 'ml',
+        'withdrawalStatus': 0,
+        'appliedDate': getFormattedDate(date),
+        'message': 'none'
+      });
+    } else if (leaveIndex == 1) {
 //        _userRef.child(widget.user.uid).child("leaves").update({'al': count});
-        _leaveRef.child(widget.user.uid).push().set({
-          'fromDate': '$_fromdate',
-          'toDate': '$_todate',
-          'status': 'pending',
-          'type': 'al',
-          'withdrawalStatus': 0,
-          'appliedDate': getFormattedDate(date),
-          'message': 'none'
-        });
-      } else {
+      await _leaveRef.child(widget.user.uid).push().set({
+        'fromDate': '$_fromdate',
+        'toDate': '$_todate',
+        'status': 'pending',
+        'type': 'al',
+        'withdrawalStatus': 0,
+        'appliedDate': getFormattedDate(date),
+        'message': 'none'
+      });
+    } else {
 //        _userRef.child(widget.user.uid).child("leaves").update({'cl': count});
-        _leaveRef.child(widget.user.uid).push().set({
-          'fromDate': '$_fromdate',
-          'toDate': '$_todate',
-          'status': 'pending',
-          'type': 'cl',
-          'withdrawalStatus': 0,
-          'appliedDate': getFormattedDate(date),
-          'message': 'none'
-        });
-      }
-    });
+      await _leaveRef.child(widget.user.uid).push().set({
+        'fromDate': '$_fromdate',
+        'toDate': '$_todate',
+        'status': 'pending',
+        'type': 'cl',
+        'withdrawalStatus': 0,
+        'appliedDate': getFormattedDate(date),
+        'message': 'none'
+      });
+    }
   }
 
-  void addLeave(BuildContext context) {
+  Future<bool> addLeave() async {
     int request = int.parse(leavesCount);
 
-    _userRef
+    DataSnapshot dataSnapshot = await _userRef
         .child(widget.user.uid)
         .child("leaves")
         .child(leaveKeys[leaveIndex])
-        .once()
-        .then((DataSnapshot snapshot) {
-      if (snapshot.value < request) {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Cannot Process Request"),
-                content: Text("Not enough leaves present"),
-              );
-            });
-      } else {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Request sent to Manager"),
-                content:
-                    Text("You will get a notification once it is approved"),
-              );
-            });
-      }
-    });
+        .once();
+
+    if (dataSnapshot.value < request) {
+      return false;
+    } else
+      return true;
   }
 
   bool _validateData(BuildContext context) {

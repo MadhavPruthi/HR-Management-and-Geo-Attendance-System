@@ -17,8 +17,24 @@ String findLatestIn(listOfAttendanceIterable) {
 
   finalList.sort((a, b) {
     String time1 = a.toString().split("-")[1];
-    String time2 = a.toString().split("-")[1];
-    return time2.compareTo(time1);
+    String time2 = b.toString().split("-")[1];
+    return time1.compareTo(time2);
+  });
+
+  return finalList.last.toString().split("-")[1];
+}
+
+String findLatestOut(listOfAttendanceIterable) {
+  List finalList = listOfAttendanceIterable
+      .where((attendance) => attendance.toString().substring(0, 3) == "out")
+      .toList();
+
+  if (finalList.length == 0) return "";
+
+  finalList.sort((a, b) {
+    String time1 = a.toString().split("-")[1];
+    String time2 = b.toString().split("-")[1];
+    return time1.compareTo(time2);
   });
 
   return finalList.last.toString().split("-")[1];
@@ -32,27 +48,11 @@ String findFirstIn(listOfAttendanceIterable) {
   if (finalList.length == 0) return "";
   finalList.sort((a, b) {
     String time1 = a.toString().split("-")[1];
-    String time2 = a.toString().split("-")[1];
-    return time2.compareTo(time1);
+    String time2 = b.toString().split("-")[1];
+    return time1.compareTo(time2);
   });
 
   return finalList.first.toString().split("-")[1];
-}
-
-String findLatestOut(listOfAttendanceIterable) {
-  List finalList = listOfAttendanceIterable
-      .where((attendance) => attendance.toString().substring(0, 3) == "out")
-      .toList();
-
-  if (finalList.length == 0) return "";
-
-  finalList.sort((a, b) {
-    String time1 = a.toString().split("-")[1];
-    String time2 = a.toString().split("-")[1];
-    return time2.compareTo(time1);
-  });
-
-  return finalList.last.toString().split("-")[1];
 }
 
 String findFirstOut(listOfAttendanceIterable) {
@@ -64,17 +64,20 @@ String findFirstOut(listOfAttendanceIterable) {
 
   finalList.sort((a, b) {
     String time1 = a.toString().split("-")[1];
-    String time2 = a.toString().split("-")[1];
-    return time2.compareTo(time1);
+    String time2 = b.toString().split("-")[1];
+    return time1.compareTo(time2);
   });
 
   return finalList.first.toString().split("-")[1];
 }
 
+
+
 bool checkSuccessiveIn(listOfAttendanceIterable) {
   if (listOfAttendanceIterable.length > 0) {
     String lastOut = findLatestOut(listOfAttendanceIterable);
     String lastIn = findLatestIn(listOfAttendanceIterable);
+
     if (lastIn == "" || (lastOut != "" && lastIn.compareTo(lastOut) <= 0))
       return true;
     else

@@ -185,10 +185,11 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
                           leaveDatabase
                               .withDrawLeave(leave.key, widget.user.uid)
                               .then((_) {
-                            setState(() {
-                              Navigator.of(context).pop();
-                            });
+                            Navigator.of(context,
+                                rootNavigator: true)
+                                .pop('dialog');
                           });
+                          Future.delayed(Duration(seconds: 1), (){setState(() {});});
                         },
                         textColor: Color(0x66FFFFFF),
                         child: Padding(
