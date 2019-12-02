@@ -39,6 +39,7 @@ dependencies:
   device_info: ^0.4.1+2
   firebase_messaging: ^6.0.1
 
+
   geofencing:
     path: geofencing
 
