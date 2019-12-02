@@ -4,21 +4,26 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:geo_attendance_system/src/models/AttendaceList.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
 
+String getDoubleDigit(String value) {
+  if (value.length >= 2) return value;
+  return "0" + value;
+}
+
 String getFormattedDate(DateTime day) {
-  String formattedDate = day.day.toString() +
+  String formattedDate = getDoubleDigit(day.day.toString()) +
       "-" +
-      day.month.toString() +
+      getDoubleDigit(day.month.toString()) +
       "-" +
-      day.year.toString();
+      getDoubleDigit(day.year.toString());
   return formattedDate;
 }
 
 String getFormattedTime(DateTime day) {
-  String time = day.hour.toString() +
+  String time = getDoubleDigit(day.hour.toString()) +
       ":" +
-      day.minute.toString() +
+      getDoubleDigit(day.minute.toString()) +
       ":" +
-      day.second.toString();
+      getDoubleDigit(day.second.toString());
 
   return time;
 }
@@ -61,8 +66,8 @@ class AttendanceDatabase {
       String uid, DateTime dateTime) async {
     var snapshot = await getAttendanceOfParticularDateBasedOnUID(uid, dateTime);
     var mapOfOffice = await getOfficeFromID();
-    AttendanceList attendanceList =
-        AttendanceList.fromJson(snapshot, getFormattedDate(dateTime), mapOfOffice);
+    AttendanceList attendanceList = AttendanceList.fromJson(
+        snapshot, getFormattedDate(dateTime), mapOfOffice);
     attendanceList.dateTime = dateTime;
 
     return attendanceList != null ? attendanceList : [];

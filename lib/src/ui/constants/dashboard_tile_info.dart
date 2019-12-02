@@ -28,7 +28,7 @@ void attendanceRecorderCallback(BuildContext context, FirebaseUser user) {
 void leaveApplicationCallback(BuildContext context, FirebaseUser user) {
   Navigator.push(
       context,
-      MaterialPageRoute(
+      CupertinoPageRoute(
           builder: (context) => LeaveApplicationWidget(
                 title: "Leave Application",
                 user: user,
@@ -38,7 +38,7 @@ void leaveApplicationCallback(BuildContext context, FirebaseUser user) {
 void leaveStatusCallback(BuildContext context, FirebaseUser user) {
   Navigator.push(
       context,
-      MaterialPageRoute(
+      CupertinoPageRoute(
           builder: (context) => LeaveStatusWidget(
                 title: "Leave Status",
                 user: user,
@@ -47,25 +47,25 @@ void leaveStatusCallback(BuildContext context, FirebaseUser user) {
 
 List<List> infoAboutTiles = [
   [
-    "assets/icons/icons8-location-64.png",
+    "assets/icons/attendance_recorder.png",
     "Attendance Recorder",
     "Mark your In and Out Time",
     attendanceRecorderCallback
   ],
   [
-    "assets/icons/icons8-leave-64.png",
+    "assets/icons/attendance_summary.png",
     "Attendance Summary",
     "Check your previous record",
     attendanceSummaryCallback
   ],
   [
-    "assets/icons/icons8-attendance-48.png",
+    "assets/icons/leave_application.png",
     "Leaves Application",
     "Management",
     leaveApplicationCallback
   ],
   [
-    "assets/icons/icons8-process-100.png",
+    "assets/icons/leave_status.png",
     "Leaves Status",
     "Check pending status of leaves",
     leaveStatusCallback

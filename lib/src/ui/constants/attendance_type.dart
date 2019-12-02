@@ -1,5 +1,2 @@
-enum attendanceType {
-  IN,
-  OUT,
-  UNDETERMINED
-}
+enum attendanceType { IN, OUT, UNDETERMINED }
+

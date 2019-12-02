@@ -132,7 +132,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
           resizeToAvoidBottomPadding: true,
           appBar: AppBar(
             title: Text('Leave Application'),
-            backgroundColor: dashBoardColor,
+            backgroundColor: appbarcolor,
             leading: new IconButton(
               icon: new Icon(Icons.arrow_back_ios),
               onPressed: () => Navigator.of(context).pop(),

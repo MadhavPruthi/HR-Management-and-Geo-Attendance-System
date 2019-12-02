@@ -27,7 +27,7 @@ Widget buildTile(String icon, String title, String subtitle,
                   padding: const EdgeInsets.all(16.0),
                   child: Image.asset(
                     icon,
-                    height: 40,
+                    height: 50,
                   ),
                 )),
                 Text(
