@@ -5,6 +5,8 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 
+import 'leave_status.dart';
+
 class LeaveApplicationWidget extends StatefulWidget {
   LeaveApplicationWidget({Key key, this.title, this.user}) : super(key: key);
   final String title;
@@ -18,13 +20,14 @@ class LeaveApplicationWidget extends StatefulWidget {
 class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
     with SingleTickerProviderStateMixin {
   FirebaseDatabase db = FirebaseDatabase();
-  DatabaseReference _userRef, _managerRef;
+  FirebaseUser _user;
+  DatabaseReference _userRef, _managerRef, _leaveRef;
   String _managerName, _managerDesignation;
 
   String _fromdate = "Select";
   DateTime _fromDateInt;
-  int currentState = 0;
 
+  bool isSelected = false;
   String _todate = "Select";
   DateTime _toDateInt;
   var date = DateTime.now();
@@ -38,6 +41,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
   final _formKey = GlobalKey<FormState>();
 
   String leavesCount = "-";
+  String msg = "none";
 
   List<String> leaveType = [
     "Medical Leave",
@@ -60,6 +64,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
   void initState() {
     super.initState();
     _userRef = db.reference().child("users");
+    _leaveRef = db.reference().child("leaves");
     _managerRef = db.reference().child("managers");
     _getManager();
     _getLeaves().then((dataSnapshot) {
@@ -132,7 +137,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
           resizeToAvoidBottomPadding: true,
           appBar: AppBar(
             title: Text('Leave Application'),
-            backgroundColor: dashBoardColor,
+            backgroundColor: appbarcolor,
             leading: new IconButton(
               icon: new Icon(Icons.arrow_back_ios),
               onPressed: () => Navigator.of(context).pop(),
@@ -222,29 +227,15 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                                   containerHeight: 250.0,
                                                 ),
                                                 showTitleActions: true,
-                                                minTime: DateTime(2000, 1, 1),
-                                                maxTime: DateTime(2022, 12, 31),
+                                                minTime: DateTime(date.year,
+                                                    date.month, date.day),
+                                                maxTime: DateTime(2050, 12, 31),
                                                 onConfirm: (date) {
                                               print('confirm $date');
                                               _fromdate =
-                                                  '${date.year}-${date.month}-${date.day}';
+                                                  getFormattedDate(date);
                                               setState(() {
                                                 _fromDateInt = date;
-
-                                                if (_toDateInt != null) {
-                                                  setState(() {
-                                                    int _difference = _toDateInt
-                                                        .difference(
-                                                            _fromDateInt)
-                                                        .inDays;
-                                                    if (_difference <= 0)
-                                                      leavesCount =
-                                                          "Invalid Dates";
-                                                    else
-                                                      leavesCount = _difference
-                                                          .toString();
-                                                  });
-                                                }
                                               });
                                             },
                                                 currentTime: DateTime.now(),
@@ -296,12 +287,12 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                                   containerHeight: 250.0,
                                                 ),
                                                 showTitleActions: true,
-                                                minTime: DateTime(2000, 1, 1),
+                                                minTime: DateTime(date.year,
+                                                    date.month, date.day),
                                                 maxTime: DateTime(2022, 12, 31),
                                                 onConfirm: (date) {
                                               print('confirm $date');
-                                              _todate =
-                                                  '${date.year}-${date.month}-${date.day}';
+                                              _todate = getFormattedDate(date);
                                               setState(() {
                                                 _toDateInt = date;
 
@@ -311,6 +302,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                                         .difference(
                                                             _fromDateInt)
                                                         .inDays;
+                                                    _difference += 1;
                                                     if (_difference <= 0)
                                                       leavesCount =
                                                           "Invalid Dates";
@@ -379,6 +371,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                     leaveIndex = index;
                                   },
                                   onSelected: (List selected) => setState(() {
+                                    isSelected = true;
                                     if (selected.length > 1) {
                                       selected.removeAt(0);
                                       print(
@@ -391,6 +384,8 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                 ),
                                 TextField(
                                   autofocus: false,
+                                  //controller: emailController,
+                                  //onSubmitted: _giveData(emailController),
                                   decoration: new InputDecoration(
                                     labelText:
                                         "Message for Management (Optional)",
@@ -412,9 +407,19 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                         hoverColor: splashScreenColorBottom,
                                         hoverElevation: 40.0,
                                         onPressed: () {
-                                          //onLoadingDialog(context);
+//                                          onLoadingDialog(context);
                                           if (_validateData(context)) {
                                             addLeave(context);
+                                            pushData(context);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LeaveStatusWidget(
+                                                          title: "Leave Status",
+                                                          user: widget.user)),
+                                            );
+                                            //msg =  msgManagement.text;
                                           }
                                         },
                                         child: Text('Submit',
@@ -422,6 +427,57 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                                 color: Colors.white)))),
                               ])))))),
     );
+  }
+
+  void giveData(TextEditingController controller) {
+    msg = controller.text;
+  }
+
+  void pushData(BuildContext context) {
+    int request = int.parse(leavesCount);
+    int count;
+    _userRef
+        .child(widget.user.uid)
+        .child("leaves")
+        .child(leaveKeys[leaveIndex])
+        .once()
+        .then((DataSnapshot snapshot) {
+      count = snapshot.value - request;
+      if (leaveIndex == 0) {
+//        _userRef.child(widget.user.uid).child("leaves").update({'ml': count});
+        _leaveRef.child(widget.user.uid).push().set({
+          'fromDate': '$_fromdate',
+          'toDate': '$_todate',
+          'status': 'pending',
+          'type': 'ml',
+          'withdrawalStatus': 0,
+          'appliedDate': getFormattedDate(date),
+          'message': 'none'
+        });
+      } else if (leaveIndex == 1) {
+//        _userRef.child(widget.user.uid).child("leaves").update({'al': count});
+        _leaveRef.child(widget.user.uid).push().set({
+          'fromDate': '$_fromdate',
+          'toDate': '$_todate',
+          'status': 'pending',
+          'type': 'al',
+          'withdrawalStatus': 0,
+          'appliedDate': getFormattedDate(date),
+          'message': 'none'
+        });
+      } else {
+//        _userRef.child(widget.user.uid).child("leaves").update({'cl': count});
+        _leaveRef.child(widget.user.uid).push().set({
+          'fromDate': '$_fromdate',
+          'toDate': '$_todate',
+          'status': 'pending',
+          'type': 'cl',
+          'withdrawalStatus': 0,
+          'appliedDate': getFormattedDate(date),
+          'message': 'none'
+        });
+      }
+    });
   }
 
   void addLeave(BuildContext context) {
@@ -512,4 +568,18 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
       },
     );
   }
+}
+
+String getDoubleDigit(String value) {
+  if (value.length >= 2) return value;
+  return "0" + value;
+}
+
+String getFormattedDate(DateTime day) {
+  String formattedDate = getDoubleDigit(day.day.toString()) +
+      "-" +
+      getDoubleDigit(day.month.toString()) +
+      "-" +
+      getDoubleDigit(day.year.toString());
+  return formattedDate;
 }

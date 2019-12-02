@@ -70,6 +70,7 @@ class _SplashScreenState extends State<SplashScreenWidget> {
         ),
         child: Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Image.asset("assets/logo/logo-white.png", height: 150,),
             Container(
               padding: const EdgeInsets.only(top: 80),
               child: SpinKitThreeBounce(
