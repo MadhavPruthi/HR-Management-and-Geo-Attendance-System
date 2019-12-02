@@ -28,7 +28,7 @@ class Leave {
         toDate: formattedProperDateTime(parsedJson['toDate']),
         type: getType(parsedJson['type']),
         status: getStatus(parsedJson['status']),
-        withdrawalStatus: ("0" != parsedJson['withdrawalStatus']),
+        withdrawalStatus: (0 != parsedJson['withdrawalStatus']),
         message: parsedJson['message'] == "" ? "none" : parsedJson['message']);
   }
 }

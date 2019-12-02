@@ -5,6 +5,7 @@ import 'package:geo_attendance_system/src/models/leave.dart';
 import 'package:geo_attendance_system/src/services/fetch_leaves.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/constants/leave_type.dart';
+import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 
 class LeaveStatusWidget extends StatefulWidget {
   LeaveStatusWidget({Key key, this.title, this.user}) : super(key: key);
@@ -124,6 +125,7 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
         constraints: new BoxConstraints.expand(),
         child: new Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             new Text(getLeaveType(leave.type),
                 style: TextStyle(
@@ -142,12 +144,12 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
                   fontWeight: FontWeight.w300,
                   fontSize: 14.0,
                 )),
-            Container(
-              color: Colors.white70,
-              width: 170.0,
-              height: 1.0,
-              margin: const EdgeInsets.symmetric(vertical: 8.0),
-            ),
+//            Container(
+//              color: Colors.white70,
+//              width: 170.0,
+//              height: 1.0,
+//              margin: const EdgeInsets.symmetric(vertical: 8.0),
+//            ),
             new Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -157,21 +159,37 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
                       size: 14.0, color: Color(0x66FFFFFF)),
                 ),
                 new Text(
-                  'approved',
+                  leave.withdrawalStatus == true
+                      ? getStatus(leave.status)
+                      : "Withdrawn",
                   style: TextStyle(
-                      color: Color(0x66FFFFFF),
+                      color: Colors.white70,
                       fontFamily: 'poppins-medium',
                       fontWeight: FontWeight.w300,
-                      fontSize: 12.0),
+                      fontSize: 14.0),
                 ),
                 new Container(width: 70.0),
-                leave.status == LeaveStatus.approved
-                    ? Container()
+                leave.status == LeaveStatus.approved ||
+                        leave.status == LeaveStatus.rejected ||
+                        leave.withdrawalStatus == true
+                    ? Container(
+                        height: 35,
+                      )
                     : new RaisedButton(
+                        color: Colors.indigo,
                         shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(10.0),
                         ),
-                        onPressed: null,
+                        onPressed: () async {
+                          onLoadingDialog(context);
+                          leaveDatabase
+                              .withDrawLeave(leave.key, widget.user.uid)
+                              .then((_) {
+                            setState(() {
+                              Navigator.of(context).pop();
+                            });
+                          });
+                        },
                         textColor: Color(0x66FFFFFF),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
@@ -184,25 +202,20 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
                                   color: Color(0x66FFFFFF),
                                   fontFamily: 'poppins-medium',
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 12.0),
+                                  fontSize: 10.0),
                             ),
                           ]),
                         ),
                       )
-                /*
-            ,*/
               ],
             ),
-            new Text(
-                "Applied on" + " " +
-                    getFormattedDate(leave.appliedDate),
+            new Text("Applied on" + " " + getFormattedDate(leave.appliedDate),
                 style: TextStyle(
-                  color: Color(0x66FFFFFF),
-                  fontFamily: 'poppins-medium',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.0,
-                  letterSpacing: 1
-                )),
+                    color: Color(0x66FFFFFF),
+                    fontFamily: 'poppins-medium',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12.0,
+                    letterSpacing: 1)),
           ],
         ),
       ),
@@ -220,8 +233,6 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
 
   void _removeLeave() {}
 }
-
-int y = 4;
 
 List<Icon> listOfIcons = [
   Icon(
@@ -283,6 +294,27 @@ Color getColor(LeaveStatus leaveStatus) {
       break;
   }
   return listOfColors[2];
+}
+
+String getStatus(LeaveStatus leaveStatus) {
+  switch (leaveStatus) {
+    case LeaveStatus.approved:
+      return "Approved";
+      break;
+
+    case LeaveStatus.pending:
+      return "Pending";
+      break;
+
+    case LeaveStatus.rejected:
+      return "Rejected";
+      break;
+
+    case LeaveStatus.undetermined:
+      return "Pending";
+      break;
+  }
+  return "Pending";
 }
 
 String getDoubleDigit(String value) {
