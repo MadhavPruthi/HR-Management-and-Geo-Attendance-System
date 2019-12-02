@@ -49,7 +49,7 @@ class LeaveDatabase {
   }
 
   Future<void> withDrawLeave(String key, String uid) async {
-    var json = {"wthdrawalStatus": 1};
+    var json = {"withdrawalStatus": 1};
     _databaseReference.child("leaves").child(uid).child(key).update(json);
   }
 }

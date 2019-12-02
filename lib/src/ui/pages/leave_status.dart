@@ -154,12 +154,12 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.all(4.0),
+                  padding: const EdgeInsets.all(2.0),
                   child: new Icon(Icons.calendar_today,
                       size: 14.0, color: Color(0x66FFFFFF)),
                 ),
                 new Text(
-                  leave.withdrawalStatus == true
+                  leave.withdrawalStatus == false
                       ? getStatus(leave.status)
                       : "Withdrawn",
                   style: TextStyle(

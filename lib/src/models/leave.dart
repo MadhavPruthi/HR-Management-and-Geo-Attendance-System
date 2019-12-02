@@ -21,6 +21,7 @@ class Leave {
       this.message});
 
   factory Leave.fromJson(String key, Map<String, dynamic> parsedJson) {
+    print(parsedJson['withdrawalStatus'].runtimeType);
     return Leave(
         key: key,
         appliedDate: formattedProperDateTime(parsedJson['appliedDate']),

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
-import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
+
+import 'leave_status.dart';
 
 class LeaveApplicationWidget extends StatefulWidget {
   LeaveApplicationWidget({Key key, this.title, this.user}) : super(key: key);
@@ -20,13 +21,13 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
     with SingleTickerProviderStateMixin {
   FirebaseDatabase db = FirebaseDatabase();
   FirebaseUser _user;
-  DatabaseReference _userRef, _managerRef,_leaveRef;
+  DatabaseReference _userRef, _managerRef, _leaveRef;
   String _managerName, _managerDesignation;
 
   String _fromdate = "Select";
   DateTime _fromDateInt;
 
-bool isSelected=false;
+  bool isSelected = false;
   String _todate = "Select";
   DateTime _toDateInt;
   var date = DateTime.now();
@@ -232,11 +233,9 @@ bool isSelected=false;
                                                 onConfirm: (date) {
                                               print('confirm $date');
                                               _fromdate =
-                                                  '${date.year}-${date.month}-${date.day}';
+                                                  getFormattedDate(date);
                                               setState(() {
                                                 _fromDateInt = date;
-
-
                                               });
                                             },
                                                 currentTime: DateTime.now(),
@@ -293,8 +292,7 @@ bool isSelected=false;
                                                 maxTime: DateTime(2022, 12, 31),
                                                 onConfirm: (date) {
                                               print('confirm $date');
-                                              _todate =
-                                                  '${date.year}-${date.month}-${date.day}';
+                                              _todate = getFormattedDate(date);
                                               setState(() {
                                                 _toDateInt = date;
 
@@ -303,8 +301,8 @@ bool isSelected=false;
                                                     int _difference = _toDateInt
                                                         .difference(
                                                             _fromDateInt)
-                                                        .inDays ;
-                                                    _difference+=1;
+                                                        .inDays;
+                                                    _difference += 1;
                                                     if (_difference <= 0)
                                                       leavesCount =
                                                           "Invalid Dates";
@@ -373,7 +371,7 @@ bool isSelected=false;
                                     leaveIndex = index;
                                   },
                                   onSelected: (List selected) => setState(() {
-                                    isSelected=true;
+                                    isSelected = true;
                                     if (selected.length > 1) {
                                       selected.removeAt(0);
                                       print(
@@ -400,7 +398,6 @@ bool isSelected=false;
                                           BorderSide(color: Colors.black54),
                                     ),
                                   ),
-
                                 ),
                                 Container(
                                     padding: const EdgeInsets.symmetric(
@@ -410,13 +407,17 @@ bool isSelected=false;
                                         hoverColor: splashScreenColorBottom,
                                         hoverElevation: 40.0,
                                         onPressed: () {
-                                          //onLoadingDialog(context);
+//                                          onLoadingDialog(context);
                                           if (_validateData(context)) {
                                             addLeave(context);
                                             pushData(context);
                                             Navigator.pushReplacement(
                                               context,
-                                              MaterialPageRoute(builder: (context) => HomePage(user: _user)),
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LeaveStatusWidget(
+                                                          title: "Leave Status",
+                                                          user: widget.user)),
                                             );
                                             //msg =  msgManagement.text;
                                           }
@@ -427,63 +428,57 @@ bool isSelected=false;
                               ])))))),
     );
   }
-  void giveData(TextEditingController controller)
-  {
+
+  void giveData(TextEditingController controller) {
     msg = controller.text;
   }
-void pushData(BuildContext context)
-{ int request = int.parse(leavesCount);
-int count ;
-_userRef
-    .child(widget.user.uid)
-    .child("leaves")
-    .child(leaveKeys[leaveIndex])
-    .once()
-    .then((DataSnapshot snapshot){
+
+  void pushData(BuildContext context) {
+    int request = int.parse(leavesCount);
+    int count;
+    _userRef
+        .child(widget.user.uid)
+        .child("leaves")
+        .child(leaveKeys[leaveIndex])
+        .once()
+        .then((DataSnapshot snapshot) {
       count = snapshot.value - request;
-      if(leaveIndex == 0)
-      {
-        _userRef.child(widget.user.uid).child("leaves").update({'ml' : count }) ;
+      if (leaveIndex == 0) {
+//        _userRef.child(widget.user.uid).child("leaves").update({'ml': count});
         _leaveRef.child(widget.user.uid).push().set({
-          'fromDate' : '$_fromdate',
-          'toDate' : '$_todate',
-          'status' :'pending',
-          'type' : 'ml',
-          'withdrawalStatus' : '0',
-          'appliedDate' : '${date.day}-${date.month}-${date.year}',
-          'message' : 'none'
+          'fromDate': '$_fromdate',
+          'toDate': '$_todate',
+          'status': 'pending',
+          'type': 'ml',
+          'withdrawalStatus': 0,
+          'appliedDate': getFormattedDate(date),
+          'message': 'none'
         });
-
-      }
-      else if (leaveIndex == 1)
-        {
-          _userRef.child(widget.user.uid).child("leaves").update({'al' : count }) ;
-          _leaveRef.child(widget.user.uid).push().set({
-            'fromDate' : '$_fromdate',
-            'toDate' : '$_todate',
-            'status' :'pending',
-            'type' : 'al',
-            'withdrawalStatus' : '0',
-            'appliedDate' : '${date.day}-${date.month}-${date.year}',
-            'message' : 'none'
-          });
-        }
-      else{
-        _userRef.child(widget.user.uid).child("leaves").update({'cl' : count }) ;
+      } else if (leaveIndex == 1) {
+//        _userRef.child(widget.user.uid).child("leaves").update({'al': count});
         _leaveRef.child(widget.user.uid).push().set({
-          'fromDate' : '$_fromdate',
-          'toDate' : '$_todate',
-          'status' :'pending',
-          'type' : 'cl',
-          'withdrawalStatus' : '0',
-          'appliedDate' : '${date.day}-${date.month}-${date.year}',
-          'message' : 'none'
+          'fromDate': '$_fromdate',
+          'toDate': '$_todate',
+          'status': 'pending',
+          'type': 'al',
+          'withdrawalStatus': 0,
+          'appliedDate': getFormattedDate(date),
+          'message': 'none'
+        });
+      } else {
+//        _userRef.child(widget.user.uid).child("leaves").update({'cl': count});
+        _leaveRef.child(widget.user.uid).push().set({
+          'fromDate': '$_fromdate',
+          'toDate': '$_todate',
+          'status': 'pending',
+          'type': 'cl',
+          'withdrawalStatus': 0,
+          'appliedDate': getFormattedDate(date),
+          'message': 'none'
         });
       }
-
-});
-}
-
+    });
+  }
 
   void addLeave(BuildContext context) {
     int request = int.parse(leavesCount);
@@ -573,4 +568,18 @@ _userRef
       },
     );
   }
+}
+
+String getDoubleDigit(String value) {
+  if (value.length >= 2) return value;
+  return "0" + value;
+}
+
+String getFormattedDate(DateTime day) {
+  String formattedDate = getDoubleDigit(day.day.toString()) +
+      "-" +
+      getDoubleDigit(day.month.toString()) +
+      "-" +
+      getDoubleDigit(day.year.toString());
+  return formattedDate;
 }
