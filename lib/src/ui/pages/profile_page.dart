@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geo_attendance_system/src/ui/constants/colors.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geo_attendance_system/src/models/user.dart';
+import 'package:geo_attendance_system/src/services/fetch_user.dart';
+import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 
 enum AppBarBehavior { normal, pinned, floating, snapping }
 
@@ -93,23 +96,33 @@ class _ContactItem extends StatelessWidget {
   }
 }
 
-class ContactsDemo extends StatefulWidget {
-  static const String routeName = '/contacts';
-   final EmployeeProfile employeeProfile;
+class ProfilePage extends StatefulWidget {
+  final FirebaseUser user;
 
+  ProfilePage({this.user});
 
   @override
-  ContactsDemoState createState() => ContactsDemoState();
+  ProfilePageState createState() => ProfilePageState();
 }
 
-class ContactsDemoState extends State<ContactsDemo> {
-
-
+class ProfilePageState extends State<ProfilePage> {
   static final GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>();
   final double _appBarHeight = 256.0;
-
+  UserDatabase userDatabase = new UserDatabase();
   AppBarBehavior _appBarBehavior = AppBarBehavior.pinned;
+  Employee employee = null;
+
+  @override
+  void initState() {
+    super.initState();
+    UserDatabase.getDetailsFromUID(widget.user.uid).then((employee) {
+      print(employee);
+      setState(() {
+        this.employee = employee;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,138 +134,125 @@ class ContactsDemoState extends State<ContactsDemo> {
       ),
       child: Scaffold(
         key: _scaffoldKey,
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: _appBarHeight,
-              pinned: _appBarBehavior == AppBarBehavior.pinned,
-              actions: <Widget>[
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Icon(Icons.person)),
-              ],
-              flexibleSpace: FlexibleSpaceBar(
-                title: const Text('Name', ),
-                background: Stack(
-                  fit: StackFit.expand,
-                  children: <Widget>[
-                    Image.asset(
-                      'people/ali_landscape.png',
-                      package: 'flutter_gallery_assets',
-                      fit: BoxFit.cover,
-                      height: _appBarHeight,
-                    ),
-                    // This gradient ensures that the toolbar icons are distinct
-                    // against the background image.
-                    const DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment(0.0, -1.0),
-                          end: Alignment(0.0, -0.4),
-                          colors: <Color>[Color(0x60000000), Color(0x00000000)],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(<Widget>[
-                AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: SystemUiOverlayStyle.dark,
-                  child: ProfilePageWidget(
-                    icon: Icons.call,
-                    children: <Widget>[
-                      _ContactItem(
-                        icon: Icons.edit,
-                        tooltip: 'Edit',
-                        onPressed: () {
-                          _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                            content: Text('Edit your details'),
-                          ));
-                        },
-                        lines: const <String>[
-                          'Phone Number',
-                          'Mobile',
-                        ],
-                      ),
-                    ],
+        body: employee == null
+            ? Container(
+                color: dashBoardColor,
+                child: Center(
+                  child: SpinKitChasingDots(
+                    color: Colors.white,
+                    size: 30.0,
                   ),
                 ),
-                ProfilePageWidget(
-                  icon: Icons.contact_mail,
-                  children: <Widget>[
-                    _ContactItem(
-                      icon: Icons.email,
-                      tooltip: 'Send personal e-mail',
-                      onPressed: () {
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                          content:
-                              Text('Edit your details'),
-                        ));
-                      },
-                      lines: const <String>[
-                        'example@example.com',
-                        'Personal',
-                      ],
+              )
+            : CustomScrollView(
+                slivers: <Widget>[
+                  SliverAppBar(
+                    expandedHeight: _appBarHeight,
+                    pinned: _appBarBehavior == AppBarBehavior.pinned,
+                    actions: <Widget>[
+                      Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          child: FlatButton(
+                            textColor: Colors.white,
+                            child: Row(
+                              children: <Widget>[
+                                Icon(Icons.edit),
+                                SizedBox(width: 10,),
+                                Text("Change Password".toUpperCase())
+                              ],
+                            ), onPressed: () {},
+                          )),
+                    ],
+                    flexibleSpace: FlexibleSpaceBar(
+                      title: Text("${employee.firstName}"),
+                      background: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          Image.asset(
+                            'people/ali_landscape.png',
+                            package: 'flutter_gallery_assets',
+                            fit: BoxFit.cover,
+                            height: _appBarHeight,
+                          ),
+                          // This gradient ensures that the toolbar icons are distinct
+                          // against the background image.
+                          const DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment(0.0, -1.0),
+                                end: Alignment(0.0, -0.4),
+                                colors: <Color>[
+                                  Color(0x60000000),
+                                  Color(0x00000000)
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-                ProfilePageWidget(
-                  icon: Icons.location_on,
-                  children: <Widget>[
-                    _ContactItem(
-                      icon: Icons.map,
-                      tooltip: 'Open map',
-                      onPressed: () {
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                          content:
-                              Text('This would show a map of San Francisco.'),
-                        ));
-                      },
-                      lines: const <String>[
-                        '2000 Main Street',
-                        'San Francisco, CA',
-                        'Home',
-                      ],
-                    ),
-                    _ContactItem(
-                      icon: Icons.map,
-                      tooltip: 'Open map',
-                      onPressed: () {
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                          content:
-                              Text('This would show a map of Mountain View.'),
-                        ));
-                      },
-                      lines: const <String>[
-                        '1600 Amphitheater Parkway',
-                        'Mountain View, CA',
-                        'Work',
-                      ],
-                    ),
-                    _ContactItem(
-                      icon: Icons.map,
-                      tooltip: 'Open map',
-                      onPressed: () {
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                          content: Text(
-                              'This would also show a map, if this was not a demo.'),
-                        ));
-                      },
-                      lines: const <String>[
-                        '126 Severyns Ave',
-                        'Mountain View, CA',
-                        'Jet Travel',
-                      ],
-                    ),
-                  ],
-                ),
-              ]),
-            ),
-          ],
-        ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildListDelegate(<Widget>[
+                      AnnotatedRegion<SystemUiOverlayStyle>(
+                        value: SystemUiOverlayStyle.dark,
+                        child: ProfilePageWidget(
+                          icon: Icons.call,
+                          children: <Widget>[
+                            _ContactItem(
+                              icon: Icons.call,
+                              onPressed: null,
+                              lines: <String>[
+                                employee.contactNumber,
+                                'Mobile',
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      ProfilePageWidget(
+                        icon: Icons.contact_mail,
+                        children: <Widget>[
+                          _ContactItem(
+                            icon: Icons.email,
+                            onPressed: null,
+                            lines: <String>[
+                              widget.user.email,
+                              'Personal',
+                            ],
+                          ),
+                        ],
+                      ),
+                      ProfilePageWidget(
+                        icon: Icons.location_on,
+                        children: <Widget>[
+                          _ContactItem(
+                            icon: Icons.map,
+                            onPressed: null,
+                            lines: <String>[
+                              employee.residentialAddress,
+                              'Home',
+                            ],
+                          ),
+                        ],
+                      ),
+                      ProfilePageWidget(
+                        icon: Icons.description,
+                        children: <Widget>[
+                          _ContactItem(
+                            icon: Icons.work,
+                            onPressed: null,
+                            lines: <String>[
+                              employee.designation,
+                              'Designation',
+                            ],
+                          ),
+                        ],
+                      ),
+                    ]),
+                  ),
+                ],
+              ),
       ),
     );
   }

@@ -283,43 +283,6 @@ enum Role {
   // TODO
   ADD_HERE
 }
-class EmployeeProfile {
-
-  String Name;
-  String UID;
-  String Address;
-  String UUID;
-  String PhoneNumber;
-
-  //String allotted_office;
-  //String email
-
-  EmployeeProfile(
-      {this.UID, this.PhoneNumber, this.Address, this.Name, this.UUID});
-
-  EmployeeProfile.fromSnapshot(DataSnapshot snapshot)
-      : UID = snapshot.key,
-  //here it refers to employee ID
-        UUID = snapshot.value["UUID"],
-        Name = snapshot.value["Name"],
-        Address = snapshot.value["Address"],
-        PhoneNumber = snapshot.value["PhoneNumber"];
-
-  // allotted_office = snapshot.value["alloted_office"];
-  //email = snapshot.value["user"];
-
-  toJson() {
-    return {
-      "uid": UID,
-      "Name": Name,
-      "Address": Address,
-      "PhoneNumber": PhoneNumber,
-    };
-  }
-
-}
-
-
 
 class Employee {
   String uID;
@@ -329,10 +292,10 @@ class Employee {
   String lastName;
   String officeEmail;
   String alternateEmail;
-
+  String contactNumber;
   DateTime dateOfBirth;
   DateTime joiningDate;
-
+  String residentialAddress;
   Gender gender;
   int retirementAge;
 
@@ -343,7 +306,7 @@ class Employee {
   EmployeeSubFunction employeeSubFunction;
 
   Grade grade;
-  Designation designation;
+  String designation;
 
   MaritalStatus maritalStatus;
   Religion religion;
@@ -363,6 +326,8 @@ class Employee {
       this.firstName,
       this.middleName,
       this.lastName,
+      this.residentialAddress,
+      this.contactNumber,
       this.officeEmail,
       this.alternateEmail,
       this.dateOfBirth,
@@ -413,30 +378,30 @@ class Employee {
 
   toJson() {
     return {
-      "employeeID" : employeeID,
-      "firstName" : firstName,
-      "middleName" : middleName,
-      "lastName" : lastName,
-      "officeEmail" : officeEmail,
-      "alternateEmail" : alternateEmail,
-      "dateOfBirth" : dateOfBirth,
-      "joiningDate" : joiningDate,
-      "gender" : gender,
-      "retirementAge" : retirementAge,
-      "joiningUnit" : joiningUnit,
-      "skillCategory" : skillCategory,
-      "employeeFunction" : employeeFunction,
-      "employeeSubFunction" : employeeSubFunction,
-      "grade" : grade,
-      "designation" : designation,
-      "maritalStatus" : maritalStatus,
-      "religion" : religion,
-      "nationality" : nationality,
-      "entity" : entity,
-      "bloodGroup" : bloodGroup,
-      "employeeType" : employeeType,
-      "reviewPerson" : reviewPerson,
-      "role" : role,
+      "employeeID": employeeID,
+      "firstName": firstName,
+      "middleName": middleName,
+      "lastName": lastName,
+      "officeEmail": officeEmail,
+      "alternateEmail": alternateEmail,
+      "dateOfBirth": dateOfBirth,
+      "joiningDate": joiningDate,
+      "gender": gender,
+      "retirementAge": retirementAge,
+      "joiningUnit": joiningUnit,
+      "skillCategory": skillCategory,
+      "employeeFunction": employeeFunction,
+      "employeeSubFunction": employeeSubFunction,
+      "grade": grade,
+      "designation": designation,
+      "maritalStatus": maritalStatus,
+      "religion": religion,
+      "nationality": nationality,
+      "entity": entity,
+      "bloodGroup": bloodGroup,
+      "employeeType": employeeType,
+      "reviewPerson": reviewPerson,
+      "role": role,
     };
   }
 }

@@ -6,7 +6,6 @@ import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/constants/dashboard_tile_info.dart';
 import 'package:geo_attendance_system/src/ui/pages/profile_page.dart';
 import 'package:geo_attendance_system/src/ui/widgets/dashboard_tile.dart';
-import 'package:geo_attendance_system/src/models/user.dart';
 
 import 'login.dart';
 
@@ -14,7 +13,6 @@ class Dashboard extends StatefulWidget {
   final AnimationController controller;
   final BaseAuth auth;
   final FirebaseUser user;
-  final EmployeeProfile employeeProfile;
 
   Dashboard({this.controller, this.auth, this.user});
 
@@ -42,7 +40,9 @@ class _DashboardState extends State<Dashboard> {
     return new Container(
       child: new Stack(
         children: <Widget>[
-          new NavigationPanel(),
+          new NavigationPanel(
+            user: widget.user,
+          ),
           new PositionedTransition(
             rect: getPanelAnimation(constraints),
             child: new Material(
@@ -128,6 +128,10 @@ class DashboardMainPanel extends StatelessWidget {
 }
 
 class NavigationPanel extends StatefulWidget {
+  final FirebaseUser user;
+
+  NavigationPanel({this.user});
+
   @override
   _NavigationPanelState createState() => _NavigationPanelState();
 }
@@ -174,8 +178,10 @@ class _NavigationPanelState extends State<NavigationPanel> {
         child: ListView(
           children: <Widget>[
             drawerTile("Edit your Profile", () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => ContactsDemo()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ProfilePage(
+                        user: widget.user,
+                      )));
             }, Icons.perm_identity),
             drawerTile("Logout", () {
               Auth auth = new Auth();
