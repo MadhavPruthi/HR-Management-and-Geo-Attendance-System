@@ -23,7 +23,9 @@ class OfficeDatabase {
     final name = findOffice["name"];
     final latitude = findOffice["latitude"];
     final longitude = findOffice["longitude"];
-    final radius = findOffice["radius"].toDouble();
+    final radius =
+        findOffice["radius"] == null ? 200.0 : findOffice["radius"].toDouble();
+
     return Office(
         key: office,
         name: name,

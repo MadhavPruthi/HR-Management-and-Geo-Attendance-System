@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage>
   AnimationController controller;
 
   OfficeDatabase officeDatabase = new OfficeDatabase();
+  final _databaseReference = FirebaseDatabase.instance.reference();
   var geoFenceActive = false;
   var result;
   String error;
@@ -96,6 +98,12 @@ class _HomePageState extends State<HomePage>
     firebaseMessaging.onIosSettingsRegistered
         .listen((IosNotificationSettings setting) {
       print('IOS Setting Registed');
+    });
+
+    firebaseMessaging.getToken().then((token) {
+      _databaseReference.child("users").child(widget.user.uid).update({
+          "notificationToken" : token,
+      });
     });
     _initializeGeoFence();
 

@@ -350,7 +350,7 @@ class Employee {
       this.role});
 
   Employee.fromSnapshot(DataSnapshot snapshot)
-      : uID = snapshot.key,
+      : uID = snapshot.value["UID"],
         employeeID = snapshot.value["employeeID"],
         firstName = snapshot.value["firstName"],
         middleName = snapshot.value["middleName"],

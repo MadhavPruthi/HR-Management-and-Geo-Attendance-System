@@ -176,7 +176,7 @@ class ProfilePageState extends State<ProfilePage> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 8.0, horizontal: 10),
                           child: Text(
-                            "${employee.firstName} - ${employee.uID}",
+                            "${employee.firstName} - ${employee.employeeID}",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w900,
@@ -255,6 +255,7 @@ class ProfilePageState extends State<ProfilePage> {
                           ),
                         ],
                       ),
+                      employee.designation == null?Container():
                       ProfilePageWidget(
                         icon: Icons.description,
                         children: <Widget>[

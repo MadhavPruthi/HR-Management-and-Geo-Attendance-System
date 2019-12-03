@@ -185,6 +185,42 @@ class _NavigationPanelState extends State<NavigationPanel> {
               future: _databaseReference
                   .child("users")
                   .child(widget.user.uid)
+                  .child("allotted_office")
+                  .once(),
+              // ignore: missing_return
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return Text(
+                      'Press the button to fetch data',
+                      textAlign: TextAlign.center,
+                    );
+
+                  case ConnectionState.active:
+
+                  case ConnectionState.waiting:
+                    return Container();
+
+                  case ConnectionState.done:
+                    if (snapshot.hasError)
+                      return Text(
+                        'Error:\n\n${snapshot.error}',
+                        textAlign: TextAlign.center,
+                      );
+                      return Stack(children: [
+                        drawerTile("Allocated Location: ${snapshot.data.value}",
+                            null, Icons.location_on),
+
+                      ]);
+
+                    return Container();
+                }
+              },
+            ),
+            FutureBuilder(
+              future: _databaseReference
+                  .child("users")
+                  .child(widget.user.uid)
                   .child("isManager")
                   .once(),
               // ignore: missing_return
