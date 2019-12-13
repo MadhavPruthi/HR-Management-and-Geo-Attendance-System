@@ -238,6 +238,23 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                                   getFormattedDate(date);
                                               setState(() {
                                                 _fromDateInt = date;
+
+                                                if (_todate != null) {
+                                                  setState(() {
+                                                    int _difference = _toDateInt
+                                                        .difference(
+                                                        _fromDateInt)
+                                                        .inDays;
+                                                    _difference += 1;
+                                                    if (_difference <= 0)
+                                                      leavesCount =
+                                                      "Invalid Dates";
+                                                    else
+                                                      leavesCount = _difference
+                                                          .toString();
+                                                  });
+                                                }
+
                                               });
                                             },
                                                 currentTime: DateTime.now(),

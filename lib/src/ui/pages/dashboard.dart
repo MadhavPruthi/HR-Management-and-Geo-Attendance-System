@@ -174,6 +174,16 @@ class _NavigationPanelState extends State<NavigationPanel> {
     );
   }
 
+  Future<String> fetchOfficeName() async{
+
+    DataSnapshot dataSnapshot = await  _databaseReference
+        .child("users")
+        .child(widget.user.uid)
+        .child("allotted_office")
+        .once();
+    DataSnapshot snapshot = await _databaseReference.child("location").child(dataSnapshot.value).child("name").once();
+    return snapshot.value;
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -182,11 +192,7 @@ class _NavigationPanelState extends State<NavigationPanel> {
         child: ListView(
           children: <Widget>[
             FutureBuilder(
-              future: _databaseReference
-                  .child("users")
-                  .child(widget.user.uid)
-                  .child("allotted_office")
-                  .once(),
+              future: fetchOfficeName(),
               // ignore: missing_return
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -208,7 +214,7 @@ class _NavigationPanelState extends State<NavigationPanel> {
                         textAlign: TextAlign.center,
                       );
                       return Stack(children: [
-                        drawerTile("Allocated Location: ${snapshot.data.value}",
+                        drawerTile("Allocated Location: ${snapshot.data}",
                             null, Icons.location_on),
 
                       ]);

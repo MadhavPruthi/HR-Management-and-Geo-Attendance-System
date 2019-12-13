@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geo_attendance_system/src/services/authentication.dart';
-import 'package:geo_attendance_system/src/services/fetch_IMEI.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/pages/homepage.dart';
 import 'package:geo_attendance_system/src/ui/pages/login.dart';
@@ -27,8 +27,10 @@ class _SplashScreenState extends State<SplashScreenWidget> {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
   String _userId = "";
 
+
   void initState() {
     super.initState();
+
 
     Timer(Duration(seconds: 3), () {
       widget.auth.getCurrentUser().then((user) {
@@ -57,6 +59,8 @@ class _SplashScreenState extends State<SplashScreenWidget> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +74,10 @@ class _SplashScreenState extends State<SplashScreenWidget> {
         ),
         child: Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Image.asset("assets/logo/logo-white.png", height: 150,),
+            Image.asset(
+              "assets/logo/logo-white.png",
+              height: 150,
+            ),
             Container(
               padding: const EdgeInsets.only(top: 80),
               child: SpinKitThreeBounce(

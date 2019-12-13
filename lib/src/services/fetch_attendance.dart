@@ -48,7 +48,7 @@ class AttendanceDatabase {
       String uid, DateTime dateTime) async {
     DataSnapshot snapshot = await getAttendanceBasedOnUID(uid);
     String formattedDate = getFormattedDate(dateTime);
-    return snapshot.value[formattedDate];
+    return snapshot.value == null ? null : snapshot.value[formattedDate];
   }
 
   static Future<Map<String, String>> getOfficeFromID() async {

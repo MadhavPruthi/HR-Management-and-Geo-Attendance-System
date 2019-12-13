@@ -225,14 +225,14 @@ class _LoginState extends State<Login> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Text("GATE",
+                              Text("GeoFlix",
                                   style: TextStyle(
                                       fontFamily: "Poppins-Bold",
                                       color: appbarcolor,
-                                      fontSize: ScreenUtil.getInstance().setSp(110),
+                                      fontSize: ScreenUtil.getInstance().setSp(90),
                                       letterSpacing: .6,
                                       fontWeight: FontWeight.bold)),
-                              Text("Geo-Attendance and Tracking for Employees",
+                              Text("Geo-Attendance and HR Management System",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontFamily: "Poppins-Bold",

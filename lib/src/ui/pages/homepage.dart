@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
@@ -34,6 +35,7 @@ class _HomePageState extends State<HomePage>
   Office allottedOffice;
   final PermissionHandler _permissionHandler = PermissionHandler();
   FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   Future<void> _initializeGeoFence() async {
     try {
@@ -77,22 +79,66 @@ class _HomePageState extends State<HomePage>
     }
   }
 
+  void showDialogNotification(BuildContext context, String text) {
+    Dialog simpleDialog = Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Container(
+        height: 300.0,
+        width: 300.0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(15.0),
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.blue,
+                    fontFamily: "poppins-medium",
+                    fontSize: 18),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 50),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  RaisedButton(
+                    color: Colors.blue,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Okay',
+                      style: TextStyle(fontSize: 18.0, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    showDialog(
+        context: context, builder: (BuildContext context) => simpleDialog);
+  }
+
   @override
   void initState() {
     super.initState();
 
-    firebaseMessaging.configure(
-      onLaunch: (Map<String, dynamic> msg) {
-        print(" onLaunch called ${(msg)}");
-      },
-      onResume: (Map<String, dynamic> msg) {
-        print(" onResume called ${(msg)}");
-      },
-      onMessage: (Map<String, dynamic> msg) {
-//        showNotification(msg);
-        print(" onMessage called ${(msg)}");
-      },
-    );
+    firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
+      print(" onLaunch called ${(msg)}");
+    }, onResume: (Map<String, dynamic> msg) {
+      print(" onResume called ${(msg)}");
+    }, onMessage: (Map<String, dynamic> msg) {
+      showDialogNotification(context, msg["notification"]["body"]);
+    });
     firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(sound: true, alert: true, badge: true));
     firebaseMessaging.onIosSettingsRegistered
@@ -102,7 +148,7 @@ class _HomePageState extends State<HomePage>
 
     firebaseMessaging.getToken().then((token) {
       _databaseReference.child("users").child(widget.user.uid).update({
-          "notificationToken" : token,
+        "notificationToken": token,
       });
     });
     _initializeGeoFence();

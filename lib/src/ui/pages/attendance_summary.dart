@@ -64,7 +64,7 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
     AttendanceDatabase.getAttendanceListOfParticularDateBasedOnUID(
             widget.user.uid, day)
         .then((AttendanceList attendanceList) {
-          print(attendanceList.attendanceList);
+      print(attendanceList.attendanceList);
       attendanceList.attendanceList.forEach((Attendance attendance) {
         print(attendance.office);
         events.add(
@@ -73,6 +73,12 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
           _selectedEvents = events;
         });
       });
+
+      if (attendanceList.attendanceList.length == 0) {
+        setState(() {
+          _selectedEvents = [];
+        });
+      }
 
       Navigator.of(context, rootNavigator: true).pop('dialog');
     });
@@ -93,7 +99,6 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
           icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-
         title: Text(
           "Attendance History",
           style: TextStyle(

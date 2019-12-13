@@ -3,11 +3,13 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".Application"
         android:icon="@mipmap/ic_launcher"
-        android:label="geo_attendance_system">
+        android:label="GeoFlix">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
