@@ -1,16 +1,59 @@
-# geo_attendance_system
+# Attendance system using Geo-fencing technology
 
-Major Project
+- Our aim for this project is to develop an Application that can help
+  both the employees and the employer in making the process of tracking
+  attendance, leaves, and live location and recording of on-field
+  worker’s attendance faster and more efficiently.
+- By making use of an HR Management application, any organisation would
+  greatly benefit by reducing error rate, decreased workload designated
+  for the management of employees, as well as increase the efficiency of
+  time and error rate for an organisation.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Running the Project
 
-A few resources to get you started if this is your first Flutter project:
+```
+# Install the dependencies
+flutter pub get
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+# Run the project
+flutter run
+```
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+
+#### Landing Page
+
+!["assets/github/landing.jpg"]
+
+#### Login Page
+
+!["assets/github/drawer.jpg"]
+
+#### Drawer
+
+!["assets/github/drawer.jpg"]
+
+#### Dashboard
+
+!["assets/github/dashboard.jpg"]
+
+#### Mark Attendance
+
+!["assets/github/make_attendance.jpg"]
+
+#### Geofence Circle
+
+!["assets/github/mark_attendance.jpg]
+
+#### Leave Apply
+
+!["assets/github/leave_make.jpg"]
+
+#### Leave Status
+
+!["assets/github/leave_status.jpg"]
+
+#### Calendar 
+
+!["assets/github/calendar.jpg"]

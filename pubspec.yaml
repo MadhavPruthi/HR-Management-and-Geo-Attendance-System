@@ -33,7 +33,9 @@ dependencies:
   device_id: ^0.2.0
   location: ^2.3.5
   flutter_spinkit: ^3.1.0
-  flutter_datetime_picker: ^1.2.5
+  flutter_datetime_picker:
+    git:
+      url: https://github.com/derohimat/flutter_datetime_picker.git
   grouped_buttons: ^1.0.3
   permission_handler: '^4.0.0'
   device_info: ^0.4.1+2
