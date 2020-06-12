@@ -22,38 +22,14 @@ flutter run
 
 ## Screenshots
 
-#### Landing Page
 
-!["assets/github/landing.jpg"](assets/github/landing.jpg)
+<img src="assets/github/landing.jpg" width="200" > &nbsp; <img
+src="assets/github/login.jpg" width="200"> &nbsp; <img
+src="assets/github/drawer.jpg" width="200"> &nbsp; <img
+src="assets/github/dashboard.jpg" width="200"> &nbsp; <img
+src="assets/github/make_attendance.jpg" width="200"> &nbsp; <img
+src="assets/github/mark_attendance.jpg" width="200"> &nbsp; <img
+src="assets/github/leave_make.jpg" width="200"> &nbsp; <img
+src="assets/github/leave_status.jpg" width="200"> &nbsp; <img
+src="assets/github/calendar.jpg" width="200">
 
-#### Login Page
-
-!["assets/github/drawer.jpg"](assets/github/drawer.jpg)
-
-#### Drawer
-
-!["assets/github/drawer.jpg"](assets/github/drawer.jpg)
-
-#### Dashboard
-
-!["assets/github/dashboard.jpg"](assets/github/dashboard.jpg)
-
-#### Mark Attendance
-
-!["assets/github/make_attendance.jpg"](assets/github/make_attendance.jpg)
-
-#### Geofence Circle
-
-!["assets/github/mark_attendance.jpg"](assets/github/mark_attendance.jpg)
-
-#### Leave Apply
-
-!["assets/github/leave_make.jpg"](assets/github/leave_make.jpg)
-
-#### Leave Status
-
-!["assets/github/leave_status.jpg"](assets/github/leave_status.jpg)
-
-#### Calendar 
-
-!["assets/github/calendar.jpg"](assets/github/calendar.jpg)
