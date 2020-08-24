@@ -22,6 +22,9 @@
 or reject the leaves applied for, by an employee under him.
 - **Cloud Notification** - Push Notifications on leave status change
 
+### Admin Application
+<a href="https://github.com/deepaktiwari88/HR-Management-and-Geo-Attendance-System-Admin-App">Link to Administrator Application</a>
+
 ## Running the Project
 
 ```
