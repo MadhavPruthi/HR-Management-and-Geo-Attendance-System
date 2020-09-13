@@ -41,6 +41,7 @@ Attendance will be added to the **"Attendance"** stub in the RTDB tree. Leave Sy
 <br><img src="assets/github/leave.png" width="250"> <br>
 I will attach a JSON sample file(in the root directory) which you can use to prepopulate sample data in the RTDB using Import JSON feature.
 <br><img src="assets/github/sample.png" width="250"> <br>
+At last, Kindly update the google API key in the android manifest and enable the necessary Maps API on your API console. <a href="https://console.developers.google.com">Google Developer API console</a>
 
 ### Cloud Functions
 Push Notifications has been enabled in the application to provide update regarding the Leave Application from Manager.
