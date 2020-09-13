@@ -29,7 +29,7 @@ or reject the leaves applied for, by an employee under him.
 
 ### Firebase Console Set up
 Add/Replace your google-services.json (downloadable from your firebase console) file into android/app directory. The project is built upon Real time database offered by Google Firebase. It is tailored right now according to our team needs. E.g. the login functionality is using an Employee ID, which we accomplished by mapping email ID to Unique ID (Employee ID). Enable the email authentication in the Auth Tab of Firebase Project.
-<br><img src="assets/github/users.png" width="250"> 
+<br><img src="assets/github/users.png" width="250"> <br>
 The Location of the various sites are stored in the Location Stub of RTDB with key as unique ID and parameters as
 - latitude(double)
 - longitude(double)
