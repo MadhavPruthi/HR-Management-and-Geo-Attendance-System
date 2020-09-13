@@ -1,0 +1,544 @@
+{
+  "Attendance" : {
+    "7o8y0poBljPeakEnos1fCiVHkJO2" : {
+      "02-12-2019" : {
+        "in-19:46:32" : {
+          "office" : "office1",
+          "time" : "19:46:32"
+        },
+        "in-19:46:55" : {
+          "office" : "office1",
+          "time" : "19:46:55"
+        },
+        "in-19:46:59" : {
+          "office" : "office1",
+          "time" : "19:46:59"
+        },
+        "in-19:53:43" : {
+          "office" : "office1",
+          "time" : "19:53:43"
+        },
+        "in-20:06:02" : {
+          "office" : "office1",
+          "time" : "20:06:02"
+        },
+        "in-20:07:24" : {
+          "office" : "office1",
+          "time" : "20:07:24"
+        },
+        "out-19:46:42" : {
+          "office" : "office1",
+          "time" : "19:46:42"
+        },
+        "out-19:53:36" : {
+          "office" : "office1",
+          "time" : "19:53:36"
+        },
+        "out-19:53:52" : {
+          "office" : "office1",
+          "time" : "19:53:52"
+        },
+        "out-19:53:56" : {
+          "office" : "office1",
+          "time" : "19:53:56"
+        },
+        "out-20:07:09" : {
+          "office" : "office1",
+          "time" : "20:07:09"
+        }
+      },
+      "03-12-2019" : {
+        "in-15:10:09" : {
+          "office" : "office1",
+          "time" : "15:10:09"
+        },
+        "in-15:10:31" : {
+          "office" : "office1",
+          "time" : "15:10:31"
+        },
+        "in-16:36:05" : {
+          "office" : "office1",
+          "time" : "16:36:05"
+        },
+        "out-15:10:25" : {
+          "office" : "office1",
+          "time" : "15:10:25"
+        },
+        "out-15:10:56" : {
+          "office" : "office1",
+          "time" : "15:10:56"
+        },
+        "out-16:36:14" : {
+          "office" : "office1",
+          "time" : "16:36:14"
+        }
+      },
+      "04-12-2019" : {
+        "in-10:32:19" : {
+          "office" : "office1",
+          "time" : "10:32:19"
+        },
+        "out-11:12:32" : {
+          "office" : "office1",
+          "time" : "11:12:32"
+        }
+      },
+      "1-12-2019" : {
+        "in-17:10:9" : {
+          "office" : "office1",
+          "time" : "17:10:9"
+        },
+        "in-21:55:24" : {
+          "office" : "office1",
+          "time" : "21:55:24"
+        },
+        "out-17:10:57" : {
+          "office" : "office1",
+          "time" : "17:10:57"
+        },
+        "out-17:11:4" : {
+          "office" : "office1",
+          "time" : "17:11:4"
+        }
+      },
+      "2-12-2019" : {
+        "in-1:48:31" : {
+          "office" : "office1",
+          "time" : "1:48:31"
+        },
+        "in-1:49:16" : {
+          "office" : "office1",
+          "time" : "1:49:16"
+        },
+        "in-1:49:2" : {
+          "office" : "office1",
+          "time" : "1:49:2"
+        },
+        "out-1:48:46" : {
+          "office" : "office1",
+          "time" : "1:48:46"
+        }
+      },
+      "30-11-2019" : {
+        "in-20:18:21" : {
+          "office" : "office1",
+          "time" : "20:18:21"
+        },
+        "in-20:20:34" : {
+          "office" : "office1",
+          "time" : "20:20:34"
+        },
+        "in-20:20:53" : {
+          "office" : "office1",
+          "time" : "20:20:53"
+        },
+        "out-20:20:20" : {
+          "office" : "office1",
+          "time" : "20:20:20"
+        },
+        "out-20:21:26" : {
+          "office" : "office1",
+          "time" : "20:21:26"
+        },
+        "out-20:21:34" : {
+          "office" : "office1",
+          "time" : "20:21:34"
+        },
+        "out-23:19:3" : {
+          "office" : "office1",
+          "time" : "23:19:30"
+        }
+      }
+    }
+  },
+  "EmployeeID" : {
+    "36" : "ihfg@gmail.com",
+    "214" : "arinav@gmaol.com",
+    "234" : "123@gmail.com",
+    "245" : "abc@gmail.com",
+    "349" : "xyz@gmail.com",
+    "541" : "divyansh@gmail.com",
+    "2345" : "testapp@geo.com",
+    "8521" : "tea@geo.com",
+    "16103017" : "deepak@gmail.com",
+    "hr" : {
+      "123" : "hr@indus.com",
+      "241" : "indus@indus.com"
+    },
+    "null" : "asmaahbar@gmail.com"
+  },
+  "Managers" : {
+    "7o8y0poBljPeakEnos1fCiVHkJO2" : {
+      "7o8y0poBljPeakEnos1fCiVHkJO2" : 1,
+      "HIoFuX5QMFZhEhbV1GupvJ9cuRn1" : 1,
+      "P5mAlkbyGWSH9USSHPuyFto0N8Y2" : 1,
+      "egbuNmuq1odgDV6vF7sr6IjDGK13" : 1
+    }
+  },
+  "leaves" : {
+    "7o8y0poBljPeakEnos1fCiVHkJO2" : {
+      "-LvBnuGZzEU33AjIkt2z" : {
+        "appliedDate" : "03-12-2019",
+        "fromDate" : "03-12-2019",
+        "message" : "none",
+        "status" : "approved",
+        "toDate" : "06-12-2019",
+        "type" : "cl",
+        "withdrawalStatus" : 0
+      },
+      "-LvDubIWbfx-YHwPCKcM" : {
+        "appliedDate" : "04-12-2019",
+        "fromDate" : "04-12-2019",
+        "message" : "none",
+        "status" : "rejected",
+        "toDate" : "07-12-2019",
+        "type" : "cl",
+        "withdrawalStatus" : 0
+      },
+      "-LvDupxHcHdmXO1Ad4Nq" : {
+        "appliedDate" : "04-12-2019",
+        "fromDate" : "04-12-2019",
+        "message" : "none",
+        "status" : "rejected",
+        "toDate" : "05-12-2019",
+        "type" : "cl",
+        "withdrawalStatus" : 0
+      },
+      "-LveDh7MZRpfMeni0Xcn" : {
+        "appliedDate" : "09-12-2019",
+        "fromDate" : "09-12-2019",
+        "message" : "none",
+        "status" : "rejected",
+        "toDate" : "13-12-2019",
+        "type" : "cl",
+        "withdrawalStatus" : 0
+      },
+      "-LveHMCjO2DzyM18sr6g" : {
+        "appliedDate" : "09-12-2019",
+        "fromDate" : "09-12-2019",
+        "message" : "none",
+        "status" : "approved",
+        "toDate" : "10-12-2019",
+        "type" : "al",
+        "withdrawalStatus" : 0
+      },
+      "-LvjL1PFeJRcK8IT7kwc" : {
+        "appliedDate" : "10-12-2019",
+        "fromDate" : "10-12-2019",
+        "message" : "none",
+        "status" : "approved",
+        "toDate" : "12-12-2019",
+        "type" : "ml",
+        "withdrawalStatus" : 0
+      },
+      "-LwPZjJYGYzMfqFnVcvV" : {
+        "appliedDate" : "19-12-2019",
+        "fromDate" : "19-12-2019",
+        "message" : "none",
+        "status" : "approved",
+        "toDate" : "22-12-2019",
+        "type" : "cl",
+        "withdrawalStatus" : 0
+      },
+      "-MF66NvcQSeqnF-EHwWY" : {
+        "appliedDate" : "19-08-2020",
+        "fromDate" : "22-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "22-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 1
+      },
+      "-MF66nLXYu24FDBxf8vv" : {
+        "appliedDate" : "19-08-2020",
+        "fromDate" : "22-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "22-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 1
+      },
+      "-MF66oyCGVaBZw087Acv" : {
+        "appliedDate" : "19-08-2020",
+        "fromDate" : "22-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "22-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 1
+      },
+      "-MF7CpSCye2w7giS1dtQ" : {
+        "appliedDate" : "19-08-2020",
+        "fromDate" : "20-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "21-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 1
+      },
+      "-MF7CrmJ5xbXNZLsEJYS" : {
+        "appliedDate" : "19-08-2020",
+        "fromDate" : "20-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "21-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 1
+      },
+      "-MF7CtsA66jZuTxFCk4h" : {
+        "appliedDate" : "19-08-2020",
+        "fromDate" : "20-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "21-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 0
+      },
+      "-MF7Cxi3eaUlFppz0tpg" : {
+        "appliedDate" : "19-08-2020",
+        "fromDate" : "20-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "21-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 0
+      },
+      "-MF9S0byGTma3T1qRdZD" : {
+        "appliedDate" : "20-08-2020",
+        "fromDate" : "21-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "21-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 0
+      },
+      "-MF9Yx8Oap4TKtHaVGMH" : {
+        "appliedDate" : "20-08-2020",
+        "fromDate" : "21-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "21-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 1
+      },
+      "-MF9ZhTgjnTAWhGPVhp0" : {
+        "appliedDate" : "20-08-2020",
+        "fromDate" : "21-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "21-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 0
+      },
+      "-MF9mXb_VbpigPA5EbF8" : {
+        "appliedDate" : "20-08-2020",
+        "fromDate" : "21-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "21-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 1
+      },
+      "-MFCs4KSSM2FajnFPzPs" : {
+        "appliedDate" : "20-08-2020",
+        "fromDate" : "21-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "21-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 1
+      },
+      "-MFDGx8Tm8pNZHeuGVAM" : {
+        "appliedDate" : "21-08-2020",
+        "fromDate" : "21-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "22-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 0
+      },
+      "-MFDH-9tZcpNp13E66Hb" : {
+        "appliedDate" : "21-08-2020",
+        "fromDate" : "21-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "22-08-2020",
+        "type" : "AE",
+        "withdrawalStatus" : 1
+      },
+      "-MF_1727YBTaWIeRnBtl" : {
+        "appliedDate" : "25-08-2020",
+        "fromDate" : "29-08-2020",
+        "message" : "none",
+        "status" : "pending",
+        "toDate" : "29-08-2020",
+        "type" : "cl",
+        "withdrawalStatus" : 1
+      }
+    },
+    "egbuNmuq1odgDV6vF7sr6IjDGK13" : {
+      "-Lv9_Xo5OKi9Dlw-9AAp" : {
+        "appliedDate" : "03-12-2019",
+        "fromDate" : "03-12-2019",
+        "message" : "none",
+        "status" : "approved",
+        "toDate" : "05-12-2019",
+        "type" : "ml",
+        "withdrawalStatus" : 0
+      },
+      "-LvEGU6D3-LwPqnvNHuK" : {
+        "appliedDate" : "04-12-2019",
+        "fromDate" : "04-12-2019",
+        "message" : "none",
+        "status" : "approved",
+        "toDate" : "06-12-2019",
+        "type" : "cl",
+        "withdrawalStatus" : 0
+      },
+      "-LvEGtRNS40eIgVilSmF" : {
+        "appliedDate" : "04-12-2019",
+        "fromDate" : "06-12-2019",
+        "message" : "none",
+        "status" : "rejected",
+        "toDate" : "08-12-2019",
+        "type" : "ml",
+        "withdrawalStatus" : 0
+      },
+      "-LvEQnmVR9lpfFdYARAG" : {
+        "appliedDate" : "04-12-2019",
+        "fromDate" : "04-12-2019",
+        "message" : "none",
+        "status" : "approved",
+        "toDate" : "06-12-2019",
+        "type" : "ml",
+        "withdrawalStatus" : 0
+      }
+    }
+  },
+  "location" : {
+    "office 10" : {
+      "latitude" : 20.946117,
+      "longitude" : 85.08526,
+      "name" : "New Spectrum Coal & Power",
+      "radius" : 200
+    },
+    "office 11" : {
+      "latitude" : 20.946117,
+      "longitude" : 85.08526,
+      "name" : "Near Spectrum Coal & Power Limited",
+      "radius" : 200
+    },
+    "office 12" : {
+      "latitude" : 21.884666,
+      "longitude" : 83.732178,
+      "name" : "Himgir Unit",
+      "radius" : 200
+    },
+    "office 13" : {
+      "latitude" : 23.728995,
+      "longitude" : 86.779274,
+      "name" : "1.6 MTPA Dahibari NLW Coal Washery",
+      "radius" : 200
+    },
+    "office 14" : {
+      "latitude" : 23.728984,
+      "longitude" : 86.777925,
+      "name" : "1.6 MTPA Dahibari NLW Coal Washery",
+      "radius" : 200
+    },
+    "office 16" : {
+      "latitude" : 23.678839,
+      "longitude" : 86.435271,
+      "name" : "Patherdih NLW Coal",
+      "range" : 200
+    },
+    "office 17" : {
+      "langitude " : 23.619622,
+      "longitude" : 86.482006,
+      "name" : "SH8 Santaldih, West Bengal",
+      "radius" : 200
+    },
+    "office 3" : {
+      "latitude" : 22.393919,
+      "longitude" : 82.5533828,
+      "name" : "ACB India LTD",
+      "range" : 200
+    },
+    "office 4" : {
+      "latitude" : 21.936365,
+      "longitude" : 83.815263,
+      "name" : "Dulanga",
+      "radius" : 200
+    },
+    "office 5" : {
+      "latitude" : 22.34528,
+      "longitude" : 82.437475,
+      "name" : "300mW Thermal Power Plant",
+      "radius" : 200
+    },
+    "office 6" : {
+      "latitude" : 22.297579,
+      "longitude" : 82.700804,
+      "name" : "Swastik Coal and Power",
+      "radius" : 200
+    },
+    "office 7" : {
+      "latitude" : 22.339451,
+      "longitude" : 82.499854,
+      "name" : "Central stores",
+      "range" : 200
+    },
+    "office 8" : {
+      "latitude" : 22.339451,
+      "longitude" : 82.499854,
+      "name" : "Spectrum-Washery Ratija village",
+      "range" : 200
+    },
+    "office 9" : {
+      "latitude" : 22.131164,
+      "longitude" : 83.256921,
+      "name" : "TRN Energy PVT. LTD",
+      "range" : 200
+    },
+    "office1" : {
+      "latitude" : 30.7676243,
+      "longitude" : 76.7856554,
+      "name" : "Punjab Engineering College",
+      "radius" : 200
+    },
+    "office2" : {
+      "latitude" : 76.343,
+      "longitude" : 34.353,
+      "name" : "Chandigarh",
+      "radius" : 200
+    }
+  },
+  "managers" : {
+    "manager1" : {
+      "designation" : "Director Indus AutoMotive",
+      "name" : "Hardik Gupta"
+    },
+    "manager2" : {
+      "designation" : "CEO Facebook",
+      "name" : "Mark Zuckerberg"
+    }
+  },
+  "users" : {
+    "7o8y0poBljPeakEnos1fCiVHkJO2" : {
+      "Address" : "2000, Main Street, San Francisco, CL",
+      "Name" : "John Mayer",
+      "PhoneNumber" : "9011234563",
+      "UID" : 245,
+      "UUID" : "b5b697680c4e55ae",
+      "allotted_office" : "office1",
+      "designation" : "SDE",
+      "leaves" : {
+        "al" : 2,
+        "cl" : 1,
+        "ml" : 0
+      },
+      "manager" : "manager1",
+      "notificationToken" : "e_WcwlpjW64:APA91bGCRORzOYxfTQOHvhPoMWxaC_S1wPK_JRJYBX1r-PeYzg7VPI48cSYnGa_fmpRuaM-copCJfHsm88y2FUhjFyWgJjm34qaJ0d4EVr1cCxxXIAvt7EWmxVz-NBiHJgCsoaUWoCPr"
+    }
+  }
+}
