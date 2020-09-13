@@ -29,18 +29,18 @@ or reject the leaves applied for, by an employee under him.
 
 ### Firebase Console Set up
 Add/Replace your google-services.json (downloadable from your firebase console) file into android/app directory. The project is built upon Real time database offered by Google Firebase. It is tailored right now according to our team needs. E.g. the login functionality is using an Employee ID, which we accomplished by mapping email ID to Unique ID (Employee ID). Enable the email authentication in the Auth Tab of Firebase Project.
-<img src="assets/github/users.png" width="200"> 
+<br><img src="assets/github/users.png" width="250"> 
 The Location of the various sites are stored in the Location Stub of RTDB with key as unique ID and parameters as
 - latitude(double)
 - longitude(double)
 - name(string)
 - radius(number in metres)
 
-<img src="assets/github/location.png" width="200"> 
+<br><img src="assets/github/location.png" width="250"> <br>
 Attendance will be added to the **"Attendance"** stub in the RTDB tree. Leave System has some specific parameters for every employee which is required to run the app.
-<img src="assets/github/leave.png" width="200">
+<br><img src="assets/github/leave.png" width="250"> <br>
 I will attach a JSON sample file(in the root directory) which you can use to prepopulate sample data in the RTDB using Import JSON feature.
-<img src="assets/github/sample.png" width="200">
+<br><img src="assets/github/sample.png" width="250"> <br>
 
 ### Cloud Functions
 Push Notifications has been enabled in the application to provide update regarding the Leave Application from Manager.
