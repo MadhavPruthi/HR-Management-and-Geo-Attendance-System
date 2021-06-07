@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage>
         case PermissionStatus.denied:
           print("DENIED");
           break;
-        case PermissionStatus.disabled:
+        case PermissionStatus.neverAskAgain:
           // do something
           break;
         case PermissionStatus.restricted:

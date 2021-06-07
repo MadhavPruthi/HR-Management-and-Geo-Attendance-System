@@ -1,5 +1,6 @@
 name: geo_attendance_system
 description: Major Project
+publish_to: none
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -35,16 +36,16 @@ dependencies:
   flutter_spinkit: ^3.1.0
   flutter_datetime_picker:
     git:
-      url: https://github.com/derohimat/flutter_datetime_picker.git
+      url: https://github.com/Realank/flutter_datetime_picker.git
   grouped_buttons: ^1.0.3
-  permission_handler: '^4.0.0'
+  permission_handler: ^4.0.0
   device_info: ^0.4.1+2
   firebase_messaging: ^6.0.1
-  flutter_local_notifications:
-
+  flutter_local_notifications: ^4.0.1+2
 
   geofencing:
-    path: geofencing
+    git:
+      url: https://github.com/bkonyi/FlutterGeofencing.git
 
 dev_dependencies:
   flutter_test:

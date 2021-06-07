@@ -37,7 +37,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   Set<Circle> _circles = new Set();
 
   Location _locationService = new Location();
-  bool _permission = false;
+  PermissionStatus _permission;
   String error;
   CameraPosition _currentCameraPosition;
   var rMin;
@@ -169,19 +169,19 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
     if (GeoFenceClass.geofenceState == 'Unknown') {
       showDialog(
           context: context,
-          child: Dialog(
-            child: Container(
-              height: 200,
-              decoration: BoxDecoration(
-                color: Colors.blueGrey,
-              ),
-              child: Center(
-                  child: Text(
-                "Kindly retry after some time!",
-                style: TextStyle(color: Colors.white, fontSize: 22),
-              )),
-            ),
-          ));
+          builder: (_) => Dialog(
+                child: Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey,
+                  ),
+                  child: Center(
+                      child: Text(
+                    "Kindly retry after some time!",
+                    style: TextStyle(color: Colors.white, fontSize: 22),
+                  )),
+                ),
+              ));
     } else {
       onLoadingDialog(context);
       officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
@@ -194,19 +194,19 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
     if (GeoFenceClass.geofenceState == 'Unknown') {
       showDialog(
           context: context,
-          child: Dialog(
-            child: Container(
-              height: 200,
-              decoration: BoxDecoration(
-                color: Colors.blueGrey,
-              ),
-              child: Center(
-                  child: Text(
-                "Kindly retry after some time!",
-                style: TextStyle(color: Colors.white, fontSize: 22),
-              )),
-            ),
-          ));
+          builder: (_) => Dialog(
+                child: Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey,
+                  ),
+                  child: Center(
+                      child: Text(
+                    "Kindly retry after some time!",
+                    style: TextStyle(color: Colors.white, fontSize: 22),
+                  )),
+                ),
+              ));
     } else {
       onLoadingDialog(context);
       officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
@@ -233,7 +233,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
       if (serviceStatus) {
         _permission = await _locationService.requestPermission();
         print("Permission: $_permission");
-        if (_permission) {
+        if (_permission == PermissionStatus.GRANTED) {
           location = await _locationService.getLocation();
 
           _locationSubscription = _locationService

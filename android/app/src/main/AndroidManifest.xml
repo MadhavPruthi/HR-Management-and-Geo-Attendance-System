@@ -3,11 +3,11 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name=".Application"
         android:icon="@mipmap/ic_launcher"
         android:label="GeoFlix">
 
@@ -15,7 +15,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="please-add-your-API-Key" />
         <activity
-            android:name=".MainActivity"
+            android:name="io.flutter.embedding.android.FlutterActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
@@ -47,6 +47,9 @@
             android:name="io.flutter.plugins.geofencing.GeofencingService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
 
     </application>
 </manifest>

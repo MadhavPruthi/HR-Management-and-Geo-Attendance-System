@@ -173,12 +173,11 @@ class _LoginState extends State<Login> {
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
     return new Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: new AssetImage(
-                'assets/back.jpg'),
+            image: new AssetImage('assets/back.jpg'),
             fit: BoxFit.fill,
           ),
 //          gradient: LinearGradient(
@@ -211,11 +210,11 @@ class _LoginState extends State<Login> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                         Image.asset(
-                           "assets/logo/logo.png",
-                           width: ScreenUtil.getInstance().setWidth(220),
-                           height: ScreenUtil.getInstance().setHeight(220),
-                         ),
+                        Image.asset(
+                          "assets/logo/logo.png",
+                          width: ScreenUtil.getInstance().setWidth(220),
+                          height: ScreenUtil.getInstance().setHeight(220),
+                        ),
                         SizedBox(
                           width: ScreenUtil.getInstance().setWidth(40),
                         ),
@@ -229,7 +228,8 @@ class _LoginState extends State<Login> {
                                   style: TextStyle(
                                       fontFamily: "Poppins-Bold",
                                       color: appbarcolor,
-                                      fontSize: ScreenUtil.getInstance().setSp(90),
+                                      fontSize:
+                                          ScreenUtil.getInstance().setSp(90),
                                       letterSpacing: .6,
                                       fontWeight: FontWeight.bold)),
                               Text("Geo-Attendance and HR Management System",
@@ -237,7 +237,8 @@ class _LoginState extends State<Login> {
                                   style: TextStyle(
                                       fontFamily: "Poppins-Bold",
                                       color: Colors.black54,
-                                      fontSize: ScreenUtil.getInstance().setSp(25),
+                                      fontSize:
+                                          ScreenUtil.getInstance().setSp(25),
                                       letterSpacing: 0.2,
                                       fontWeight: FontWeight.bold)),
                             ],

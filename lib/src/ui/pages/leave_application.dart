@@ -136,7 +136,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                   letterSpacing: 2,
                   fontWeight: FontWeight.w900))),
       home: Scaffold(
-          resizeToAvoidBottomPadding: true,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             title: Text('Leave Application'),
             backgroundColor: appbarcolor,
@@ -243,18 +243,17 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
                                                   setState(() {
                                                     int _difference = _toDateInt
                                                         .difference(
-                                                        _fromDateInt)
+                                                            _fromDateInt)
                                                         .inDays;
                                                     _difference += 1;
                                                     if (_difference <= 0)
                                                       leavesCount =
-                                                      "Invalid Dates";
+                                                          "Invalid Dates";
                                                     else
                                                       leavesCount = _difference
                                                           .toString();
                                                   });
                                                 }
-
                                               });
                                             },
                                                 currentTime: DateTime.now(),
