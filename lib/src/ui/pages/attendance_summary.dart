@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/models/AttendaceList.dart';
 import 'package:geo_attendance_system/src/services/fetch_attendance.dart';
@@ -22,7 +22,7 @@ class AttendanceSummary extends StatefulWidget {
   AttendanceSummary({Key key, this.title, this.user}) : super(key: key);
 
   final String title;
-  final FirebaseUser user;
+  final firebaseAuth.FirebaseUser user;
 
   @override
   _AttendanceSummaryState createState() => _AttendanceSummaryState();
@@ -59,8 +59,9 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
     super.dispose();
   }
 
-  void _onDaySelected(DateTime day, List events) {
+  void _onDaySelected(DateTime day, DateTime focusedDay) {
     onLoadingDialog(context);
+    List events = [];
     AttendanceDatabase.getAttendanceListOfParticularDateBasedOnUID(
             widget.user.uid, day)
         .then((AttendanceList attendanceList) {
@@ -114,8 +115,8 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               _buildTableCalendarWithBuilders(),
-              const SizedBox(height: 8.0),
-              _buildButtons(),
+              // const SizedBox(height: 8.0),
+              // _buildButtons(),
               const SizedBox(height: 8.0),
               Expanded(child: _buildEventList()),
             ],
@@ -205,38 +206,18 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
             ),
           );
         },
-        markersBuilder: (context, date, events, holidays) {
-          final children = <Widget>[];
-
-          if (events.isNotEmpty) {
-            children.add(
-              Positioned(
-                right: 1,
-                bottom: 1,
-                child: _buildEventsMarker(date, events),
-              ),
-            );
-          }
-
-          if (holidays.isNotEmpty) {
-            children.add(
-              Positioned(
-                right: -2,
-                top: -2,
-                child: _buildHolidaysMarker(),
-              ),
-            );
-          }
-          return children;
-        },
       ),
-      onDaySelected: (date, events) {
+      onDaySelected: (date, focusedDay) {
         _selectedDay = date;
-        _onDaySelected(date, events);
+        _onDaySelected(date, focusedDay);
         _animationController.forward(from: 0.0);
       },
     );
   }
+
+  // Commenting for now as signature has been changed significantly
+  // Pushed to backlog
+  /*
 
   Widget _buildEventsMarker(DateTime date, List events) {
     return AnimatedContainer(
@@ -270,6 +251,8 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
       color: Colors.blueGrey,
     );
   }
+
+
 
   Widget _buildButtons() {
     return Column(
@@ -335,6 +318,8 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
       ],
     );
   }
+
+   */
 
   Widget _buildEventList() {
     return _selectedEvents.length != 0
