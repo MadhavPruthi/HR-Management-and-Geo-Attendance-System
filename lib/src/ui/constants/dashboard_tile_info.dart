@@ -7,7 +7,7 @@ import '../pages/attendance_summary.dart';
 import '../pages/leave_application.dart';
 import '../pages/leave_status.dart';
 
-void attendanceSummaryCallback(BuildContext context, FirebaseUser user) {
+void attendanceSummaryCallback(BuildContext context, User user) {
   Navigator.push(
     context,
     CupertinoPageRoute(
@@ -18,14 +18,14 @@ void attendanceSummaryCallback(BuildContext context, FirebaseUser user) {
   );
 }
 
-void attendanceRecorderCallback(BuildContext context, FirebaseUser user) {
+void attendanceRecorderCallback(BuildContext context, User user) {
   Navigator.push(
       context,
       CupertinoPageRoute(
           builder: (context) => AttendanceRecorderWidget(user: user)));
 }
 
-void leaveApplicationCallback(BuildContext context, FirebaseUser user) {
+void leaveApplicationCallback(BuildContext context, User user) {
   Navigator.push(
       context,
       CupertinoPageRoute(
@@ -35,7 +35,7 @@ void leaveApplicationCallback(BuildContext context, FirebaseUser user) {
               )));
 }
 
-void leaveStatusCallback(BuildContext context, FirebaseUser user) {
+void leaveStatusCallback(BuildContext context, User user) {
   Navigator.push(
       context,
       CupertinoPageRoute(

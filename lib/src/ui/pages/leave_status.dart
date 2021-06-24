@@ -10,7 +10,7 @@ import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 class LeaveStatusWidget extends StatefulWidget {
   LeaveStatusWidget({Key key, this.title, this.user}) : super(key: key);
   final String title;
-  final FirebaseUser user;
+  final User user;
   final FirebaseDatabase db = new FirebaseDatabase();
 
   @override
@@ -185,11 +185,12 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
                           leaveDatabase
                               .withDrawLeave(leave.key, widget.user.uid)
                               .then((_) {
-                            Navigator.of(context,
-                                rootNavigator: true)
+                            Navigator.of(context, rootNavigator: true)
                                 .pop('dialog');
                           });
-                          Future.delayed(Duration(seconds: 1), (){setState(() {});});
+                          Future.delayed(Duration(seconds: 1), () {
+                            setState(() {});
+                          });
                         },
                         textColor: Color(0x66FFFFFF),
                         child: Padding(

@@ -12,7 +12,7 @@ import 'leave_status.dart';
 class LeaveApplicationWidget extends StatefulWidget {
   LeaveApplicationWidget({Key key, this.title, this.user}) : super(key: key);
   final String title;
-  final FirebaseUser user;
+  final User user;
   final FirebaseDatabase db = new FirebaseDatabase();
 
   @override
@@ -22,7 +22,7 @@ class LeaveApplicationWidget extends StatefulWidget {
 class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
     with SingleTickerProviderStateMixin {
   FirebaseDatabase db = FirebaseDatabase();
-  FirebaseUser _user;
+  User _user;
   DatabaseReference _userRef, _managerRef, _leaveRef;
   String _managerName, _managerDesignation;
 

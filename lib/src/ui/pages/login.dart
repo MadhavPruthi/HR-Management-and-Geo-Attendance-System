@@ -28,7 +28,7 @@ class _LoginState extends State<Login> {
   String _username;
   String _password;
   String _errorMessage = "";
-  FirebaseUser _user;
+  User _user;
   bool formSubmit = false;
   Auth authObject;
 
@@ -74,7 +74,7 @@ class _LoginState extends State<Login> {
     }
   }
 
-  Future<List> checkForSingleSignOn(FirebaseUser _user) async {
+  Future<List> checkForSingleSignOn(User _user) async {
     DataSnapshot dataSnapshot = await _userRef.child(_user.uid).once();
 
     if (dataSnapshot != null) {

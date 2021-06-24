@@ -71,8 +71,6 @@ String findFirstOut(listOfAttendanceIterable) {
   return finalList.first.toString().split("-")[1];
 }
 
-
-
 bool checkSuccessiveIn(listOfAttendanceIterable) {
   if (listOfAttendanceIterable.length > 0) {
     String lastOut = findLatestOut(listOfAttendanceIterable);
@@ -100,7 +98,7 @@ bool checkSuccessiveOut(listOfAttendanceIterable) {
 }
 
 void markInAttendance(BuildContext context, Office office,
-    LocationData currentPosition, FirebaseUser user) async {
+    LocationData currentPosition, User user) async {
   Future.delayed(Duration(seconds: 1), () {
     DateTime dateToday = getTodayDate();
     AttendanceDatabase.getAttendanceOfParticularDateBasedOnUID(
@@ -146,7 +144,7 @@ void markInAttendance(BuildContext context, Office office,
 }
 
 void markOutAttendance(BuildContext context, Office office,
-    LocationData currentPosition, FirebaseUser user) async {
+    LocationData currentPosition, User user) async {
   Future.delayed(Duration(seconds: 1), () {
     DateTime dateToday = getTodayDate();
     AttendanceDatabase.getAttendanceOfParticularDateBasedOnUID(

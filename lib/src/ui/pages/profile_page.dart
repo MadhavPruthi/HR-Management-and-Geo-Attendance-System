@@ -97,7 +97,7 @@ class _ContactItem extends StatelessWidget {
 }
 
 class ProfilePage extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
 
   ProfilePage({this.user});
 
@@ -171,7 +171,9 @@ class ProfilePageState extends State<ProfilePage> {
                       title: Container(
                         decoration: BoxDecoration(
                             color: Colors.deepOrangeAccent.withOpacity(0.5),
-                            boxShadow: [BoxShadow(color: Colors.white30, blurRadius: 10)]),
+                            boxShadow: [
+                              BoxShadow(color: Colors.white30, blurRadius: 10)
+                            ]),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 8.0, horizontal: 10),
@@ -180,7 +182,7 @@ class ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w900,
-                            fontSize: 16),
+                                fontSize: 16),
                           ),
                         ),
                       ),
@@ -255,20 +257,21 @@ class ProfilePageState extends State<ProfilePage> {
                           ),
                         ],
                       ),
-                      employee.designation == null?Container():
-                      ProfilePageWidget(
-                        icon: Icons.description,
-                        children: <Widget>[
-                          _ContactItem(
-                            icon: Icons.work,
-                            onPressed: null,
-                            lines: <String>[
-                              employee.designation,
-                              'Designation',
-                            ],
-                          ),
-                        ],
-                      ),
+                      employee.designation == null
+                          ? Container()
+                          : ProfilePageWidget(
+                              icon: Icons.description,
+                              children: <Widget>[
+                                _ContactItem(
+                                  icon: Icons.work,
+                                  onPressed: null,
+                                  lines: <String>[
+                                    employee.designation,
+                                    'Designation',
+                                  ],
+                                ),
+                              ],
+                            ),
                     ]),
                   ),
                 ],
