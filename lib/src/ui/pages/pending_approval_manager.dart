@@ -11,7 +11,7 @@ class LeaveApprovalByManagerWidget extends StatefulWidget {
   LeaveApprovalByManagerWidget({Key key, this.title, this.user})
       : super(key: key);
   final String title;
-  final FirebaseUser user;
+  final User user;
   final FirebaseDatabase db = new FirebaseDatabase();
 
   @override

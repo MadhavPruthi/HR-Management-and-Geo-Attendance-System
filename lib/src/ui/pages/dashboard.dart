@@ -14,7 +14,7 @@ import 'login.dart';
 class Dashboard extends StatefulWidget {
   final AnimationController controller;
   final BaseAuth auth;
-  final FirebaseUser user;
+  final User user;
 
   Dashboard({this.controller, this.auth, this.user});
 
@@ -79,7 +79,7 @@ class _DashboardState extends State<Dashboard> {
 }
 
 class DashboardMainPanel extends StatelessWidget {
-  final FirebaseUser user;
+  final User user;
 
   DashboardMainPanel({this.user});
 
@@ -130,7 +130,7 @@ class DashboardMainPanel extends StatelessWidget {
 }
 
 class NavigationPanel extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
 
   NavigationPanel({this.user});
 
@@ -174,16 +174,20 @@ class _NavigationPanelState extends State<NavigationPanel> {
     );
   }
 
-  Future<String> fetchOfficeName() async{
-
-    DataSnapshot dataSnapshot = await  _databaseReference
+  Future<String> fetchOfficeName() async {
+    DataSnapshot dataSnapshot = await _databaseReference
         .child("users")
         .child(widget.user.uid)
         .child("allotted_office")
         .once();
-    DataSnapshot snapshot = await _databaseReference.child("location").child(dataSnapshot.value).child("name").once();
+    DataSnapshot snapshot = await _databaseReference
+        .child("location")
+        .child(dataSnapshot.value)
+        .child("name")
+        .once();
     return snapshot.value;
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -213,11 +217,10 @@ class _NavigationPanelState extends State<NavigationPanel> {
                         'Error:\n\n${snapshot.error}',
                         textAlign: TextAlign.center,
                       );
-                      return Stack(children: [
-                        drawerTile("Allocated Location: ${snapshot.data}",
-                            null, Icons.location_on),
-
-                      ]);
+                    return Stack(children: [
+                      drawerTile("Allocated Location: ${snapshot.data}", null,
+                          Icons.location_on),
+                    ]);
 
                     return Container();
                 }

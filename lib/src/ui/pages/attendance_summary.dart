@@ -22,7 +22,7 @@ class AttendanceSummary extends StatefulWidget {
   AttendanceSummary({Key key, this.title, this.user}) : super(key: key);
 
   final String title;
-  final firebaseAuth.FirebaseUser user;
+  final firebaseAuth.User user;
 
   @override
   _AttendanceSummaryState createState() => _AttendanceSummaryState();
@@ -114,7 +114,7 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              _buildTableCalendarWithBuilders(),
+              // _buildTableCalendarWithBuilders(),
               // const SizedBox(height: 8.0),
               // _buildButtons(),
               const SizedBox(height: 8.0),
@@ -125,6 +125,10 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
       ),
     );
   }
+
+  // Commenting for now as signature has been changed significantly
+  // Pushed to backlog
+  /*
 
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
@@ -214,10 +218,6 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
       },
     );
   }
-
-  // Commenting for now as signature has been changed significantly
-  // Pushed to backlog
-  /*
 
   Widget _buildEventsMarker(DateTime date, List events) {
     return AnimatedContainer(

@@ -15,7 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../services/geofence.dart';
 
 class HomePage extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
 
   HomePage({this.user});
 
