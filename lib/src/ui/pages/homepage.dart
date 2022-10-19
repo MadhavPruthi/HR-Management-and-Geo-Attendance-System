@@ -17,7 +17,7 @@ import '../../services/geofence.dart';
 class HomePage extends StatefulWidget {
   final FirebaseUser user;
 
-  HomePage({this.user});
+  HomePage({required this.user});
 
   @override
   _HomePageState createState() => new _HomePageState();
@@ -25,17 +25,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
+  late AnimationController controller;
 
   OfficeDatabase officeDatabase = new OfficeDatabase();
   final _databaseReference = FirebaseDatabase.instance.reference();
   var geoFenceActive = false;
   var result;
-  String error;
-  Office allottedOffice;
+  String? error;
+  Office? allottedOffice;
   final PermissionHandler _permissionHandler = PermissionHandler();
   FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 
   Future<void> _initializeGeoFence() async {
     try {
@@ -107,8 +107,10 @@ class _HomePageState extends State<HomePage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  RaisedButton(
-                    color: Colors.blue,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith(
+                            (states) => Colors.blue)),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -132,11 +134,11 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
 
-    firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
+    firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) async {
       print(" onLaunch called ${(msg)}");
-    }, onResume: (Map<String, dynamic> msg) {
+    }, onResume: (Map<String, dynamic> msg) async {
       print(" onResume called ${(msg)}");
-    }, onMessage: (Map<String, dynamic> msg) {
+    }, onMessage: (Map<String, dynamic> msg) async {
       showDialogNotification(context, msg["notification"]["body"]);
     });
     firebaseMessaging.requestNotificationPermissions(

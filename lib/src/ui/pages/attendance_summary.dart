@@ -19,7 +19,8 @@ final Map<DateTime, List> _holidays = {
 };
 
 class AttendanceSummary extends StatefulWidget {
-  AttendanceSummary({Key key, this.title, this.user}) : super(key: key);
+  AttendanceSummary({Key? key, required this.title, required this.user})
+      : super(key: key);
 
   final String title;
   final FirebaseUser user;
@@ -30,10 +31,11 @@ class AttendanceSummary extends StatefulWidget {
 
 class _AttendanceSummaryState extends State<AttendanceSummary>
     with TickerProviderStateMixin {
-  LinkedHashMap<DateTime, List> _events;
-  List _selectedEvents;
-  AnimationController _animationController;
-  DateTime _selectedDay;
+  late LinkedHashMap<DateTime, List> _events;
+  late List _selectedEvents;
+  late final AnimationController _animationController;
+  late DateTime _selectedDay;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
 
   @override
   void initState() {
@@ -131,10 +133,10 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
       focusedDay: DateTime.now(),
       firstDay: DateTime(2000),
       lastDay: DateTime.now(),
-      eventLoader: (dateTime) => _events[dateTime],
+      eventLoader: (dateTime) => _events[dateTime]!,
       holidayPredicate: (dateTime) => _holidays
           .containsKey(DateTime(dateTime.year, dateTime.month, dateTime.day)),
-      calendarFormat: CalendarFormat.month,
+      calendarFormat: _calendarFormat,
       formatAnimationCurve: Curves.fastOutSlowIn,
       formatAnimationDuration: const Duration(milliseconds: 400),
       startingDayOfWeek: StartingDayOfWeek.sunday,
@@ -287,9 +289,11 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.month);
-                });
+                if (_calendarFormat != CalendarFormat.month) {
+                  setState(() {
+                    _calendarFormat = CalendarFormat.month;
+                  });
+                }
               },
             ),
             ElevatedButton(
@@ -301,10 +305,11 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                setState(() {
-                  _calendarController
-                      .setCalendarFormat(CalendarFormat.twoWeeks);
-                });
+                if (_calendarFormat != CalendarFormat.twoWeeks) {
+                  setState(() {
+                    _calendarFormat = CalendarFormat.twoWeeks;
+                  });
+                }
               },
             ),
             ElevatedButton(
@@ -316,9 +321,11 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.week);
-                });
+                if (_calendarFormat != CalendarFormat.week) {
+                  setState(() {
+                    _calendarFormat = CalendarFormat.week;
+                  });
+                }
               },
             ),
           ],

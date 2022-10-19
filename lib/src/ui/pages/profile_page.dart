@@ -9,7 +9,8 @@ import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 enum AppBarBehavior { normal, pinned, floating, snapping }
 
 class ProfilePageWidget extends StatefulWidget {
-  const ProfilePageWidget({Key key, this.icon, this.children})
+  const ProfilePageWidget(
+      {Key? key, required this.icon, required this.children})
       : super(key: key);
 
   final IconData icon;
@@ -28,7 +29,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
       decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: themeData.dividerColor))),
       child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.subhead,
+        style: Theme.of(context).textTheme.headlineMedium!,
         child: SafeArea(
           top: false,
           bottom: false,
@@ -51,13 +52,17 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
 
 class _ContactItem extends StatelessWidget {
   const _ContactItem(
-      {Key key, this.icon, this.lines, this.tooltip, this.onPressed})
+      {Key? key,
+      required this.icon,
+      required this.lines,
+      this.tooltip,
+      required this.onPressed})
       : assert(lines.length > 1),
         super(key: key);
 
   final IconData icon;
   final List<String> lines;
-  final String tooltip;
+  final String? tooltip;
   final VoidCallback onPressed;
 
   @override
@@ -80,15 +85,14 @@ class _ContactItem extends StatelessWidget {
                 ],
               ),
             ),
-            if (icon != null)
-              SizedBox(
-                width: 72.0,
-                child: IconButton(
-                  icon: Icon(icon),
-                  color: themeData.primaryColor,
-                  onPressed: onPressed,
-                ),
+            SizedBox(
+              width: 72.0,
+              child: IconButton(
+                icon: Icon(icon),
+                color: themeData.primaryColor,
+                onPressed: onPressed,
               ),
+            ),
           ],
         ),
       ),
@@ -99,7 +103,7 @@ class _ContactItem extends StatelessWidget {
 class ProfilePage extends StatefulWidget {
   final FirebaseUser user;
 
-  ProfilePage({this.user});
+  ProfilePage({required this.user});
 
   @override
   ProfilePageState createState() => ProfilePageState();
@@ -111,7 +115,7 @@ class ProfilePageState extends State<ProfilePage> {
   final double _appBarHeight = 256.0;
   UserDatabase userDatabase = new UserDatabase();
   AppBarBehavior _appBarBehavior = AppBarBehavior.pinned;
-  Employee employee = null;
+  late Employee employee;
 
   @override
   void initState() {
@@ -153,15 +157,35 @@ class ProfilePageState extends State<ProfilePage> {
                       Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
-                          child: FlatButton(
-                            textColor: Colors.white,
+                          child: TextButton(
+                            style: ButtonStyle(
+                              padding: MaterialStateProperty.resolveWith(
+                                (states) =>
+                                    EdgeInsets.symmetric(horizontal: 16.0),
+                              ),
+                              shape: MaterialStateProperty.resolveWith(
+                                (states) => const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(2.0)),
+                                ),
+                              ),
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith(
+                                (states) => Colors.blue,
+                              ),
+                            ),
                             child: Row(
                               children: <Widget>[
                                 Icon(Icons.edit),
                                 SizedBox(
                                   width: 10,
                                 ),
-                                Text("Change Password".toUpperCase())
+                                Text(
+                                  "Change Password".toUpperCase(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                )
                               ],
                             ),
                             onPressed: () {},
@@ -171,7 +195,9 @@ class ProfilePageState extends State<ProfilePage> {
                       title: Container(
                         decoration: BoxDecoration(
                             color: Colors.deepOrangeAccent.withOpacity(0.5),
-                            boxShadow: [BoxShadow(color: Colors.white30, blurRadius: 10)]),
+                            boxShadow: [
+                              BoxShadow(color: Colors.white30, blurRadius: 10)
+                            ]),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 8.0, horizontal: 10),
@@ -180,7 +206,7 @@ class ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w900,
-                            fontSize: 16),
+                                fontSize: 16),
                           ),
                         ),
                       ),
@@ -220,7 +246,7 @@ class ProfilePageState extends State<ProfilePage> {
                           children: <Widget>[
                             _ContactItem(
                               icon: Icons.call,
-                              onPressed: null,
+                              onPressed: () {},
                               lines: <String>[
                                 employee.contactNumber,
                                 'Mobile',
@@ -234,7 +260,7 @@ class ProfilePageState extends State<ProfilePage> {
                         children: <Widget>[
                           _ContactItem(
                             icon: Icons.email,
-                            onPressed: null,
+                            onPressed: () {},
                             lines: <String>[
                               widget.user.email,
                               'Personal',
@@ -247,7 +273,7 @@ class ProfilePageState extends State<ProfilePage> {
                         children: <Widget>[
                           _ContactItem(
                             icon: Icons.map,
-                            onPressed: null,
+                            onPressed: () {},
                             lines: <String>[
                               employee.residentialAddress,
                               'Home',
@@ -255,20 +281,21 @@ class ProfilePageState extends State<ProfilePage> {
                           ),
                         ],
                       ),
-                      employee.designation == null?Container():
-                      ProfilePageWidget(
-                        icon: Icons.description,
-                        children: <Widget>[
-                          _ContactItem(
-                            icon: Icons.work,
-                            onPressed: null,
-                            lines: <String>[
-                              employee.designation,
-                              'Designation',
-                            ],
-                          ),
-                        ],
-                      ),
+                      employee.designation == null
+                          ? Container()
+                          : ProfilePageWidget(
+                              icon: Icons.description,
+                              children: <Widget>[
+                                _ContactItem(
+                                  icon: Icons.work,
+                                  onPressed: () {},
+                                  lines: <String>[
+                                    employee.designation,
+                                    'Designation',
+                                  ],
+                                ),
+                              ],
+                            ),
                     ]),
                   ),
                 ],

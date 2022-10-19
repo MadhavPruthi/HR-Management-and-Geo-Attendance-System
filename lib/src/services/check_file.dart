@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
 
   static void callback(List<String> ids, Location l, GeofenceEvent e) async {
     print('Fences: $ids Location $l Event: $e');
-    final SendPort send =
+    final SendPort? send =
     IsolateNameServer.lookupPortByName('geofencing_send_port');
     send?.send(e.toString());
   }
@@ -60,16 +60,13 @@ class _MyAppState extends State<MyApp> {
     print('Initialization done');
   }
 
-  String numberValidator(String value) {
-    if (value == null) {
-      return null;
-    }
-    final num a = num.tryParse(value);
-    if (a == null) {
-      return '"$value" is not a valid number';
-    }
-    return null;
-  }
+  // String numberValidator(String value) {
+  //   final num? a = num.tryParse(value);
+  //   if (a == null) {
+  //     return '"$value" is not a valid number';
+  //   }
+  //   return null;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +82,7 @@ class _MyAppState extends State<MyApp> {
                   children: <Widget>[
                     Text('Current state: $geofenceState'),
                     Center(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: const Text('Register'),
                         onPressed: () {
                           if (latitude == null) {
@@ -106,7 +103,7 @@ class _MyAppState extends State<MyApp> {
                       ),
                     ),
                     Center(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                           child: const Text('Unregister'),
                           onPressed: () =>
                               GeofencingManager.removeGeofenceById('mtv')),
@@ -119,7 +116,7 @@ class _MyAppState extends State<MyApp> {
                       controller:
                       TextEditingController(text: latitude.toString()),
                       onChanged: (String s) {
-                        latitude = double.tryParse(s);
+                        latitude = double.tryParse(s) ?? 0;
                       },
                     ),
                     TextField(
@@ -129,7 +126,7 @@ class _MyAppState extends State<MyApp> {
                         controller:
                         TextEditingController(text: longitude.toString()),
                         onChanged: (String s) {
-                          longitude = double.tryParse(s);
+                          longitude = double.tryParse(s) ?? 0;
                         }),
                     TextField(
                         decoration: const InputDecoration(hintText: 'Radius'),
@@ -137,7 +134,7 @@ class _MyAppState extends State<MyApp> {
                         controller:
                         TextEditingController(text: radius.toString()),
                         onChanged: (String s) {
-                          radius = double.tryParse(s);
+                          radius = double.tryParse(s) ?? 0;
                         }),
                   ]))),
     );

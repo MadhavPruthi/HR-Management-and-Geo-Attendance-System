@@ -14,7 +14,7 @@ import '../../services/authentication.dart';
 class Login extends StatefulWidget {
   Login({this.auth});
 
-  final BaseAuth auth;
+  final BaseAuth? auth;
 
   @override
   _LoginState createState() => _LoginState();
@@ -23,14 +23,14 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _formKey = new GlobalKey<FormState>();
   FirebaseDatabase db = new FirebaseDatabase();
-  DatabaseReference _empIdRef, _userRef;
+  late DatabaseReference _empIdRef, _userRef;
 
-  String _username;
-  String _password;
+  String? _username;
+  String? _password;
   String _errorMessage = "";
-  FirebaseUser _user;
+  late FirebaseUser _user;
   bool formSubmit = false;
-  Auth authObject;
+  late Auth authObject;
 
   @override
   void initState() {
@@ -43,8 +43,8 @@ class _LoginState extends State<Login> {
 
   bool validateAndSave() {
     final form = _formKey.currentState;
-    if (form.validate()) {
-      form.save();
+    if (form?.validate() ?? false) {
+      form!.save();
       setState(() {
         _errorMessage = "";
       });
@@ -60,13 +60,13 @@ class _LoginState extends State<Login> {
       String email;
       try {
         _empIdRef.child(_username).once().then((DataSnapshot snapshot) {
-          if (snapshot == null) {
+          if (snapshot.value == null) {
             print("popped");
             _errorMessage = "Invalid Login Details";
           } else {
             email = snapshot.value;
+            loginUser(email);
           }
-          loginUser(email);
         });
       } catch (e) {
         print(e);
@@ -93,9 +93,9 @@ class _LoginState extends State<Login> {
   }
 
   void loginUser(String email) async {
-    if (email != null) {
+    if (_password == null) {
       try {
-        _user = await authObject.signIn(email, _password);
+        _user = await authObject.signIn(email, _password!);
 
         checkForSingleSignOn(_user).then((list) {
           Navigator.of(context).pop();
@@ -125,14 +125,14 @@ class _LoginState extends State<Login> {
         Navigator.of(context).pop();
         print("Error" + e.toString());
         setState(() {
-          _errorMessage = e.message.toString();
-          _formKey.currentState.reset();
+          _errorMessage = e.toString();
+          _formKey.currentState?.reset();
         });
       }
     } else {
       setState(() {
         _errorMessage = "Invalid Login Details";
-        _formKey.currentState.reset();
+        _formKey.currentState?.reset();
         Navigator.of(context).pop();
       });
     }
@@ -395,9 +395,10 @@ class _LoginState extends State<Login> {
                       ),
                       hintText: "Employee ID",
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
-                  validator: (value) =>
-                      value.isEmpty ? 'Username can\'t be empty' : null,
-                  onSaved: (value) => _username = value.trim(),
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Username can\'t be empty'
+                      : null,
+                  onSaved: (value) => _username = value?.trim(),
                 ),
               ),
               Container(
@@ -414,8 +415,9 @@ class _LoginState extends State<Login> {
                       ),
                       hintText: "Password",
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
-                  validator: (value) =>
-                      value.isEmpty ? 'Password can\'t be empty' : null,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Password can\'t be empty'
+                      : null,
                   onSaved: (value) => _password = value,
                 ),
               ),
@@ -426,8 +428,21 @@ class _LoginState extends State<Login> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  FlatButton(
-                    onPressed: () => _formKey.currentState.reset(),
+                  TextButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.resolveWith(
+                        (states) => EdgeInsets.symmetric(horizontal: 16.0),
+                      ),
+                      shape: MaterialStateProperty.resolveWith(
+                        (states) => const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                        (states) => Colors.blue,
+                      ),
+                    ),
+                    onPressed: () => _formKey.currentState?.reset(),
                     child: Text(
                       "Reset",
                       style: TextStyle(

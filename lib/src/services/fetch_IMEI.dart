@@ -4,9 +4,9 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
 
 Future<List<String>> getDeviceDetails() async {
-  String deviceName;
-  String deviceVersion;
-  String identifier;
+  String deviceName = '';
+  String deviceVersion = '';
+  String identifier = '';
   final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
   try {
     if (Platform.isAndroid) {
