@@ -72,14 +72,16 @@ class ChooseOfficeWidgetState extends State<ChooseOfficeWidget> {
         items: [
           new BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text('Home'),
+            label: 'Home',
           ),
           new BottomNavigationBarItem(
             icon: Icon(Icons.mail),
-            title: Text('Messages'),
+            label: 'Messages',
           ),
           new BottomNavigationBarItem(
-              icon: Icon(Icons.person), title: Text('Profile'))
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          )
         ],
       ),
     );

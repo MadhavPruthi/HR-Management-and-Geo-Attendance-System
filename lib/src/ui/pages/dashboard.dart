@@ -13,10 +13,14 @@ import 'login.dart';
 
 class Dashboard extends StatefulWidget {
   final AnimationController controller;
-  final BaseAuth auth;
+  final BaseAuth? auth;
   final FirebaseUser user;
 
-  Dashboard({this.controller, this.auth, this.user});
+  Dashboard({
+    required this.controller,
+    this.auth,
+    required this.user,
+  });
 
   @override
   _DashboardState createState() => new _DashboardState();
@@ -81,12 +85,12 @@ class _DashboardState extends State<Dashboard> {
 class DashboardMainPanel extends StatelessWidget {
   final FirebaseUser user;
 
-  DashboardMainPanel({this.user});
+  DashboardMainPanel({required this.user});
 
   final List tileData = infoAboutTiles;
 
   List<Widget> _listWidget(BuildContext context) {
-    List<Widget> widgets = new List();
+    List<Widget> widgets = [];
     tileData.forEach((tile) {
       widgets.add(buildTile(tile[0], tile[1], tile[2], context, user, tile[3]));
     });
@@ -95,7 +99,7 @@ class DashboardMainPanel extends StatelessWidget {
   }
 
   List<StaggeredTile> _staggeredTiles() {
-    List<StaggeredTile> widgets = new List();
+    List<StaggeredTile> widgets = [];
     tileData.forEach((tile) {
       widgets.add(StaggeredTile.extent(1, 210.0));
     });
@@ -132,7 +136,7 @@ class DashboardMainPanel extends StatelessWidget {
 class NavigationPanel extends StatefulWidget {
   final FirebaseUser user;
 
-  NavigationPanel({this.user});
+  NavigationPanel({required this.user});
 
   @override
   _NavigationPanelState createState() => _NavigationPanelState();
@@ -141,17 +145,30 @@ class NavigationPanel extends StatefulWidget {
 class _NavigationPanelState extends State<NavigationPanel> {
   final _databaseReference = FirebaseDatabase.instance.reference();
 
-  Widget drawerTile(String title, Function() onTap, [IconData icon]) {
+  Widget drawerTile(String title, Function() onTap, [IconData? icon]) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      child: OutlineButton(
-        shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(30.0)),
-        hoverColor: Colors.transparent,
-        borderSide: BorderSide(
-          color: Colors.white, //Color of the border
-          style: BorderStyle.solid, //Style of the border
-          width: 0.8, //width of the border
+      child: OutlinedButton(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.resolveWith(
+            (states) => RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0),
+            ),
+          ),
+          overlayColor: MaterialStateProperty.resolveWith(
+            (states) {
+              if (states.contains(MaterialState.hovered)) {
+                return Colors.transparent;
+              }
+            },
+          ),
+          side: MaterialStateProperty.resolveWith(
+            (states) => BorderSide(
+              color: Colors.white, //Color of the border
+              style: BorderStyle.solid, //Style of the border
+              width: 0.8, //width of the border
+            ),
+          ),
         ),
         child: ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -174,16 +191,20 @@ class _NavigationPanelState extends State<NavigationPanel> {
     );
   }
 
-  Future<String> fetchOfficeName() async{
-
-    DataSnapshot dataSnapshot = await  _databaseReference
+  Future<String> fetchOfficeName() async {
+    DataSnapshot dataSnapshot = await _databaseReference
         .child("users")
         .child(widget.user.uid)
         .child("allotted_office")
         .once();
-    DataSnapshot snapshot = await _databaseReference.child("location").child(dataSnapshot.value).child("name").once();
+    DataSnapshot snapshot = await _databaseReference
+        .child("location")
+        .child(dataSnapshot.value)
+        .child("name")
+        .once();
     return snapshot.value;
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -213,11 +234,10 @@ class _NavigationPanelState extends State<NavigationPanel> {
                         'Error:\n\n${snapshot.error}',
                         textAlign: TextAlign.center,
                       );
-                      return Stack(children: [
-                        drawerTile("Allocated Location: ${snapshot.data}",
-                            null, Icons.location_on),
-
-                      ]);
+                    return Stack(children: [
+                      drawerTile("Allocated Location: ${snapshot.data}", () {},
+                          Icons.location_on),
+                    ]);
 
                     return Container();
                 }
@@ -249,8 +269,9 @@ class _NavigationPanelState extends State<NavigationPanel> {
                         'Error:\n\n${snapshot.error}',
                         textAlign: TextAlign.center,
                       );
-                    print(snapshot.data.value);
-                    if (snapshot.data.value == null || snapshot.data.value == 1)
+                    print(snapshot.data?.value);
+                    if (snapshot.data?.value == null ||
+                        snapshot.data?.value == 1)
                       return Stack(children: [
                         drawerTile("Review Pending Leaves", () {
                           Navigator.of(context).push(MaterialPageRoute(

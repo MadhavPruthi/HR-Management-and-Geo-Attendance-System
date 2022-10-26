@@ -39,7 +39,7 @@ class GeoFenceClass {
 
   static void callback(List<String> ids, Location l, GeofenceEvent e) async {
     print('Fences: $ids Location $l Event: $e');
-    final SendPort send =
+    final SendPort? send =
         IsolateNameServer.lookupPortByName(geofence_port_name);
     send?.send(e.toString());
   }

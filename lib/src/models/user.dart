@@ -285,69 +285,70 @@ enum Role {
 }
 
 class Employee {
-  String uID;
+  String uID = '';
   String employeeID;
   String firstName;
-  String middleName;
-  String lastName;
-  String officeEmail;
-  String alternateEmail;
-  String contactNumber;
-  DateTime dateOfBirth;
-  DateTime joiningDate;
-  String residentialAddress;
-  Gender gender;
-  int retirementAge;
+  String? middleName;
+  String? lastName;
+  String? officeEmail;
+  String? alternateEmail;
+  String contactNumber = '';
+  DateTime? dateOfBirth;
+  DateTime? joiningDate;
+  String residentialAddress = '';
+  Gender? gender;
+  int? retirementAge;
 
-  Office joiningUnit;
-  SkillCategory skillCategory;
+  Office? joiningUnit;
+  SkillCategory? skillCategory;
 
-  EmployeeFunction employeeFunction;
-  EmployeeSubFunction employeeSubFunction;
+  EmployeeFunction? employeeFunction;
+  EmployeeSubFunction? employeeSubFunction;
 
-  Grade grade;
+  Grade? grade;
   String designation;
 
-  MaritalStatus maritalStatus;
-  Religion religion;
+  MaritalStatus? maritalStatus;
+  Religion? religion;
 
-  Nationality nationality;
+  Nationality? nationality;
 
-  Entity entity;
-  BloodGroup bloodGroup;
+  Entity? entity;
+  BloodGroup? bloodGroup;
 
-  EmployeeType employeeType;
-  Employee reviewPerson;
+  EmployeeType? employeeType;
+  Employee? reviewPerson;
 
-  Role role;
+  Role? role;
 
-  Employee(
-      {this.employeeID,
-      this.firstName,
-      this.middleName,
-      this.lastName,
-      this.residentialAddress,
-      this.contactNumber,
-      this.officeEmail,
-      this.alternateEmail,
-      this.dateOfBirth,
-      this.joiningDate,
-      this.gender,
-      this.retirementAge,
-      this.joiningUnit,
-      this.skillCategory,
-      this.employeeFunction,
-      this.employeeSubFunction,
-      this.grade,
-      this.designation,
-      this.maritalStatus,
-      this.religion,
-      this.nationality,
-      this.entity,
-      this.bloodGroup,
-      this.employeeType,
-      this.reviewPerson,
-      this.role});
+  Employee({
+    required this.employeeID,
+    required this.firstName,
+    this.middleName,
+    this.lastName,
+    required this.residentialAddress,
+    required this.contactNumber,
+    this.officeEmail,
+    this.alternateEmail,
+    this.dateOfBirth,
+    this.joiningDate,
+    this.gender,
+    this.retirementAge,
+    this.joiningUnit,
+    this.skillCategory,
+    this.employeeFunction,
+    this.employeeSubFunction,
+    this.grade,
+    required this.designation,
+    this.maritalStatus,
+    this.religion,
+    this.nationality,
+    this.entity,
+    this.bloodGroup,
+    this.employeeType,
+    this.reviewPerson,
+    this.role,
+  });
 
   Employee.fromSnapshot(DataSnapshot snapshot)
       : uID = snapshot.value["UID"],

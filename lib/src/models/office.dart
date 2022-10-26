@@ -5,7 +5,13 @@ class Office {
   String name;
   double radius;
 
-  Office({this.key, this.name, this.latitude, this.longitude, this.radius});
+  Office({
+    required this.key,
+    required this.name,
+    required this.latitude,
+    required this.longitude,
+    required this.radius,
+  });
 
   String get getName {
     return name;

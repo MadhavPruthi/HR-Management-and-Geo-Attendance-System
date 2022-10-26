@@ -70,7 +70,7 @@ class AttendanceDatabase {
         snapshot, getFormattedDate(dateTime), mapOfOffice);
     attendanceList.dateTime = dateTime;
 
-    return attendanceList != null ? attendanceList : [];
+    return attendanceList;
   }
 
   static Future markAttendance(

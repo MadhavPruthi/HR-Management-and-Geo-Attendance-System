@@ -15,7 +15,7 @@ publish_to: none
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.18.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -28,7 +28,7 @@ dependencies:
   calendarro: ^1.0.0
   firebase_auth: any
   flutter_screenutil: ^0.4.2
-  table_calendar: any
+  table_calendar: ^3.0.7
   firebase_database: any
   google_maps_flutter: ^0.5.21+8
   device_id: ^0.2.0

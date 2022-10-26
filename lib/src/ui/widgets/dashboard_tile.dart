@@ -4,7 +4,7 @@ import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 
 Widget buildTile(String icon, String title, String subtitle,
     BuildContext context, FirebaseUser user,
-    [Function(BuildContext, FirebaseUser) onTap]) {
+    [Function(BuildContext, FirebaseUser)? onTap]) {
   return Material(
       elevation: 10.0,
       shadowColor: dashBoardColor,

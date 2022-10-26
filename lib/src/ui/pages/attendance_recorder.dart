@@ -16,7 +16,7 @@ import 'package:location/location.dart';
 class AttendanceRecorderWidget extends StatefulWidget {
   final FirebaseUser user;
 
-  AttendanceRecorderWidget({this.user});
+  AttendanceRecorderWidget({required this.user});
 
   @override
   AttendanceRecorderWidgetState createState() =>
@@ -30,16 +30,16 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   OfficeDatabase officeDatabase = new OfficeDatabase();
 
   // ignore: unused_field
-  StreamSubscription<LocationData> _locationSubscription;
-  LocationData _currentLocation;
-  LocationData _startLocation;
+  StreamSubscription<LocationData>? _locationSubscription;
+  LocationData? _currentLocation;
+  LocationData? _startLocation;
   Set<Marker> _markers = {};
   Set<Circle> _circles = new Set();
 
   Location _locationService = new Location();
-  PermissionStatus _permission;
-  String error;
-  CameraPosition _currentCameraPosition;
+  PermissionStatus? _permission;
+  String? error;
+  CameraPosition? _currentCameraPosition;
   var rMin;
   var rMax;
   var direction = 1;
@@ -54,7 +54,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   @override
   void dispose() {
     super.dispose();
-    if (_locationSubscription != null) _locationSubscription.cancel();
+    _locationSubscription?.cancel();
   }
 
   @override
@@ -185,7 +185,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
     } else {
       onLoadingDialog(context);
       officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-        markInAttendance(context, office, _currentLocation, widget.user);
+        markInAttendance(context, office, _currentLocation!, widget.user);
       });
     }
   }
@@ -210,7 +210,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
     } else {
       onLoadingDialog(context);
       officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-        markOutAttendance(context, office, _currentLocation, widget.user);
+        markOutAttendance(context, office, _currentLocation!, widget.user);
       });
     }
   }
@@ -225,7 +225,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
     await _locationService.changeSettings(
         accuracy: LocationAccuracy.BALANCED, interval: 1000);
 
-    LocationData location;
+    LocationData? location;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       bool serviceStatus = await _locationService.serviceEnabled();
