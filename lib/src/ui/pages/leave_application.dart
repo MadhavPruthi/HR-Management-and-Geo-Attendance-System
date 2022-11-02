@@ -13,7 +13,7 @@ class LeaveApplicationWidget extends StatefulWidget {
   LeaveApplicationWidget({Key? key, required this.title, required this.user})
       : super(key: key);
   final String title;
-  final FirebaseUser user;
+  final User user;
   final FirebaseDatabase db = new FirebaseDatabase();
 
   @override
@@ -23,7 +23,7 @@ class LeaveApplicationWidget extends StatefulWidget {
 class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
     with SingleTickerProviderStateMixin {
   FirebaseDatabase db = FirebaseDatabase();
-  FirebaseUser? _user;
+  User? _user;
   late DatabaseReference _userRef, _managerRef, _leaveRef;
   String _managerName = '', _managerDesignation = '';
 
@@ -70,9 +70,9 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
     _leaveRef = db.reference().child("leaves");
     _managerRef = db.reference().child("managers");
     _getManager();
-    _getLeaves().then((dataSnapshot) {
+    _getLeaves().then((DatabaseEvent databaseEvent) {
       setState(() {
-        list = _generateListLeaves(dataSnapshot);
+        list = _generateListLeaves(databaseEvent.snapshot);
       });
     });
   }
@@ -82,23 +82,25 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
         .child(widget.user.uid)
         .child("manager")
         .once()
-        .then((DataSnapshot managerID) {
-      _managerRef.child(managerID.value).once().then((DataSnapshot details) {
+        .then((DatabaseEvent event) {
+          final managerID = event.snapshot;
+      _managerRef.child(managerID.value as String).once().then((DatabaseEvent _event) {
+        final details = _event.snapshot;
         setState(() {
-          _managerName = details.value["name"];
-          _managerDesignation = details.value["designation"];
+          _managerName = (details.value as Map)["name"];
+          _managerDesignation = (details.value as Map)["designation"];
         });
       });
     });
   }
 
-  Future<DataSnapshot> _getLeaves() async {
+  Future<DatabaseEvent> _getLeaves() async {
     return _userRef.child(widget.user.uid).child("leaves").once();
   }
 
   List<Widget> _generateListLeaves(DataSnapshot dataSnapshot) {
     List<Widget> list = [];
-    dataSnapshot.value.forEach((key, value) {
+    (dataSnapshot.value as Map).forEach((key, value) {
       list.add(Container(
           decoration: BoxDecoration(
               color: dashBoardColor,
@@ -588,14 +590,14 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
   Future<bool> addLeave() async {
     int request = int.parse(leavesCount);
 
-    DataSnapshot dataSnapshot = await _userRef
+    DataSnapshot dataSnapshot = (await _userRef
         .child(widget.user.uid)
         .child("leaves")
         .child(leaveKeys[leaveIndex])
-        .once();
+        .once()).snapshot;
 //    print("Value" +  dataSnapshot.key.toString() + " " + dataSnapshot.value.toString());
 //    print(request);
-    if (dataSnapshot.value < request) {
+    if ((dataSnapshot.value as int) < request) {
       return false;
     } else
       return true;

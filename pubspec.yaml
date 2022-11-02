@@ -26,22 +26,21 @@ dependencies:
   flutter_sparkline: any
   flutter_staggered_grid_view: any
   calendarro: ^1.0.0
-  firebase_auth: any
+  firebase_auth: ^4.1.0
   flutter_screenutil: ^0.4.2
   table_calendar: ^3.0.7
-  firebase_database: any
+  firebase_database: ^10.0.3
   google_maps_flutter: ^0.5.21+8
-  device_id: ^0.2.0
   location: ^2.3.5
   flutter_spinkit: ^3.1.0
   flutter_datetime_picker:
     git:
       url: https://github.com/Realank/flutter_datetime_picker.git
   grouped_buttons: ^1.0.3
-  permission_handler: ^4.0.0
+  permission_handler: ^10.2.0
   device_info: ^0.4.1+2
-  firebase_messaging: ^6.0.1
-  flutter_local_notifications: ^4.0.1+2
+  firebase_messaging: ^14.0.3
+  flutter_local_notifications: ^12.0.3
 
   geofencing:
     git:

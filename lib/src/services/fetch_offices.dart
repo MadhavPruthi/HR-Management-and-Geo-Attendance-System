@@ -14,12 +14,12 @@ class OfficeDatabase {
   OfficeDatabase._internal();
 
   Future<Office> getOfficeBasedOnUID(String uid) async {
-    DataSnapshot dataSnapshot = await _databaseReference.child("users").once();
-    final userInfo = dataSnapshot.value[uid];
+    DataSnapshot dataSnapshot =( await _databaseReference.child("users").once()).snapshot;
+    final userInfo =( dataSnapshot.value as Map)[uid];
     final office = userInfo["allotted_office"];
 
-    dataSnapshot = await _databaseReference.child("location").once();
-    final findOffice = dataSnapshot.value[office];
+    dataSnapshot = (await _databaseReference.child("location").once()).snapshot;
+    final findOffice = (dataSnapshot.value as Map)[office];
     final name = findOffice["name"];
     final latitude = findOffice["latitude"];
     final longitude = findOffice["longitude"];
@@ -35,9 +35,9 @@ class OfficeDatabase {
   }
 
   Future<List<Office>> getOfficeList() async {
-    DataSnapshot dataSnapshot = await _databaseReference.once();
+    DataSnapshot dataSnapshot = (await _databaseReference.once()).snapshot;
     Completer<List<Office>> completer;
-    final officeList = dataSnapshot.value["location"];
+    final officeList = (dataSnapshot.value as Map)["location"];
     List<Office> result = [];
 
     var officeMap = officeList;

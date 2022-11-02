@@ -101,7 +101,7 @@ class _ContactItem extends StatelessWidget {
 }
 
 class ProfilePage extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
 
   ProfilePage({required this.user});
 
@@ -262,7 +262,7 @@ class ProfilePageState extends State<ProfilePage> {
                             icon: Icons.email,
                             onPressed: () {},
                             lines: <String>[
-                              widget.user.email,
+                              widget.user.email ?? '',
                               'Personal',
                             ],
                           ),

@@ -28,7 +28,7 @@ class _LoginState extends State<Login> {
   String? _username;
   String? _password;
   String _errorMessage = "";
-  late FirebaseUser _user;
+  late User _user;
   bool formSubmit = false;
   late Auth authObject;
 
@@ -59,12 +59,13 @@ class _LoginState extends State<Login> {
       onLoadingDialog(context);
       String email;
       try {
-        _empIdRef.child(_username).once().then((DataSnapshot snapshot) {
+        _empIdRef.child(_username!).once().then((DatabaseEvent event) {
+          final snapshot = event.snapshot;
           if (snapshot.value == null) {
             print("popped");
             _errorMessage = "Invalid Login Details";
           } else {
-            email = snapshot.value;
+            email = snapshot.value as String;
             loginUser(email);
           }
         });
@@ -74,11 +75,12 @@ class _LoginState extends State<Login> {
     }
   }
 
-  Future<List> checkForSingleSignOn(FirebaseUser _user) async {
-    DataSnapshot dataSnapshot = await _userRef.child(_user.uid).once();
+  Future<List> checkForSingleSignOn(User _user) async {
+    DataSnapshot dataSnapshot =
+        (await _userRef.child(_user.uid).once()).snapshot;
 
     if (dataSnapshot != null) {
-      var uuid = dataSnapshot.value["UUID"];
+      var uuid = (dataSnapshot.value as Map)["UUID"];
       List listOfDetails = await getDeviceDetails();
 
       if (uuid != null) {

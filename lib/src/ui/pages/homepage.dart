@@ -15,7 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../services/geofence.dart';
 
 class HomePage extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
 
   HomePage({required this.user});
 
@@ -33,15 +33,13 @@ class _HomePageState extends State<HomePage>
   var result;
   String? error;
   Office? allottedOffice;
-  final PermissionHandler _permissionHandler = PermissionHandler();
-  FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 
   Future<void> _initializeGeoFence() async {
     try {
-      result = await _permissionHandler
-          .requestPermissions([PermissionGroup.location]);
-      switch (result[PermissionGroup.location]) {
+      result = await Permission.location.request();
+      switch (result[Permission.location]) {
         case PermissionStatus.granted:
           GeofencingManager.initialize().then((_) {
             officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
@@ -58,13 +56,10 @@ class _HomePageState extends State<HomePage>
         case PermissionStatus.denied:
           print("DENIED");
           break;
-        case PermissionStatus.neverAskAgain:
+        case PermissionStatus.permanentlyDenied:
           // do something
           break;
         case PermissionStatus.restricted:
-          // do something
-          break;
-        case PermissionStatus.unknown:
           // do something
           break;
         default:
@@ -134,19 +129,18 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
 
-    firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) async {
-      print(" onLaunch called ${(msg)}");
-    }, onResume: (Map<String, dynamic> msg) async {
-      print(" onResume called ${(msg)}");
-    }, onMessage: (Map<String, dynamic> msg) async {
-      showDialogNotification(context, msg["notification"]["body"]);
-    });
-    firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, alert: true, badge: true));
-    firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings setting) {
-      print('IOS Setting Registed');
-    });
+    FirebaseMessaging.onMessage.listen(
+      (RemoteMessage message) {
+        showDialogNotification(context, message.data["notification"]["body"]);
+      },
+    );
+
+    firebaseMessaging.requestPermission();
+    FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
     firebaseMessaging.getToken().then((token) {
       _databaseReference.child("users").child(widget.user.uid).update({
