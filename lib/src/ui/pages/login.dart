@@ -160,7 +160,7 @@ class _LoginState extends State<Login> {
   Widget horizontalLine() => Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         child: Container(
-          width: ScreenUtil.getInstance().setWidth(120),
+          width: ScreenUtil().setWidth(120),
           height: 1.0,
           color: Colors.black26.withOpacity(.2),
         ),
@@ -170,9 +170,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
-    ScreenUtil.instance =
-        ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
+    ScreenUtil.init(context, designSize: Size(750, 1334), minTextAdapt: true);
     return new Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
@@ -214,11 +212,11 @@ class _LoginState extends State<Login> {
                       children: <Widget>[
                         Image.asset(
                           "assets/logo/logo.png",
-                          width: ScreenUtil.getInstance().setWidth(220),
-                          height: ScreenUtil.getInstance().setHeight(220),
+                          width: ScreenUtil().setWidth(220),
+                          height: ScreenUtil().setHeight(220),
                         ),
                         SizedBox(
-                          width: ScreenUtil.getInstance().setWidth(40),
+                          width: ScreenUtil().setWidth(40),
                         ),
                         Expanded(
                           child: Column(
@@ -230,8 +228,7 @@ class _LoginState extends State<Login> {
                                   style: TextStyle(
                                       fontFamily: "Poppins-Bold",
                                       color: appbarcolor,
-                                      fontSize:
-                                          ScreenUtil.getInstance().setSp(90),
+                                      fontSize: ScreenUtil().setSp(90),
                                       letterSpacing: .6,
                                       fontWeight: FontWeight.bold)),
                               Text("Geo-Attendance and HR Management System",
@@ -239,8 +236,7 @@ class _LoginState extends State<Login> {
                                   style: TextStyle(
                                       fontFamily: "Poppins-Bold",
                                       color: Colors.black54,
-                                      fontSize:
-                                          ScreenUtil.getInstance().setSp(25),
+                                      fontSize: ScreenUtil().setSp(25),
                                       letterSpacing: 0.2,
                                       fontWeight: FontWeight.bold)),
                             ],
@@ -249,10 +245,10 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                     SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(90),
+                      height: ScreenUtil().setHeight(90),
                     ),
                     formCard(),
-                    SizedBox(height: ScreenUtil.getInstance().setHeight(40)),
+                    SizedBox(height: ScreenUtil().setHeight(40)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -275,8 +271,8 @@ class _LoginState extends State<Login> {
                         ),*/
                         InkWell(
                           child: Container(
-                            width: ScreenUtil.getInstance().setWidth(330),
-                            height: ScreenUtil.getInstance().setHeight(100),
+                            width: ScreenUtil().setWidth(330),
+                            height: ScreenUtil().setHeight(100),
                             decoration: BoxDecoration(
                                 gradient: LinearGradient(colors: [
                                   splashScreenColorBottom,
@@ -308,7 +304,7 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                     SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(40),
+                      height: ScreenUtil().setHeight(40),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -321,10 +317,10 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                     SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(40),
+                      height: ScreenUtil().setHeight(40),
                     ),
                     SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(30),
+                      height: ScreenUtil().setHeight(30),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -378,11 +374,11 @@ class _LoginState extends State<Login> {
             children: <Widget>[
               Text("Login",
                   style: TextStyle(
-                      fontSize: ScreenUtil.getInstance().setSp(45),
+                      fontSize: ScreenUtil().setSp(45),
                       fontFamily: "Poppins-Bold",
                       letterSpacing: .6)),
               SizedBox(
-                height: ScreenUtil.getInstance().setHeight(30),
+                height: ScreenUtil().setHeight(30),
               ),
               Container(
                 height: 60,
@@ -450,7 +446,7 @@ class _LoginState extends State<Login> {
                       style: TextStyle(
                           color: dashBoardColor,
                           fontFamily: "Poppins-Medium",
-                          fontSize: ScreenUtil.getInstance().setSp(28)),
+                          fontSize: ScreenUtil().setSp(28)),
                     ),
                   ),
                   Text(
@@ -458,7 +454,7 @@ class _LoginState extends State<Login> {
                     style: TextStyle(
                         color: dashBoardColor,
                         fontFamily: "Poppins-Medium",
-                        fontSize: ScreenUtil.getInstance().setSp(28)),
+                        fontSize: ScreenUtil().setSp(28)),
                   )
                 ],
               )
