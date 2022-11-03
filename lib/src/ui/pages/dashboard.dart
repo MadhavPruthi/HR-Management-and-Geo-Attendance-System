@@ -14,7 +14,7 @@ import 'login.dart';
 class Dashboard extends StatefulWidget {
   final AnimationController controller;
   final BaseAuth? auth;
-  final FirebaseUser user;
+  final User user;
 
   Dashboard({
     required this.controller,
@@ -83,7 +83,7 @@ class _DashboardState extends State<Dashboard> {
 }
 
 class DashboardMainPanel extends StatelessWidget {
-  final FirebaseUser user;
+  final User user;
 
   DashboardMainPanel({required this.user});
 
@@ -134,7 +134,7 @@ class DashboardMainPanel extends StatelessWidget {
 }
 
 class NavigationPanel extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
 
   NavigationPanel({required this.user});
 
@@ -192,17 +192,17 @@ class _NavigationPanelState extends State<NavigationPanel> {
   }
 
   Future<String> fetchOfficeName() async {
-    DataSnapshot dataSnapshot = await _databaseReference
+    DataSnapshot dataSnapshot =( await _databaseReference
         .child("users")
         .child(widget.user.uid)
         .child("allotted_office")
-        .once();
-    DataSnapshot snapshot = await _databaseReference
+        .once()).snapshot;
+    DataSnapshot snapshot = (await _databaseReference
         .child("location")
-        .child(dataSnapshot.value)
+        .child(dataSnapshot.value as String)
         .child("name")
-        .once();
-    return snapshot.value;
+        .once()).snapshot;
+    return snapshot.value as String;
   }
 
   @override
@@ -269,9 +269,9 @@ class _NavigationPanelState extends State<NavigationPanel> {
                         'Error:\n\n${snapshot.error}',
                         textAlign: TextAlign.center,
                       );
-                    print(snapshot.data?.value);
-                    if (snapshot.data?.value == null ||
-                        snapshot.data?.value == 1)
+                    print(snapshot.data?.snapshot.value);
+                    if (snapshot.data?.snapshot.value == null ||
+                        snapshot.data?.snapshot.value == 1)
                       return Stack(children: [
                         drawerTile("Review Pending Leaves", () {
                           Navigator.of(context).push(MaterialPageRoute(

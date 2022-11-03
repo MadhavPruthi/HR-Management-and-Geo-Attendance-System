@@ -34,12 +34,12 @@ class LeaveDatabase {
 
   Future<List<Leave>> getLeaveListBasedOnUID(String uid) async {
     DataSnapshot dataSnapshot =
-        await _databaseReference.child("leaves").child(uid).once();
+       ( await _databaseReference.child("leaves").child(uid).once()).snapshot;
     List<Leave> result = [];
     if (dataSnapshot == null || dataSnapshot.value == null) return result;
 
     var officeMap = dataSnapshot.value;
-    officeMap.forEach((key, map) {
+    (officeMap as Map).forEach((key, map) {
       result.add(Leave.fromJson(key, map.cast<String, dynamic>()));
     });
 

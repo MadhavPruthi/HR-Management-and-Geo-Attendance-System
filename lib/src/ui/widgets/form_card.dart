@@ -6,7 +6,7 @@ class FormCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Container(
       width: double.infinity,
-      height: ScreenUtil.getInstance().setHeight(500),
+      height: ScreenUtil().setHeight(500),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
@@ -27,28 +27,28 @@ class FormCard extends StatelessWidget {
           children: <Widget>[
             Text("Login",
                 style: TextStyle(
-                    fontSize: ScreenUtil.getInstance().setSp(45),
+                    fontSize: ScreenUtil().setSp(45),
                     fontFamily: "Poppins-Bold",
                     letterSpacing: .6)),
             SizedBox(
-              height: ScreenUtil.getInstance().setHeight(30),
+              height: ScreenUtil().setHeight(30),
             ),
             Text("Username",
                 style: TextStyle(
                     fontFamily: "Poppins-Medium",
-                    fontSize: ScreenUtil.getInstance().setSp(26))),
+                    fontSize: ScreenUtil().setSp(26))),
             TextField(
               decoration: InputDecoration(
                   hintText: "username",
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
             ),
             SizedBox(
-              height: ScreenUtil.getInstance().setHeight(30),
+              height: ScreenUtil().setHeight(30),
             ),
             Text("Password",
                 style: TextStyle(
                     fontFamily: "Poppins-Medium",
-                    fontSize: ScreenUtil.getInstance().setSp(26))),
+                    fontSize: ScreenUtil().setSp(26))),
             TextField(
               obscureText: true,
               decoration: InputDecoration(
@@ -56,7 +56,7 @@ class FormCard extends StatelessWidget {
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
             ),
             SizedBox(
-              height: ScreenUtil.getInstance().setHeight(35),
+              height: ScreenUtil().setHeight(35),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -66,7 +66,7 @@ class FormCard extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.blue,
                       fontFamily: "Poppins-Medium",
-                      fontSize: ScreenUtil.getInstance().setSp(28)),
+                      fontSize: ScreenUtil().setSp(28)),
                 )
               ],
             )

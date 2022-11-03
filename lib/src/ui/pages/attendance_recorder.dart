@@ -14,7 +14,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class AttendanceRecorderWidget extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
 
   AttendanceRecorderWidget({required this.user});
 
@@ -39,7 +39,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   Location _locationService = new Location();
   PermissionStatus? _permission;
   String? error;
-  CameraPosition? _currentCameraPosition;
+  late CameraPosition _currentCameraPosition;
   var rMin;
   var rMax;
   var direction = 1;
@@ -223,7 +223,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
 
   initPlatformState() async {
     await _locationService.changeSettings(
-        accuracy: LocationAccuracy.BALANCED, interval: 1000);
+        accuracy: LocationAccuracy.balanced, interval: 1000);
 
     LocationData? location;
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -233,14 +233,13 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
       if (serviceStatus) {
         _permission = await _locationService.requestPermission();
         print("Permission: $_permission");
-        if (_permission == PermissionStatus.GRANTED) {
+        if (_permission == PermissionStatus.granted) {
           location = await _locationService.getLocation();
 
-          _locationSubscription = _locationService
-              .onLocationChanged()
+          _locationSubscription = _locationService.onLocationChanged
               .listen((LocationData result) async {
             _currentCameraPosition = CameraPosition(
-                target: LatLng(result.latitude, result.longitude),
+                target: LatLng(result.latitude ?? 0, result.longitude ?? 0),
                 zoom: 16,
                 tilt: 50.0,
                 bearing: 45.0);
@@ -254,7 +253,8 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
                 _markers.clear();
                 _markers.add(Marker(
                     markerId: MarkerId("Current Location"),
-                    position: LatLng(result.latitude, result.longitude)));
+                    position:
+                        LatLng(result.latitude ?? 0, result.longitude ?? 0)));
               });
             }
           });

@@ -23,7 +23,7 @@ class AttendanceSummary extends StatefulWidget {
       : super(key: key);
 
   final String title;
-  final FirebaseUser user;
+  final User user;
 
   @override
   _AttendanceSummaryState createState() => _AttendanceSummaryState();
@@ -207,36 +207,36 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
             ),
           );
         },
-        markersBuilder: (context, date, events, holidays) {
-          final children = <Widget>[];
+        // markersBuilder: (context, date, events, holidays) {
+        //   final children = <Widget>[];
 
-          if (events.isNotEmpty) {
-            children.add(
-              Positioned(
-                right: 1,
-                bottom: 1,
-                child: _buildEventsMarker(date, events),
-              ),
-            );
-          }
+        //   if (events.isNotEmpty) {
+        //     children.add(
+        //       Positioned(
+        //         right: 1,
+        //         bottom: 1,
+        //         child: _buildEventsMarker(date, events),
+        //       ),
+        //     );
+        //   }
 
-          if (holidays.isNotEmpty) {
-            children.add(
-              Positioned(
-                right: -2,
-                top: -2,
-                child: _buildHolidaysMarker(),
-              ),
-            );
-          }
-          return children;
-        },
+        //   if (holidays.isNotEmpty) {
+        //     children.add(
+        //       Positioned(
+        //         right: -2,
+        //         top: -2,
+        //         child: _buildHolidaysMarker(),
+        //       ),
+        //     );
+        //   }
+        //   return children;
+        // },
       ),
-      onDaySelected: (date, events) {
-        _selectedDay = date;
-        _onDaySelected(date, events);
-        _animationController.forward(from: 0.0);
-      },
+      // onDaySelected: (date, events) {
+      //   _selectedDay = date;
+      //   _onDaySelected(date, events);
+      //   _animationController.forward(from: 0.0);
+      // },
     );
   }
 
@@ -245,11 +245,11 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: _calendarController.isSelected(date)
-            ? Colors.brown[500]
-            : _calendarController.isToday(date)
-                ? Colors.brown[300]
-                : Colors.blue[400],
+        // color: _calendarController.isSelected(date)
+        //     ? Colors.brown[500]
+        //     : _calendarController.isToday(date)
+        //         ? Colors.brown[300]
+        //         : Colors.blue[400],
       ),
       width: 16.0,
       height: 16.0,
