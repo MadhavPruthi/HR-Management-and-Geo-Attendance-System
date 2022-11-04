@@ -17,6 +17,7 @@ class OfficeDatabase {
     DataSnapshot dataSnapshot =( await _databaseReference.child("users").once()).snapshot;
     final userInfo =( dataSnapshot.value as Map)[uid];
     final office = userInfo["allotted_office"];
+    print(userInfo);
 
     dataSnapshot = (await _databaseReference.child("location").once()).snapshot;
     final findOffice = (dataSnapshot.value as Map)[office];

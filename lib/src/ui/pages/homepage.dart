@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage>
   OfficeDatabase officeDatabase = new OfficeDatabase();
   final _databaseReference = FirebaseDatabase.instance.reference();
   var geoFenceActive = false;
-  var result;
+  late PermissionStatus result;
   String? error;
   Office? allottedOffice;
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage>
   Future<void> _initializeGeoFence() async {
     try {
       result = await Permission.location.request();
-      switch (result[Permission.location]) {
+      switch (result) {
         case PermissionStatus.granted:
           GeofencingManager.initialize().then((_) {
             officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
