@@ -34,20 +34,22 @@ class _SplashScreenState extends State<SplashScreenWidget> {
     Timer(Duration(seconds: 3), () {
       widget.auth.getCurrentUser().then((user) {
         setState(() {          
-          authStatus = user.uid == null
+          authStatus = user?.uid == null
               ? AuthStatus.NOT_LOGGED_IN
               : AuthStatus.LOGGED_IN;
 
-          MaterialPageRoute loginRoute = new MaterialPageRoute(
-              builder: (BuildContext context) => Login(auth: new Auth()));
-          MaterialPageRoute homePageRoute = new MaterialPageRoute(
-              builder: (BuildContext context) => HomePage(user: user));
-
           if (authStatus == AuthStatus.LOGGED_IN) {
+            MaterialPageRoute homePageRoute = new MaterialPageRoute(
+                builder: (BuildContext context) => HomePage(user: user!));
             Navigator.pushReplacement(context, homePageRoute);
           } else {
             if (authStatus == AuthStatus.NOT_LOGGED_IN)
-              Navigator.pushReplacement(context, loginRoute);
+              {
+                MaterialPageRoute loginRoute = new MaterialPageRoute(
+                    builder: (BuildContext context) => Login(auth: new Auth()));
+                Navigator.pushReplacement(context, loginRoute);
+              }
+
           }
         });
       });

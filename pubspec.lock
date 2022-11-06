@@ -106,6 +106,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.0.0"
+  easy_geofencing:
+    dependency: "direct main"
+    description:
+      name: easy_geofencing
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   fake_async:
     dependency: transitive
     description:
@@ -291,15 +298,41 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  geofencing:
-    dependency: "direct main"
+  geolocator:
+    dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "5b99be990df8a17643ca314e1891286d8a864bb1"
-      url: "https://github.com/bkonyi/FlutterGeofencing.git"
-    source: git
-    version: "0.1.0"
+      name: geolocator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.7.1"
+  geolocator_android:
+    dependency: transitive
+    description:
+      name: geolocator_android
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
+  geolocator_apple:
+    dependency: transitive
+    description:
+      name: geolocator_apple
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.2"
+  geolocator_platform_interface:
+    dependency: transitive
+    description:
+      name: geolocator_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.6"
+  geolocator_web:
+    dependency: transitive
+    description:
+      name: geolocator_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.6"
   google_maps_flutter:
     dependency: "direct main"
     description:

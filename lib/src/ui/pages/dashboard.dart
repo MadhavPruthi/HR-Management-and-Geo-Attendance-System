@@ -272,25 +272,26 @@ class _NavigationPanelState extends State<NavigationPanel> {
                     print(snapshot.data?.snapshot.value);
                     if (snapshot.data?.snapshot.value == null ||
                         snapshot.data?.snapshot.value == 1)
-                      return Stack(children: [
-                        drawerTile("Review Pending Leaves", () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  LeaveApprovalByManagerWidget(
-                                    title: "Review Leaves",
-                                    user: widget.user,
-                                  )));
-                        }, Icons.perm_identity),
-                        Positioned(
-                          child: Icon(
-                            Icons.notifications,
-                            color: Colors.yellow,
-                            size: 30,
-                          ),
-                          right: 17,
-                          height: 40,
-                        ),
-                      ]);
+                      // return Stack(children: [
+                      //   drawerTile("Review Pending Leaves", () {
+                      //     Navigator.of(context).push(MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             LeaveApprovalByManagerWidget(
+                      //               title: "Review Leaves",
+                      //               user: widget.user,
+                      //             )));
+                      //   }, Icons.perm_identity),
+                      //   Positioned(
+                      //     child: Icon(
+                      //       Icons.notifications,
+                      //       color: Colors.yellow,
+                      //       size: 30,
+                      //     ),
+                      //     right: 17,
+                      //     height: 40,
+                      //   ),
+                      // ]);
+                      return Container();
 
                     return Container();
                 }

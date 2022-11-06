@@ -63,7 +63,8 @@ class _LoginState extends State<Login> {
           final snapshot = event.snapshot;
           if (snapshot.value == null) {
             print("popped");
-            _errorMessage = "Invalid Login Details";
+            _errorMessage = "Invalid Login Details!";
+            Navigator.pop(context);
           } else {
             email = snapshot.value as String;
             loginUser(email);
@@ -95,34 +96,38 @@ class _LoginState extends State<Login> {
   }
 
   void loginUser(String email) async {
-    if (_password == null) {
+    if (_password != null) {
       try {
         _user = await authObject.signIn(email, _password!);
 
-        checkForSingleSignOn(_user).then((list) {
-          Navigator.of(context).pop();
+        // checkForSingleSignOn(_user).then((list) {
+        //   Navigator.of(context).pop();
+        //
+        //   // Adding UUID to database
+        //   if (list[0] == true && list[2] == false) {
+        //     _userRef.child(_user.uid).update({"UUID": list[1]});
+        //   }
+        //
+        //   if (list[0] == true) {
+        //     Navigator.pushReplacement(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => HomePage(user: _user)),
+        //     );
+        //   } else {
+        //     showDialogTemplate(
+        //         context,
+        //         "ATTENTION!",
+        //         "\nUnauthorized Access Detected!\nIf you are a Legit user, Kindly Contact HR Dept for the same",
+        //         "assets/gif/no_entry.gif",
+        //         Color.fromRGBO(170, 160, 160, 1.0),
+        //         "Ok");
+        //   }
+        // });
 
-          // Adding UUID to database
-
-          if (list[0] == true && list[2] == false) {
-            _userRef.child(_user.uid).update({"UUID": list[1]});
-          }
-
-          if (list[0] == true) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage(user: _user)),
-            );
-          } else {
-            showDialogTemplate(
-                context,
-                "ATTENTION!",
-                "\nUnauthorized Access Detected!\nIf you are a Legit user, Kindly Contact HR Dept for the same",
-                "assets/gif/no_entry.gif",
-                Color.fromRGBO(170, 160, 160, 1.0),
-                "Ok");
-          }
-        });
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage(user: _user)),
+        );
       } catch (e) {
         Navigator.of(context).pop();
         print("Error" + e.toString());
@@ -133,7 +138,7 @@ class _LoginState extends State<Login> {
       }
     } else {
       setState(() {
-        _errorMessage = "Invalid Login Details";
+        _errorMessage = "Invalid Login Details!!!!!";
         _formKey.currentState?.reset();
         Navigator.of(context).pop();
       });
@@ -416,7 +421,7 @@ class _LoginState extends State<Login> {
                   validator: (value) => value == null || value.isEmpty
                       ? 'Password can\'t be empty'
                       : null,
-                  onSaved: (value) => _password = value,
+                  onChanged: (value) => _password = value,
                 ),
               ),
               Text(
