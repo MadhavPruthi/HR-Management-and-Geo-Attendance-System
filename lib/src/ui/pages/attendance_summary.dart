@@ -133,7 +133,12 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
       focusedDay: DateTime.now(),
       firstDay: DateTime(2000),
       lastDay: DateTime.now(),
-      eventLoader: (dateTime) => _events[dateTime]!,
+      // eventLoader: (dateTime) => _events[dateTime]!,
+      onDaySelected: (DateTime selectedDay, DateTime focusedDay){
+        _selectedDay = selectedDay;
+          _onDaySelected(selectedDay, _selectedEvents);
+          _animationController.forward(from: 0.0);
+      },
       holidayPredicate: (dateTime) => _holidays
           .containsKey(DateTime(dateTime.year, dateTime.month, dateTime.day)),
       calendarFormat: _calendarFormat,
@@ -166,47 +171,47 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
         formatButtonVisible: false,
       ),
       calendarBuilders: CalendarBuilders(
-        selectedBuilder: (context, date, _) {
-          return FadeTransition(
-            opacity: Tween(begin: 0.0, end: 1.0).animate(_animationController),
-            child: Container(
-              margin: const EdgeInsets.all(4.0),
-              padding: const EdgeInsets.only(top: 11.0, left: 12.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.amber[500],
-              ),
-              width: 100,
-              height: 100,
-              child: Text(
-                '${date.day}',
-                style: TextStyle().copyWith(
-                    fontSize: 18.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          );
-        },
-        todayBuilder: (context, date, _) {
-          return Container(
-            margin: const EdgeInsets.all(4.0),
-            padding: const EdgeInsets.only(top: 11.0, left: 12.0),
-            width: 100,
-            height: 100,
-            child: Text(
-              '${date.day}',
-              style: TextStyle().copyWith(
-                  fontSize: 18.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
-            ),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromRGBO(29, 209, 161, 1.0),
-            ),
-          );
-        },
+        // selectedBuilder: (context, date, _) {
+        //   return FadeTransition(
+        //     opacity: Tween(begin: 0.0, end: 1.0).animate(_animationController),
+        //     child: Container(
+        //       margin: const EdgeInsets.all(4.0),
+        //       padding: const EdgeInsets.only(top: 11.0, left: 12.0),
+        //       decoration: BoxDecoration(
+        //         shape: BoxShape.circle,
+        //         color: Colors.amber[500],
+        //       ),
+        //       width: 100,
+        //       height: 100,
+        //       child: Text(
+        //         '${date.day}',
+        //         style: TextStyle().copyWith(
+        //             fontSize: 18.0,
+        //             color: Colors.white,
+        //             fontWeight: FontWeight.bold),
+        //       ),
+        //     ),
+        //   );
+        // },
+        // todayBuilder: (context, date, _) {
+        //   return Container(
+        //     margin: const EdgeInsets.all(4.0),
+        //     padding: const EdgeInsets.only(top: 11.0, left: 12.0),
+        //     width: 100,
+        //     height: 100,
+        //     child: Text(
+        //       '${date.day}',
+        //       style: TextStyle().copyWith(
+        //           fontSize: 18.0,
+        //           color: Colors.white,
+        //           fontWeight: FontWeight.bold),
+        //     ),
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       color: Color.fromRGBO(29, 209, 161, 1.0),
+        //     ),
+        //   );
+        // },
         // markersBuilder: (context, date, events, holidays) {
         //   final children = <Widget>[];
 
@@ -232,11 +237,6 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
         //   return children;
         // },
       ),
-      // onDaySelected: (date, events) {
-      //   _selectedDay = date;
-      //   _onDaySelected(date, events);
-      //   _animationController.forward(from: 0.0);
-      // },
     );
   }
 
@@ -296,22 +296,22 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
                 }
               },
             ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.teal),
-              ),
-              child: Text(
-                '2 weeks',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                if (_calendarFormat != CalendarFormat.twoWeeks) {
-                  setState(() {
-                    _calendarFormat = CalendarFormat.twoWeeks;
-                  });
-                }
-              },
-            ),
+            // ElevatedButton(
+            //   style: ButtonStyle(
+            //     backgroundColor: MaterialStateProperty.all(Colors.teal),
+            //   ),
+            //   child: Text(
+            //     '2 weeks',
+            //     style: TextStyle(color: Colors.white),
+            //   ),
+            //   onPressed: () {
+            //     if (_calendarFormat != CalendarFormat.twoWeeks) {
+            //       setState(() {
+            //         _calendarFormat = CalendarFormat.twoWeeks;
+            //       });
+            //     }
+            //   },
+            // ),
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.redAccent),

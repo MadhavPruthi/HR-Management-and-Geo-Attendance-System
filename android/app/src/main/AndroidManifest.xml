@@ -15,7 +15,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="please-add-your-API-Key" />
+            android:value="AIzaSyDSp4rP6uKcwvoFH2MjvOjXQ_hfdyVvzxk" />
         <activity
             android:name="io.flutter.embedding.android.FlutterActivity"
             android:exported="true"

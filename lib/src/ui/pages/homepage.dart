@@ -7,12 +7,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
-import 'package:geo_attendance_system/src/ui/constants/strings.dart';
 import 'package:geo_attendance_system/src/ui/pages/dashboard.dart';
-import 'package:geofencing/geofencing.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import '../../services/geofence.dart';
+import 'package:easy_geofencing/easy_geofencing.dart';
 
 class HomePage extends StatefulWidget {
   final User user;
@@ -41,17 +38,19 @@ class _HomePageState extends State<HomePage>
       result = await Permission.location.request();
       switch (result) {
         case PermissionStatus.granted:
-          GeofencingManager.initialize().then((_) {
             officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
               print(office.latitude);
-              GeoFenceClass.startListening(
-                  office.latitude, office.longitude, office.radius);
+              EasyGeofencing.startGeofenceService(
+                  pointedLatitude: office.latitude.toString(),
+                  pointedLongitude: office.longitude.toString(),
+                  radiusMeter: office.radius.toString(),
+                  eventPeriodInSeconds: 5);
               setState(() {
                 geoFenceActive = true;
                 allottedOffice = office;
               });
             });
-          });
+
           break;
         case PermissionStatus.denied:
           print("DENIED");
@@ -157,8 +156,6 @@ class _HomePageState extends State<HomePage>
   void dispose() {
     super.dispose();
     controller.dispose();
-    GeoFenceClass.closePort();
-    GeofencingManager.removeGeofenceById(fence_id);
   }
 
   bool get isPanelVisible {
