@@ -83,13 +83,18 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
         .child("manager")
         .once()
         .then((DatabaseEvent event) {
-          final managerID = event.snapshot;
-      _managerRef.child(managerID.value as String).once().then((DatabaseEvent _event) {
+      final managerID = event.snapshot;
+      _managerRef
+          .child(managerID.value as String)
+          .once()
+          .then((DatabaseEvent _event) {
         final details = _event.snapshot;
-        setState(() {
-          _managerName = (details.value as Map)["name"];
-          _managerDesignation = (details.value as Map)["designation"];
-        });
+        if (mounted) {
+          setState(() {
+            _managerName = (details.value as Map)["name"];
+            _managerDesignation = (details.value as Map)["designation"];
+          });
+        }
       });
     });
   }
@@ -100,7 +105,7 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
 
   List<Widget> _generateListLeaves(DataSnapshot dataSnapshot) {
     List<Widget> list = [];
-    (dataSnapshot.value as Map).forEach((key, value) {
+    (dataSnapshot.value as Map?)?.forEach((key, value) {
       list.add(Container(
           decoration: BoxDecoration(
               color: dashBoardColor,
@@ -591,10 +596,11 @@ class LeaveApplicationWidgetState extends State<LeaveApplicationWidget>
     int request = int.parse(leavesCount);
 
     DataSnapshot dataSnapshot = (await _userRef
-        .child(widget.user.uid)
-        .child("leaves")
-        .child(leaveKeys[leaveIndex])
-        .once()).snapshot;
+            .child(widget.user.uid)
+            .child("leaves")
+            .child(leaveKeys[leaveIndex])
+            .once())
+        .snapshot;
 //    print("Value" +  dataSnapshot.key.toString() + " " + dataSnapshot.value.toString());
 //    print(request);
     if ((dataSnapshot.value as int) < request) {
