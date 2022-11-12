@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:ui';
 
-import 'package:easy_geofencing/easy_geofencing.dart';
 import 'package:easy_geofencing/enums/geofence_status.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geo_attendance_system/src/services/attendance_mark.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
+import 'package:geo_attendance_system/src/services/geofencing.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/widgets/attendance_Marker_buttons.dart';
 import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
@@ -32,7 +31,6 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
 
   // ignore: unused_field
   StreamSubscription<LocationData>? _locationSubscription;
-  StreamSubscription<GeofenceStatus>? geofenceStatusStream;
   LocationData? _currentLocation;
   LocationData? _startLocation;
   Set<Marker> _markers = {};
@@ -46,34 +44,33 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   var rMax;
   var direction = 1;
   var _radius;
+  late GeoFencingService geoFencingService;
   GeofenceStatus geofenceStatus = GeofenceStatus.init;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
-    if (geofenceStatusStream == null) {
-      try {
-        geofenceStatusStream = EasyGeofencing.getGeofenceStream()!
-            .listen((GeofenceStatus status) {
-          setState(() {
-            geofenceStatus = status;
-          });
-        });
-      }
-      on StateError{
-        print("Something fucked up!");
-      }
-    }
 
+    Future.microtask(() {
+      geoFencingService = GeoFencing.of(context).service
+        ..addListener(onGeofenceStatusUpdate);
+    });
   }
 
   @override
   void dispose() async {
     super.dispose();
     _locationSubscription?.cancel();
-    geofenceStatusStream?.cancel();
-    print(geofenceStatusStream?.isPaused);
+    geoFencingService.removeListener(onGeofenceStatusUpdate);
+  }
+
+  void onGeofenceStatusUpdate() {
+    if (mounted) {
+      setState(() {
+        geofenceStatus = geoFencingService.geofenceStatus;
+      });
+    }
   }
 
   @override
@@ -204,7 +201,8 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
     } else {
       onLoadingDialog(context);
       officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-        markInAttendance(context, office, _currentLocation!, widget.user, geofenceStatus);
+        markInAttendance(
+            context, office, _currentLocation!, widget.user, geofenceStatus);
       });
     }
   }
@@ -229,7 +227,8 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
     } else {
       onLoadingDialog(context);
       officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-        markOutAttendance(context, office, _currentLocation!, widget.user, geofenceStatus);
+        markOutAttendance(
+            context, office, _currentLocation!, widget.user, geofenceStatus);
       });
     }
   }

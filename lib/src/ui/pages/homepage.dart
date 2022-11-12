@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
+import 'package:geo_attendance_system/src/services/geofencing.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 import 'package:geo_attendance_system/src/ui/pages/dashboard.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:easy_geofencing/easy_geofencing.dart';
 
 class HomePage extends StatefulWidget {
   final User user;
@@ -33,23 +33,21 @@ class _HomePageState extends State<HomePage>
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 
-  Future<void> _initializeGeoFence() async {
+  Future<void> _initializeGeoFence(BuildContext context) async {
     try {
       result = await Permission.location.request();
       switch (result) {
         case PermissionStatus.granted:
-            officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-              print(office.latitude);
-              EasyGeofencing.startGeofenceService(
-                  pointedLatitude: office.latitude.toString(),
-                  pointedLongitude: office.longitude.toString(),
-                  radiusMeter: office.radius.toString(),
-                  eventPeriodInSeconds: 5);
-              setState(() {
-                geoFenceActive = true;
-                allottedOffice = office;
-              });
+          officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+            print(office.latitude);
+
+            GeoFencing.of(context).service.startGeofencing(office);
+
+            setState(() {
+              geoFenceActive = true;
+              allottedOffice = office;
             });
+          });
 
           break;
         case PermissionStatus.denied:
@@ -146,7 +144,7 @@ class _HomePageState extends State<HomePage>
         "notificationToken": token,
       });
     });
-    _initializeGeoFence();
+    Future.microtask(() => _initializeGeoFence(context));
 
     controller = new AnimationController(
         vsync: this, duration: new Duration(milliseconds: 300), value: 1.0);

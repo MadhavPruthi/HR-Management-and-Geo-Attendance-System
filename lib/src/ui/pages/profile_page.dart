@@ -115,7 +115,7 @@ class ProfilePageState extends State<ProfilePage> {
   final double _appBarHeight = 256.0;
   UserDatabase userDatabase = new UserDatabase();
   AppBarBehavior _appBarBehavior = AppBarBehavior.pinned;
-  late Employee employee;
+  Employee? employee;
 
   @override
   void initState() {
@@ -202,7 +202,7 @@ class ProfilePageState extends State<ProfilePage> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 8.0, horizontal: 10),
                           child: Text(
-                            "${employee.firstName} - ${employee.employeeID}",
+                            "${employee?.firstName} - ${employee?.employeeID}",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w900,
@@ -248,7 +248,7 @@ class ProfilePageState extends State<ProfilePage> {
                               icon: Icons.call,
                               onPressed: () {},
                               lines: <String>[
-                                employee.contactNumber,
+                                employee?.contactNumber ?? '',
                                 'Mobile',
                               ],
                             ),
@@ -275,13 +275,13 @@ class ProfilePageState extends State<ProfilePage> {
                             icon: Icons.map,
                             onPressed: () {},
                             lines: <String>[
-                              employee.residentialAddress,
+                              employee?.residentialAddress ?? '',
                               'Home',
                             ],
                           ),
                         ],
                       ),
-                      employee.designation == null
+                      employee?.designation == null
                           ? Container()
                           : ProfilePageWidget(
                               icon: Icons.description,
@@ -290,7 +290,7 @@ class ProfilePageState extends State<ProfilePage> {
                                   icon: Icons.work,
                                   onPressed: () {},
                                   lines: <String>[
-                                    employee.designation,
+                                    employee!.designation,
                                     'Designation',
                                   ],
                                 ),
