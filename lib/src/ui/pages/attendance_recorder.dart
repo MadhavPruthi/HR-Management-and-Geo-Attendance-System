@@ -32,6 +32,7 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
   // ignore: unused_field
   StreamSubscription<LocationData>? _locationSubscription;
   LocationData? _currentLocation;
+  LatLng previousLocation = LatLng(0, 0);
   LocationData? _startLocation;
   Set<Marker> _markers = {};
   Set<Circle> _circles = new Set();
@@ -125,39 +126,41 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
           officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-            setState(() {
-              rMax = office.radius;
-              rMin = 3 * office.radius / 5;
-              _radius = office.radius;
-              Timer.periodic(new Duration(milliseconds: 100), (timer) {
-                var radius =
-                    _circles.isEmpty ? office.radius : _circles.first.radius;
+            if (mounted) {
+              setState(() {
+                rMax = office.radius;
+                rMin = 3 * office.radius / 5;
+                _radius = office.radius;
+                Timer.periodic(new Duration(milliseconds: 100), (timer) {
+                  var radius =
+                      _circles.isEmpty ? office.radius : _circles.first.radius;
 
-                if ((radius > rMax) || (radius < rMin)) {
-                  direction *= -1;
-                }
-                var _par = (radius / _radius) - 0.2;
-                var radiusFinal = radius + direction * 10;
-                if (!mounted) {
-                  timer.cancel();
-                  return;
-                }
-                setState(() {
-                  _circles.clear();
-                  _circles.add(Circle(
-                    circleId: CircleId("GeoFenceCircle"),
-                    center: LatLng(office.latitude, office.longitude),
-                    radius: radiusFinal,
-                    strokeColor: Colors.blueGrey,
-                    strokeWidth: 5,
-                    fillColor: Colors.blueGrey.withOpacity(0.6 * _par),
-                  ));
-                });
+                  if ((radius > rMax) || (radius < rMin)) {
+                    direction *= -1;
+                  }
+                  var _par = (radius / _radius) - 0.2;
+                  var radiusFinal = radius + direction * 10;
+                  if (!mounted) {
+                    timer.cancel();
+                    return;
+                  }
+                  setState(() {
+                    _circles.clear();
+                    _circles.add(Circle(
+                      circleId: CircleId("GeoFenceCircle"),
+                      center: LatLng(office.latitude, office.longitude),
+                      radius: radiusFinal,
+                      strokeColor: Colors.blueGrey,
+                      strokeWidth: 5,
+                      fillColor: Colors.blueGrey.withOpacity(0.6 * _par),
+                    ));
+                  });
 //            circleOption.fillOpacity = 0.6 * _par;
 
 //                circle.setOptions(circleOption);
+                });
               });
-            });
+            }
           });
         },
       ),
@@ -256,24 +259,37 @@ class AttendanceRecorderWidgetState extends State<AttendanceRecorderWidget> {
 
           _locationSubscription = _locationService.onLocationChanged
               .listen((LocationData result) async {
-            _currentCameraPosition = CameraPosition(
-                target: LatLng(result.latitude ?? 0, result.longitude ?? 0),
+            final newLocation = LatLng(
+              result.latitude ?? 0,
+              result.longitude ?? 0,
+            );
+            if (previousLocation != newLocation) {
+              previousLocation = newLocation;
+              _currentCameraPosition = CameraPosition(
+                target: newLocation,
                 zoom: 16,
                 tilt: 50.0,
-                bearing: 45.0);
+                bearing: 45.0,
+              );
 
-            final GoogleMapController controller = await _controller.future;
-            controller.animateCamera(
-                CameraUpdate.newCameraPosition(_currentCameraPosition));
-            if (mounted) {
-              setState(() {
-                _currentLocation = result;
-                _markers.clear();
-                _markers.add(Marker(
-                    markerId: MarkerId("Current Location"),
-                    position:
-                        LatLng(result.latitude ?? 0, result.longitude ?? 0)));
-              });
+              final GoogleMapController controller = await _controller.future;
+              controller.animateCamera(
+                CameraUpdate.newCameraPosition(
+                  _currentCameraPosition,
+                ),
+              );
+              if (mounted) {
+                setState(() {
+                  _currentLocation = result;
+                  _markers.clear();
+                  _markers.add(
+                    Marker(
+                      markerId: MarkerId("Current Location"),
+                      position: newLocation,
+                    ),
+                  );
+                });
+              }
             }
           });
         }
