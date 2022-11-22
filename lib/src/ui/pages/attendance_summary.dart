@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/models/AttendaceList.dart';
@@ -17,10 +19,11 @@ final Map<DateTime, List> _holidays = {
 };
 
 class AttendanceSummary extends StatefulWidget {
-  AttendanceSummary({Key key, this.title, this.user}) : super(key: key);
+  AttendanceSummary({Key? key, required this.title, required this.user})
+      : super(key: key);
 
   final String title;
-  final FirebaseUser user;
+  final User user;
 
   @override
   _AttendanceSummaryState createState() => _AttendanceSummaryState();
@@ -28,10 +31,11 @@ class AttendanceSummary extends StatefulWidget {
 
 class _AttendanceSummaryState extends State<AttendanceSummary>
     with TickerProviderStateMixin {
-  Map<DateTime, List> _events;
-  List _selectedEvents;
-  AnimationController _animationController;
-  CalendarController _calendarController;
+  late LinkedHashMap<DateTime, List> _events;
+  late List _selectedEvents;
+  late final AnimationController _animationController;
+  late DateTime _selectedDay;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
 
   @override
   void initState() {
@@ -39,10 +43,9 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
     initializeDateFormatting();
     final _selectedDay = DateTime.now();
 
-    _events = {};
+    _events = LinkedHashMap();
 
     _selectedEvents = _events[_selectedDay] ?? [];
-    _calendarController = CalendarController();
 
     _animationController = AnimationController(
       vsync: this,
@@ -55,7 +58,6 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
   @override
   void dispose() {
     _animationController.dispose();
-    _calendarController.dispose();
     super.dispose();
   }
 
@@ -82,11 +84,6 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
 
       Navigator.of(context, rootNavigator: true).pop('dialog');
     });
-  }
-
-  void _onVisibleDaysChanged(
-      DateTime first, DateTime last, CalendarFormat format) {
-    print('$first $last');
   }
 
   @override
@@ -133,11 +130,20 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
       locale: 'en_US',
-      calendarController: _calendarController,
-      events: _events,
-      holidays: _holidays,
-      initialCalendarFormat: CalendarFormat.month,
-      formatAnimation: FormatAnimation.slide,
+      focusedDay: DateTime.now(),
+      firstDay: DateTime(2000),
+      lastDay: DateTime.now(),
+      // eventLoader: (dateTime) => _events[dateTime]!,
+      onDaySelected: (DateTime selectedDay, DateTime focusedDay){
+        _selectedDay = selectedDay;
+          _onDaySelected(selectedDay, _selectedEvents);
+          _animationController.forward(from: 0.0);
+      },
+      holidayPredicate: (dateTime) => _holidays
+          .containsKey(DateTime(dateTime.year, dateTime.month, dateTime.day)),
+      calendarFormat: _calendarFormat,
+      formatAnimationCurve: Curves.fastOutSlowIn,
+      formatAnimationDuration: const Duration(milliseconds: 400),
       startingDayOfWeek: StartingDayOfWeek.sunday,
       availableGestures: AvailableGestures.all,
       availableCalendarFormats: const {
@@ -146,11 +152,10 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
       },
       calendarStyle: CalendarStyle(
         outsideDaysVisible: true,
-        weekdayStyle: TextStyle().copyWith(color: Colors.white),
-        weekendStyle: TextStyle().copyWith(color: Colors.grey),
-        holidayStyle: TextStyle().copyWith(color: Colors.white),
-        outsideWeekendStyle: TextStyle().copyWith(color: Colors.grey),
-        outsideStyle: TextStyle().copyWith(color: Colors.grey),
+        defaultTextStyle: TextStyle().copyWith(color: Colors.white),
+        weekendTextStyle: TextStyle().copyWith(color: Colors.grey),
+        holidayTextStyle: TextStyle().copyWith(color: Colors.white),
+        outsideTextStyle: TextStyle().copyWith(color: Colors.grey),
       ),
       daysOfWeekStyle: DaysOfWeekStyle(
         weekdayStyle: TextStyle().copyWith(color: Colors.white),
@@ -162,82 +167,76 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
             const Icon(Icons.chevron_right, color: Colors.white60),
         titleTextStyle: TextStyle(
             color: Colors.white, fontWeight: FontWeight.w900, fontSize: 28),
-        centerHeaderTitle: true,
+        titleCentered: true,
         formatButtonVisible: false,
       ),
-      builders: CalendarBuilders(
-        selectedDayBuilder: (context, date, _) {
-          return FadeTransition(
-            opacity: Tween(begin: 0.0, end: 1.0).animate(_animationController),
-            child: Container(
-              margin: const EdgeInsets.all(4.0),
-              padding: const EdgeInsets.only(top: 11.0, left: 12.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.amber[500],
-              ),
-              width: 100,
-              height: 100,
-              child: Text(
-                '${date.day}',
-                style: TextStyle().copyWith(
-                    fontSize: 18.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          );
-        },
-        todayDayBuilder: (context, date, _) {
-          return Container(
-            margin: const EdgeInsets.all(4.0),
-            padding: const EdgeInsets.only(top: 11.0, left: 12.0),
-            width: 100,
-            height: 100,
-            child: Text(
-              '${date.day}',
-              style: TextStyle().copyWith(
-                  fontSize: 18.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
-            ),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromRGBO(29, 209, 161, 1.0),
-            ),
-          );
-        },
-        markersBuilder: (context, date, events, holidays) {
-          final children = <Widget>[];
+      calendarBuilders: CalendarBuilders(
+        // selectedBuilder: (context, date, _) {
+        //   return FadeTransition(
+        //     opacity: Tween(begin: 0.0, end: 1.0).animate(_animationController),
+        //     child: Container(
+        //       margin: const EdgeInsets.all(4.0),
+        //       padding: const EdgeInsets.only(top: 11.0, left: 12.0),
+        //       decoration: BoxDecoration(
+        //         shape: BoxShape.circle,
+        //         color: Colors.amber[500],
+        //       ),
+        //       width: 100,
+        //       height: 100,
+        //       child: Text(
+        //         '${date.day}',
+        //         style: TextStyle().copyWith(
+        //             fontSize: 18.0,
+        //             color: Colors.white,
+        //             fontWeight: FontWeight.bold),
+        //       ),
+        //     ),
+        //   );
+        // },
+        // todayBuilder: (context, date, _) {
+        //   return Container(
+        //     margin: const EdgeInsets.all(4.0),
+        //     padding: const EdgeInsets.only(top: 11.0, left: 12.0),
+        //     width: 100,
+        //     height: 100,
+        //     child: Text(
+        //       '${date.day}',
+        //       style: TextStyle().copyWith(
+        //           fontSize: 18.0,
+        //           color: Colors.white,
+        //           fontWeight: FontWeight.bold),
+        //     ),
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       color: Color.fromRGBO(29, 209, 161, 1.0),
+        //     ),
+        //   );
+        // },
+        // markersBuilder: (context, date, events, holidays) {
+        //   final children = <Widget>[];
 
-          if (events.isNotEmpty) {
-            children.add(
-              Positioned(
-                right: 1,
-                bottom: 1,
-                child: _buildEventsMarker(date, events),
-              ),
-            );
-          }
+        //   if (events.isNotEmpty) {
+        //     children.add(
+        //       Positioned(
+        //         right: 1,
+        //         bottom: 1,
+        //         child: _buildEventsMarker(date, events),
+        //       ),
+        //     );
+        //   }
 
-          if (holidays.isNotEmpty) {
-            children.add(
-              Positioned(
-                right: -2,
-                top: -2,
-                child: _buildHolidaysMarker(),
-              ),
-            );
-          }
-
-          return children;
-        },
+        //   if (holidays.isNotEmpty) {
+        //     children.add(
+        //       Positioned(
+        //         right: -2,
+        //         top: -2,
+        //         child: _buildHolidaysMarker(),
+        //       ),
+        //     );
+        //   }
+        //   return children;
+        // },
       ),
-      onDaySelected: (date, events) {
-        _onDaySelected(date, events);
-        _animationController.forward(from: 0.0);
-      },
-      onVisibleDaysChanged: _onVisibleDaysChanged,
     );
   }
 
@@ -246,11 +245,11 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: _calendarController.isSelected(date)
-            ? Colors.brown[500]
-            : _calendarController.isToday(date)
-                ? Colors.brown[300]
-                : Colors.blue[400],
+        // color: _calendarController.isSelected(date)
+        //     ? Colors.brown[500]
+        //     : _calendarController.isToday(date)
+        //         ? Colors.brown[300]
+        //         : Colors.blue[400],
       ),
       width: 16.0,
       height: 16.0,
@@ -281,41 +280,52 @@ class _AttendanceSummaryState extends State<AttendanceSummary>
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            RaisedButton(
-              color: Colors.indigo,
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.indigo),
+              ),
               child: Text(
                 'Month',
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.month);
-                });
+                if (_calendarFormat != CalendarFormat.month) {
+                  setState(() {
+                    _calendarFormat = CalendarFormat.month;
+                  });
+                }
               },
             ),
-            RaisedButton(
-              color: Colors.teal,
-              child: Text(
-                '2 weeks',
-                style: TextStyle(color: Colors.white),
+            // ElevatedButton(
+            //   style: ButtonStyle(
+            //     backgroundColor: MaterialStateProperty.all(Colors.teal),
+            //   ),
+            //   child: Text(
+            //     '2 weeks',
+            //     style: TextStyle(color: Colors.white),
+            //   ),
+            //   onPressed: () {
+            //     if (_calendarFormat != CalendarFormat.twoWeeks) {
+            //       setState(() {
+            //         _calendarFormat = CalendarFormat.twoWeeks;
+            //       });
+            //     }
+            //   },
+            // ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.redAccent),
               ),
-              onPressed: () {
-                setState(() {
-                  _calendarController
-                      .setCalendarFormat(CalendarFormat.twoWeeks);
-                });
-              },
-            ),
-            RaisedButton(
-              color: Colors.redAccent,
               child: Text(
                 'Week',
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.week);
-                });
+                if (_calendarFormat != CalendarFormat.week) {
+                  setState(() {
+                    _calendarFormat = CalendarFormat.week;
+                  });
+                }
               },
             ),
           ],

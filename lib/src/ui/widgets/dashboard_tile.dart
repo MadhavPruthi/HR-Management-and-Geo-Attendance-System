@@ -2,14 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
 
-Widget buildTile(String icon, String title, String subtitle,
-    BuildContext context, FirebaseUser user,
-    [Function(BuildContext, FirebaseUser) onTap]) {
+Widget buildTile(
+    String icon, String title, String subtitle, BuildContext context, User user,
+    [Function(BuildContext, User)? onTap]) {
   return Material(
       elevation: 10.0,
       shadowColor: dashBoardColor,
       borderRadius: BorderRadius.circular(12.0),
-      color: Colors.white,/*Color.fromRGBO(51, 51, 102, 1),*/
+      color: Colors.white,
+      /*Color.fromRGBO(51, 51, 102, 1),*/
       child: InkWell(
         onTap: onTap != null
             ? () {

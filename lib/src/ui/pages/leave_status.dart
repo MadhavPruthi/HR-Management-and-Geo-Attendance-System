@@ -8,9 +8,10 @@ import 'package:geo_attendance_system/src/ui/constants/leave_type.dart';
 import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 
 class LeaveStatusWidget extends StatefulWidget {
-  LeaveStatusWidget({Key key, this.title, this.user}) : super(key: key);
+  LeaveStatusWidget({Key? key, required this.title, required this.user})
+      : super(key: key);
   final String title;
-  final FirebaseUser user;
+  final User user;
   final FirebaseDatabase db = new FirebaseDatabase();
 
   @override
@@ -78,10 +79,10 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
                       ),
                     );
                   return ListView.builder(
-                    itemCount: snapshot.data.length,
+                    itemCount: snapshot.data?.length,
                     itemExtent: 170.0,
                     itemBuilder: (context, index) {
-                      return leaveRow(snapshot.data[index]);
+                      return leaveRow(snapshot.data![index]);
                     },
                   );
               }
@@ -175,23 +176,31 @@ class LeaveStatusWidgetState extends State<LeaveStatusWidget> {
                     ? Container(
                         height: 35,
                       )
-                    : new RaisedButton(
-                        color: Colors.indigo,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
+                    : new ElevatedButton(
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.resolveWith(
+                            (states) => RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          elevation:
+                              MaterialStateProperty.resolveWith((states) => 4),
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                            (states) => Colors.purple,
+                          ),
                         ),
                         onPressed: () async {
                           onLoadingDialog(context);
                           leaveDatabase
                               .withDrawLeave(leave.key, widget.user.uid)
                               .then((_) {
-                            Navigator.of(context,
-                                rootNavigator: true)
+                            Navigator.of(context, rootNavigator: true)
                                 .pop('dialog');
                           });
-                          Future.delayed(Duration(seconds: 1), (){setState(() {});});
+                          Future.delayed(Duration(seconds: 1), () {
+                            setState(() {});
+                          });
                         },
-                        textColor: Color(0x66FFFFFF),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Column(children: <Widget>[

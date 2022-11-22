@@ -285,96 +285,97 @@ enum Role {
 }
 
 class Employee {
-  String uID;
+  String uID = '';
   String employeeID;
   String firstName;
-  String middleName;
-  String lastName;
-  String officeEmail;
-  String alternateEmail;
-  String contactNumber;
-  DateTime dateOfBirth;
-  DateTime joiningDate;
-  String residentialAddress;
-  Gender gender;
-  int retirementAge;
+  String? middleName;
+  String? lastName;
+  String? officeEmail;
+  String? alternateEmail;
+  String contactNumber = '';
+  DateTime? dateOfBirth;
+  DateTime? joiningDate;
+  String residentialAddress = '';
+  Gender? gender;
+  int? retirementAge;
 
-  Office joiningUnit;
-  SkillCategory skillCategory;
+  Office? joiningUnit;
+  SkillCategory? skillCategory;
 
-  EmployeeFunction employeeFunction;
-  EmployeeSubFunction employeeSubFunction;
+  EmployeeFunction? employeeFunction;
+  EmployeeSubFunction? employeeSubFunction;
 
-  Grade grade;
+  Grade? grade;
   String designation;
 
-  MaritalStatus maritalStatus;
-  Religion religion;
+  MaritalStatus? maritalStatus;
+  Religion? religion;
 
-  Nationality nationality;
+  Nationality? nationality;
 
-  Entity entity;
-  BloodGroup bloodGroup;
+  Entity? entity;
+  BloodGroup? bloodGroup;
 
-  EmployeeType employeeType;
-  Employee reviewPerson;
+  EmployeeType? employeeType;
+  Employee? reviewPerson;
 
-  Role role;
+  Role? role;
 
-  Employee(
-      {this.employeeID,
-      this.firstName,
-      this.middleName,
-      this.lastName,
-      this.residentialAddress,
-      this.contactNumber,
-      this.officeEmail,
-      this.alternateEmail,
-      this.dateOfBirth,
-      this.joiningDate,
-      this.gender,
-      this.retirementAge,
-      this.joiningUnit,
-      this.skillCategory,
-      this.employeeFunction,
-      this.employeeSubFunction,
-      this.grade,
-      this.designation,
-      this.maritalStatus,
-      this.religion,
-      this.nationality,
-      this.entity,
-      this.bloodGroup,
-      this.employeeType,
-      this.reviewPerson,
-      this.role});
+  Employee({
+    required this.employeeID,
+    required this.firstName,
+    this.middleName,
+    this.lastName,
+    required this.residentialAddress,
+    required this.contactNumber,
+    this.officeEmail,
+    this.alternateEmail,
+    this.dateOfBirth,
+    this.joiningDate,
+    this.gender,
+    this.retirementAge,
+    this.joiningUnit,
+    this.skillCategory,
+    this.employeeFunction,
+    this.employeeSubFunction,
+    this.grade,
+    required this.designation,
+    this.maritalStatus,
+    this.religion,
+    this.nationality,
+    this.entity,
+    this.bloodGroup,
+    this.employeeType,
+    this.reviewPerson,
+    this.role,
+  });
 
   Employee.fromSnapshot(DataSnapshot snapshot)
-      : uID = snapshot.value["UID"],
-        employeeID = snapshot.value["employeeID"],
-        firstName = snapshot.value["firstName"],
-        middleName = snapshot.value["middleName"],
-        lastName = snapshot.value["lastName"],
-        officeEmail = snapshot.value["officeEmail"],
-        alternateEmail = snapshot.value["alternateEmail"],
-        dateOfBirth = snapshot.value["dateOfBirth"],
-        joiningDate = snapshot.value["joiningDate"],
-        gender = snapshot.value["gender"],
-        retirementAge = snapshot.value["retirementAge"],
-        joiningUnit = snapshot.value["joiningUnit"],
-        skillCategory = snapshot.value["skillCategory"],
-        employeeFunction = snapshot.value["employeeFunction"],
-        employeeSubFunction = snapshot.value["employeeSubFunction"],
-        grade = snapshot.value["grade"],
-        designation = snapshot.value["designation"],
-        maritalStatus = snapshot.value["maritalStatus"],
-        religion = snapshot.value["religion"],
-        nationality = snapshot.value["nationality"],
-        entity = snapshot.value["entity"],
-        bloodGroup = snapshot.value["bloodGroup"],
-        employeeType = snapshot.value["employeeType"],
-        reviewPerson = snapshot.value["reviewPerson"],
-        role = snapshot.value["role"];
+      : uID = (snapshot.value as Map)["UID"],
+        employeeID = (snapshot.value as Map)["employeeID"],
+        firstName = (snapshot.value as Map)["firstName"],
+        middleName = (snapshot.value as Map)["middleName"],
+        lastName = (snapshot.value as Map)["lastName"],
+        officeEmail = (snapshot.value as Map)["officeEmail"],
+        alternateEmail = (snapshot.value as Map)["alternateEmail"],
+        dateOfBirth = (snapshot.value as Map)["dateOfBirth"],
+        joiningDate = (snapshot.value as Map)["joiningDate"],
+        gender = (snapshot.value as Map)["gender"],
+        retirementAge = (snapshot.value as Map)["retirementAge"],
+        joiningUnit = (snapshot.value as Map)["joiningUnit"],
+        skillCategory = (snapshot.value as Map)["skillCategory"],
+        employeeFunction = (snapshot.value as Map)["employeeFunction"],
+        employeeSubFunction = (snapshot.value as Map)["employeeSubFunction"],
+        grade = (snapshot.value as Map)["grade"],
+        designation = (snapshot.value as Map)["designation"],
+        maritalStatus = (snapshot.value as Map)["maritalStatus"],
+        religion = (snapshot.value as Map)["religion"],
+        nationality = (snapshot.value as Map)["nationality"],
+        entity = (snapshot.value as Map)["entity"],
+        bloodGroup = (snapshot.value as Map)["bloodGroup"],
+        employeeType = (snapshot.value as Map)["employeeType"],
+        reviewPerson = (snapshot.value as Map)["reviewPerson"],
+        role = (snapshot.value as Map)["role"];
 
   toJson() {
     return {

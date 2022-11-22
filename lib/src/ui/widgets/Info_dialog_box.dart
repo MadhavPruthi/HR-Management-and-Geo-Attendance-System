@@ -10,7 +10,7 @@ void showDialogTemplate(BuildContext context, String title, String subtitle,
         child: AlertDialog(
           backgroundColor: color,
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           title: Text(
             title,
             style: TextStyle(color: Colors.white),
@@ -26,7 +26,20 @@ void showDialogTemplate(BuildContext context, String title, String subtitle,
             ],
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
+              style: ButtonStyle(
+                padding: MaterialStateProperty.resolveWith(
+                  (states) => EdgeInsets.symmetric(horizontal: 16.0),
+                ),
+                shape: MaterialStateProperty.resolveWith(
+                  (states) => const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                  ),
+                ),
+                backgroundColor: MaterialStateProperty.resolveWith(
+                  (states) => Colors.blue,
+                ),
+              ),
               child: Text(
                 buttonText,
                 style: TextStyle(fontSize: 18.0, color: Colors.white),

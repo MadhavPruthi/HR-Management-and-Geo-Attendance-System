@@ -15,8 +15,8 @@ class UserDatabase {
 
   static Future<Employee> getDetailsFromUID(String uid) async {
     DataSnapshot dataSnapshot =
-        await _databaseReference.child("users").child(uid).once();
-    final profile = dataSnapshot.value;
+       ( await _databaseReference.child("users").child(uid).once()).snapshot;
+    final profile = dataSnapshot.value as Map;
     return Employee(
         employeeID: profile["UID"].toString(),
         firstName: profile["Name"],

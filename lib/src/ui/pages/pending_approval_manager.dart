@@ -8,10 +8,11 @@ import 'package:geo_attendance_system/src/ui/constants/leave_type.dart';
 import 'package:geo_attendance_system/src/ui/widgets/loader_dialog.dart';
 
 class LeaveApprovalByManagerWidget extends StatefulWidget {
-  LeaveApprovalByManagerWidget({Key key, this.title, this.user})
+  LeaveApprovalByManagerWidget(
+      {Key? key, required this.title, required this.user})
       : super(key: key);
   final String title;
-  final FirebaseUser user;
+  final User user;
   final FirebaseDatabase db = new FirebaseDatabase();
 
   @override
@@ -80,13 +81,13 @@ class LeaveApprovalByManagerWidgetState
                       ),
                     );
                   return ListView.builder(
-                    itemCount: snapshot.data.length,
+                    itemCount: snapshot.data?.length,
 //                    itemExtent: 200.0,
                     itemBuilder: (context, index) {
-                      Leave leave = snapshot.data[index];
+                      Leave leave = snapshot.data![index];
                       if (leave.status == LeaveStatus.pending &&
                           leave.withdrawalStatus == false)
-                        return leaveRow(snapshot.data[index]);
+                        return leaveRow(snapshot.data![index]);
 
                       return Container();
                     },
@@ -168,10 +169,15 @@ class LeaveApprovalByManagerWidgetState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  RaisedButton(
-                    color: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(10.0),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.resolveWith(
+                        (states) => RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                          (states) => Colors.green),
                     ),
                     onPressed: () async {
                       onLoadingDialog(context);
@@ -187,7 +193,6 @@ class LeaveApprovalByManagerWidgetState
                         setState(() {});
                       });
                     },
-                    textColor: Color(0x66FFFFFF),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Column(children: <Widget>[
@@ -207,10 +212,15 @@ class LeaveApprovalByManagerWidgetState
                   SizedBox(
                     width: 30,
                   ),
-                  RaisedButton(
-                    color: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(10.0),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.resolveWith(
+                        (states) => RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                          (states) => Colors.red),
                     ),
                     onPressed: () async {
                       onLoadingDialog(context);
@@ -224,7 +234,6 @@ class LeaveApprovalByManagerWidgetState
                         });
                       });
                     },
-                    textColor: Color(0x66FFFFFF),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Column(children: <Widget>[

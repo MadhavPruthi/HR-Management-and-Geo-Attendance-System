@@ -14,7 +14,7 @@ import '../../services/authentication.dart';
 class Login extends StatefulWidget {
   Login({this.auth});
 
-  final BaseAuth auth;
+  final BaseAuth? auth;
 
   @override
   _LoginState createState() => _LoginState();
@@ -23,14 +23,14 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _formKey = new GlobalKey<FormState>();
   FirebaseDatabase db = new FirebaseDatabase();
-  DatabaseReference _empIdRef, _userRef;
+  late DatabaseReference _empIdRef, _userRef;
 
-  String _username;
-  String _password;
+  String? _username;
+  String? _password;
   String _errorMessage = "";
-  FirebaseUser _user;
+  late User _user;
   bool formSubmit = false;
-  Auth authObject;
+  late Auth authObject;
 
   @override
   void initState() {
@@ -43,8 +43,8 @@ class _LoginState extends State<Login> {
 
   bool validateAndSave() {
     final form = _formKey.currentState;
-    if (form.validate()) {
-      form.save();
+    if (form?.validate() ?? false) {
+      form!.save();
       setState(() {
         _errorMessage = "";
       });
@@ -59,14 +59,16 @@ class _LoginState extends State<Login> {
       onLoadingDialog(context);
       String email;
       try {
-        _empIdRef.child(_username).once().then((DataSnapshot snapshot) {
-          if (snapshot == null) {
+        _empIdRef.child(_username!).once().then((DatabaseEvent event) {
+          final snapshot = event.snapshot;
+          if (snapshot.value == null) {
             print("popped");
-            _errorMessage = "Invalid Login Details";
+            _errorMessage = "Invalid Login Details!";
+            Navigator.pop(context);
           } else {
-            email = snapshot.value;
+            email = snapshot.value as String;
+            loginUser(email);
           }
-          loginUser(email);
         });
       } catch (e) {
         print(e);
@@ -74,11 +76,12 @@ class _LoginState extends State<Login> {
     }
   }
 
-  Future<List> checkForSingleSignOn(FirebaseUser _user) async {
-    DataSnapshot dataSnapshot = await _userRef.child(_user.uid).once();
+  Future<List> checkForSingleSignOn(User _user) async {
+    DataSnapshot dataSnapshot =
+        (await _userRef.child(_user.uid).once()).snapshot;
 
     if (dataSnapshot != null) {
-      var uuid = dataSnapshot.value["UUID"];
+      var uuid = (dataSnapshot.value as Map)["UUID"];
       List listOfDetails = await getDeviceDetails();
 
       if (uuid != null) {
@@ -93,46 +96,50 @@ class _LoginState extends State<Login> {
   }
 
   void loginUser(String email) async {
-    if (email != null) {
+    if (_password != null) {
       try {
-        _user = await authObject.signIn(email, _password);
+        _user = await authObject.signIn(email, _password!);
 
-        checkForSingleSignOn(_user).then((list) {
-          Navigator.of(context).pop();
+        // checkForSingleSignOn(_user).then((list) {
+        //   Navigator.of(context).pop();
+        //
+        //   // Adding UUID to database
+        //   if (list[0] == true && list[2] == false) {
+        //     _userRef.child(_user.uid).update({"UUID": list[1]});
+        //   }
+        //
+        //   if (list[0] == true) {
+        //     Navigator.pushReplacement(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => HomePage(user: _user)),
+        //     );
+        //   } else {
+        //     showDialogTemplate(
+        //         context,
+        //         "ATTENTION!",
+        //         "\nUnauthorized Access Detected!\nIf you are a Legit user, Kindly Contact HR Dept for the same",
+        //         "assets/gif/no_entry.gif",
+        //         Color.fromRGBO(170, 160, 160, 1.0),
+        //         "Ok");
+        //   }
+        // });
 
-          // Adding UUID to database
-
-          if (list[0] == true && list[2] == false) {
-            _userRef.child(_user.uid).update({"UUID": list[1]});
-          }
-
-          if (list[0] == true) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage(user: _user)),
-            );
-          } else {
-            showDialogTemplate(
-                context,
-                "ATTENTION!",
-                "\nUnauthorized Access Detected!\nIf you are a Legit user, Kindly Contact HR Dept for the same",
-                "assets/gif/no_entry.gif",
-                Color.fromRGBO(170, 160, 160, 1.0),
-                "Ok");
-          }
-        });
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage(user: _user)),
+        );
       } catch (e) {
         Navigator.of(context).pop();
         print("Error" + e.toString());
         setState(() {
-          _errorMessage = e.message.toString();
-          _formKey.currentState.reset();
+          _errorMessage = e.toString();
+          _formKey.currentState?.reset();
         });
       }
     } else {
       setState(() {
-        _errorMessage = "Invalid Login Details";
-        _formKey.currentState.reset();
+        _errorMessage = "Invalid Login Details!!!!!";
+        _formKey.currentState?.reset();
         Navigator.of(context).pop();
       });
     }
@@ -158,7 +165,7 @@ class _LoginState extends State<Login> {
   Widget horizontalLine() => Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         child: Container(
-          width: ScreenUtil.getInstance().setWidth(120),
+          width: ScreenUtil().setWidth(120),
           height: 1.0,
           color: Colors.black26.withOpacity(.2),
         ),
@@ -168,17 +175,14 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
-    ScreenUtil.instance =
-        ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
+    ScreenUtil.init(context, designSize: Size(750, 1334), minTextAdapt: true);
     return new Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: new AssetImage(
-                'assets/back.jpg'),
+            image: new AssetImage('assets/back.jpg'),
             fit: BoxFit.fill,
           ),
 //          gradient: LinearGradient(
@@ -211,13 +215,13 @@ class _LoginState extends State<Login> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                         Image.asset(
-                           "assets/logo/logo.png",
-                           width: ScreenUtil.getInstance().setWidth(220),
-                           height: ScreenUtil.getInstance().setHeight(220),
-                         ),
+                        Image.asset(
+                          "assets/logo/logo.png",
+                          width: ScreenUtil().setWidth(220),
+                          height: ScreenUtil().setHeight(220),
+                        ),
                         SizedBox(
-                          width: ScreenUtil.getInstance().setWidth(40),
+                          width: ScreenUtil().setWidth(40),
                         ),
                         Expanded(
                           child: Column(
@@ -229,7 +233,7 @@ class _LoginState extends State<Login> {
                                   style: TextStyle(
                                       fontFamily: "Poppins-Bold",
                                       color: appbarcolor,
-                                      fontSize: ScreenUtil.getInstance().setSp(90),
+                                      fontSize: ScreenUtil().setSp(90),
                                       letterSpacing: .6,
                                       fontWeight: FontWeight.bold)),
                               Text("Geo-Attendance and HR Management System",
@@ -237,7 +241,7 @@ class _LoginState extends State<Login> {
                                   style: TextStyle(
                                       fontFamily: "Poppins-Bold",
                                       color: Colors.black54,
-                                      fontSize: ScreenUtil.getInstance().setSp(25),
+                                      fontSize: ScreenUtil().setSp(25),
                                       letterSpacing: 0.2,
                                       fontWeight: FontWeight.bold)),
                             ],
@@ -246,10 +250,10 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                     SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(90),
+                      height: ScreenUtil().setHeight(90),
                     ),
                     formCard(),
-                    SizedBox(height: ScreenUtil.getInstance().setHeight(40)),
+                    SizedBox(height: ScreenUtil().setHeight(40)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -272,8 +276,8 @@ class _LoginState extends State<Login> {
                         ),*/
                         InkWell(
                           child: Container(
-                            width: ScreenUtil.getInstance().setWidth(330),
-                            height: ScreenUtil.getInstance().setHeight(100),
+                            width: ScreenUtil().setWidth(330),
+                            height: ScreenUtil().setHeight(100),
                             decoration: BoxDecoration(
                                 gradient: LinearGradient(colors: [
                                   splashScreenColorBottom,
@@ -305,7 +309,7 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                     SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(40),
+                      height: ScreenUtil().setHeight(40),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -318,10 +322,10 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                     SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(40),
+                      height: ScreenUtil().setHeight(40),
                     ),
                     SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(30),
+                      height: ScreenUtil().setHeight(30),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -375,11 +379,11 @@ class _LoginState extends State<Login> {
             children: <Widget>[
               Text("Login",
                   style: TextStyle(
-                      fontSize: ScreenUtil.getInstance().setSp(45),
+                      fontSize: ScreenUtil().setSp(45),
                       fontFamily: "Poppins-Bold",
                       letterSpacing: .6)),
               SizedBox(
-                height: ScreenUtil.getInstance().setHeight(30),
+                height: ScreenUtil().setHeight(30),
               ),
               Container(
                 height: 60,
@@ -394,9 +398,10 @@ class _LoginState extends State<Login> {
                       ),
                       hintText: "Employee ID",
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
-                  validator: (value) =>
-                      value.isEmpty ? 'Username can\'t be empty' : null,
-                  onSaved: (value) => _username = value.trim(),
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Username can\'t be empty'
+                      : null,
+                  onSaved: (value) => _username = value?.trim(),
                 ),
               ),
               Container(
@@ -413,9 +418,10 @@ class _LoginState extends State<Login> {
                       ),
                       hintText: "Password",
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0)),
-                  validator: (value) =>
-                      value.isEmpty ? 'Password can\'t be empty' : null,
-                  onSaved: (value) => _password = value,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Password can\'t be empty'
+                      : null,
+                  onChanged: (value) => _password = value,
                 ),
               ),
               Text(
@@ -425,14 +431,27 @@ class _LoginState extends State<Login> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  FlatButton(
-                    onPressed: () => _formKey.currentState.reset(),
+                  TextButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.resolveWith(
+                        (states) => EdgeInsets.symmetric(horizontal: 16.0),
+                      ),
+                      shape: MaterialStateProperty.resolveWith(
+                        (states) => const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                        (states) => Colors.blue,
+                      ),
+                    ),
+                    onPressed: () => _formKey.currentState?.reset(),
                     child: Text(
                       "Reset",
                       style: TextStyle(
                           color: dashBoardColor,
                           fontFamily: "Poppins-Medium",
-                          fontSize: ScreenUtil.getInstance().setSp(28)),
+                          fontSize: ScreenUtil().setSp(28)),
                     ),
                   ),
                   Text(
@@ -440,7 +459,7 @@ class _LoginState extends State<Login> {
                     style: TextStyle(
                         color: dashBoardColor,
                         fontFamily: "Poppins-Medium",
-                        fontSize: ScreenUtil.getInstance().setSp(28)),
+                        fontSize: ScreenUtil().setSp(28)),
                   )
                 ],
               )

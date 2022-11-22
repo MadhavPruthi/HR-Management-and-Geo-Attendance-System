@@ -6,18 +6,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
 import 'package:geo_attendance_system/src/services/fetch_offices.dart';
+import 'package:geo_attendance_system/src/services/geofencing.dart';
 import 'package:geo_attendance_system/src/ui/constants/colors.dart';
-import 'package:geo_attendance_system/src/ui/constants/strings.dart';
 import 'package:geo_attendance_system/src/ui/pages/dashboard.dart';
-import 'package:geofencing/geofencing.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../services/geofence.dart';
-
 class HomePage extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
 
-  HomePage({this.user});
+  HomePage({required this.user});
 
   @override
   _HomePageState createState() => new _HomePageState();
@@ -25,46 +22,41 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
+  late AnimationController controller;
 
   OfficeDatabase officeDatabase = new OfficeDatabase();
   final _databaseReference = FirebaseDatabase.instance.reference();
   var geoFenceActive = false;
-  var result;
-  String error;
-  Office allottedOffice;
-  final PermissionHandler _permissionHandler = PermissionHandler();
-  FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  late PermissionStatus result;
+  String? error;
+  Office? allottedOffice;
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 
-  Future<void> _initializeGeoFence() async {
+  Future<void> _initializeGeoFence(BuildContext context) async {
     try {
-      result = await _permissionHandler
-          .requestPermissions([PermissionGroup.location]);
-      switch (result[PermissionGroup.location]) {
+      result = await Permission.location.request();
+      switch (result) {
         case PermissionStatus.granted:
-          GeofencingManager.initialize().then((_) {
-            officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
-              print(office.latitude);
-              GeoFenceClass.startListening(
-                  office.latitude, office.longitude, office.radius);
-              setState(() {
-                geoFenceActive = true;
-                allottedOffice = office;
-              });
+          officeDatabase.getOfficeBasedOnUID(widget.user.uid).then((office) {
+            print(office.latitude);
+
+            GeoFencing.of(context).service.startGeofencing(office);
+
+            setState(() {
+              geoFenceActive = true;
+              allottedOffice = office;
             });
           });
+
           break;
         case PermissionStatus.denied:
           print("DENIED");
           break;
-        case PermissionStatus.disabled:
+        case PermissionStatus.permanentlyDenied:
           // do something
           break;
         case PermissionStatus.restricted:
-          // do something
-          break;
-        case PermissionStatus.unknown:
           // do something
           break;
         default:
@@ -107,8 +99,10 @@ class _HomePageState extends State<HomePage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  RaisedButton(
-                    color: Colors.blue,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith(
+                            (states) => Colors.blue)),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -132,26 +126,25 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
 
-    firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
-      print(" onLaunch called ${(msg)}");
-    }, onResume: (Map<String, dynamic> msg) {
-      print(" onResume called ${(msg)}");
-    }, onMessage: (Map<String, dynamic> msg) {
-      showDialogNotification(context, msg["notification"]["body"]);
-    });
-    firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, alert: true, badge: true));
-    firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings setting) {
-      print('IOS Setting Registed');
-    });
+    FirebaseMessaging.onMessage.listen(
+      (RemoteMessage message) {
+        showDialogNotification(context, message.data["notification"]["body"]);
+      },
+    );
+
+    firebaseMessaging.requestPermission();
+    FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
     firebaseMessaging.getToken().then((token) {
       _databaseReference.child("users").child(widget.user.uid).update({
         "notificationToken": token,
       });
     });
-    _initializeGeoFence();
+    Future.microtask(() => _initializeGeoFence(context));
 
     controller = new AnimationController(
         vsync: this, duration: new Duration(milliseconds: 300), value: 1.0);
@@ -161,8 +154,6 @@ class _HomePageState extends State<HomePage>
   void dispose() {
     super.dispose();
     controller.dispose();
-    GeoFenceClass.closePort();
-    GeofencingManager.removeGeofenceById(fence_id);
   }
 
   bool get isPanelVisible {

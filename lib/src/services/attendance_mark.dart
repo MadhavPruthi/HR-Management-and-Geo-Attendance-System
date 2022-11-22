@@ -1,3 +1,4 @@
+import 'package:easy_geofencing/enums/geofence_status.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_attendance_system/src/models/office.dart';
@@ -6,7 +7,6 @@ import 'package:location/location.dart';
 
 import 'current_date.dart';
 import 'fetch_attendance.dart';
-import 'geofence.dart';
 
 String findLatestIn(listOfAttendanceIterable) {
   List finalList = listOfAttendanceIterable
@@ -71,8 +71,6 @@ String findFirstOut(listOfAttendanceIterable) {
   return finalList.first.toString().split("-")[1];
 }
 
-
-
 bool checkSuccessiveIn(listOfAttendanceIterable) {
   if (listOfAttendanceIterable.length > 0) {
     String lastOut = findLatestOut(listOfAttendanceIterable);
@@ -99,8 +97,12 @@ bool checkSuccessiveOut(listOfAttendanceIterable) {
   return true;
 }
 
-void markInAttendance(BuildContext context, Office office,
-    LocationData currentPosition, FirebaseUser user) async {
+void markInAttendance(
+    BuildContext context,
+    Office office,
+    LocationData currentPosition,
+    User user,
+    GeofenceStatus geoFenceStatus) async {
   Future.delayed(Duration(seconds: 1), () {
     DateTime dateToday = getTodayDate();
     AttendanceDatabase.getAttendanceOfParticularDateBasedOnUID(
@@ -118,15 +120,13 @@ void markInAttendance(BuildContext context, Office office,
         }
       }
 
-      if (isFeasible &&
-          (GeoFenceClass.geofenceState == "GeofenceEvent.dwell" ||
-              GeoFenceClass.geofenceState == "GeofenceEvent.enter")) {
+      if (isFeasible && geoFenceStatus == GeofenceStatus.enter) {
         AttendanceDatabase.markAttendance(user.uid, dateToday, office, "in")
             .then((_) {
           showDialogTemplate(
               context,
               "Attendance Info",
-              "Marked \nStatus: ${GeoFenceClass.geofenceState}",
+              "Marked \nStatus: ${geoFenceStatus.toString()}",
               "assets/gif/tick.gif",
               Color.fromRGBO(51, 205, 187, 1.0),
               "Great");
@@ -136,7 +136,7 @@ void markInAttendance(BuildContext context, Office office,
         showDialogTemplate(
             context,
             "Attendance Info",
-            "$errorMessage\nStatus: ${GeoFenceClass.geofenceState}",
+            "$errorMessage\nStatus: ${geoFenceStatus.toString()}",
             "assets/gif/close.gif",
             Color.fromRGBO(200, 71, 108, 1.0),
             "Oops!");
@@ -145,8 +145,12 @@ void markInAttendance(BuildContext context, Office office,
   });
 }
 
-void markOutAttendance(BuildContext context, Office office,
-    LocationData currentPosition, FirebaseUser user) async {
+void markOutAttendance(
+    BuildContext context,
+    Office office,
+    LocationData currentPosition,
+    User user,
+    GeofenceStatus geoFenceStatus) async {
   Future.delayed(Duration(seconds: 1), () {
     DateTime dateToday = getTodayDate();
     AttendanceDatabase.getAttendanceOfParticularDateBasedOnUID(
@@ -171,15 +175,13 @@ void markOutAttendance(BuildContext context, Office office,
         errorMessage = "No IN-Entry Found!";
       }
 
-      if (isFeasible &&
-          (GeoFenceClass.geofenceState == "GeofenceEvent.dwell" ||
-              GeoFenceClass.geofenceState == "GeofenceEvent.enter")) {
+      if (isFeasible && GeofenceStatus.enter == geoFenceStatus) {
         AttendanceDatabase.markAttendance(user.uid, dateToday, office, "out")
             .then((_) {
           showDialogTemplate(
               context,
               "Attendance Info",
-              "Marked \nStatus: ${GeoFenceClass.geofenceState}",
+              "Marked \nStatus: ${geoFenceStatus.toString()}",
               "assets/gif/tick.gif",
               Color.fromRGBO(51, 205, 187, 1.0),
               "Great");
@@ -189,7 +191,7 @@ void markOutAttendance(BuildContext context, Office office,
         showDialogTemplate(
             context,
             "Attendance Info",
-            "$errorMessage\nStatus: ${GeoFenceClass.geofenceState}",
+            "$errorMessage\nStatus: ${geoFenceStatus.toString()}",
             "assets/gif/close.gif",
             Color.fromRGBO(200, 71, 108, 1.0),
             "Oops!");
