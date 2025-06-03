@@ -25,10 +25,11 @@ enum Grade {
   ADD_HERE
 }
 
-enum Designation {
-  // TODO
-  ADD_HERE
-}
+// Designation is a String, so no enum needed unless specific values are enforced
+// enum Designation {
+//   // TODO
+//   ADD_HERE
+// }
 
 enum Nationality {
   Afghan,
@@ -231,7 +232,7 @@ enum Nationality {
 enum MaritalStatus {
   Unmarried,
   Married,
-  ItsComplicated,
+  ItsComplicated, // Note: Original enum had "It's Complicated" which is not a valid Dart enum value name
 }
 
 enum Religion {
@@ -285,44 +286,45 @@ enum Role {
 }
 
 class Employee {
-  String uID;
-  String employeeID;
-  String firstName;
-  String middleName;
-  String lastName;
-  String officeEmail;
-  String alternateEmail;
-  String contactNumber;
-  DateTime dateOfBirth;
-  DateTime joiningDate;
-  String residentialAddress;
-  Gender gender;
-  int retirementAge;
+  String? uID; // Made nullable as it might not always be present directly in snapshot.value
+  String? employeeID;
+  String? firstName;
+  String? middleName;
+  String? lastName;
+  String? officeEmail;
+  String? alternateEmail;
+  String? contactNumber;
+  DateTime? dateOfBirth;
+  DateTime? joiningDate;
+  String? residentialAddress;
+  Gender? gender;
+  int? retirementAge;
 
-  Office joiningUnit;
-  SkillCategory skillCategory;
+  Office? joiningUnit;
+  SkillCategory? skillCategory;
 
-  EmployeeFunction employeeFunction;
-  EmployeeSubFunction employeeSubFunction;
+  EmployeeFunction? employeeFunction;
+  EmployeeSubFunction? employeeSubFunction;
 
-  Grade grade;
-  String designation;
+  Grade? grade;
+  String? designation;
 
-  MaritalStatus maritalStatus;
-  Religion religion;
+  MaritalStatus? maritalStatus;
+  Religion? religion;
 
-  Nationality nationality;
+  Nationality? nationality;
 
-  Entity entity;
-  BloodGroup bloodGroup;
+  Entity? entity;
+  BloodGroup? bloodGroup;
 
-  EmployeeType employeeType;
-  Employee reviewPerson;
+  EmployeeType? employeeType;
+  Employee? reviewPerson;
 
-  Role role;
+  Role? role;
 
   Employee(
-      {this.employeeID,
+      {this.uID, // Added uID to constructor
+      this.employeeID,
       this.firstName,
       this.middleName,
       this.lastName,
@@ -357,51 +359,130 @@ class Employee {
         lastName = snapshot.value["lastName"],
         officeEmail = snapshot.value["officeEmail"],
         alternateEmail = snapshot.value["alternateEmail"],
-        dateOfBirth = snapshot.value["dateOfBirth"],
-        joiningDate = snapshot.value["joiningDate"],
-        gender = snapshot.value["gender"],
+        contactNumber = snapshot.value["contactNumber"],
+        dateOfBirth = _parseDateTime(snapshot.value["dateOfBirth"]),
+        joiningDate = _parseDateTime(snapshot.value["joiningDate"]),
+        residentialAddress = snapshot.value["residentialAddress"],
+        gender = _parseGender(snapshot.value["gender"]),
         retirementAge = snapshot.value["retirementAge"],
-        joiningUnit = snapshot.value["joiningUnit"],
-        skillCategory = snapshot.value["skillCategory"],
-        employeeFunction = snapshot.value["employeeFunction"],
-        employeeSubFunction = snapshot.value["employeeSubFunction"],
-        grade = snapshot.value["grade"],
+        joiningUnit = snapshot.value["joiningUnit"] != null && snapshot.value["joiningUnit"] is Map
+            ? Office.fromJson(snapshot.value["joiningUnit"]["key"] ?? snapshot.key, Map<String,dynamic>.from(snapshot.value["joiningUnit"]))
+            : null,
+        skillCategory = _parseSkillCategory(snapshot.value["skillCategory"]),
+        employeeFunction = _parseEmployeeFunction(snapshot.value["employeeFunction"]),
+        employeeSubFunction = _parseEmployeeSubFunction(snapshot.value["employeeSubFunction"]),
+        grade = _parseGrade(snapshot.value["grade"]),
         designation = snapshot.value["designation"],
-        maritalStatus = snapshot.value["maritalStatus"],
-        religion = snapshot.value["religion"],
-        nationality = snapshot.value["nationality"],
-        entity = snapshot.value["entity"],
-        bloodGroup = snapshot.value["bloodGroup"],
-        employeeType = snapshot.value["employeeType"],
-        reviewPerson = snapshot.value["reviewPerson"],
-        role = snapshot.value["role"];
+        maritalStatus = _parseMaritalStatus(snapshot.value["maritalStatus"]),
+        religion = _parseReligion(snapshot.value["religion"]),
+        nationality = _parseNationality(snapshot.value["nationality"]),
+        entity = _parseEntity(snapshot.value["entity"]),
+        bloodGroup = _parseBloodGroup(snapshot.value["bloodGroup"]),
+        employeeType = _parseEmployeeType(snapshot.value["employeeType"]),
+        reviewPerson = null, // Simplified for now, would require recursive parsing or ID-based fetching
+        role = _parseRole(snapshot.value["role"]);
 
-  toJson() {
+  Map<String, dynamic> toJson() { // Made types nullable to match class fields
     return {
+      "UID": uID,
       "employeeID": employeeID,
       "firstName": firstName,
       "middleName": middleName,
       "lastName": lastName,
       "officeEmail": officeEmail,
       "alternateEmail": alternateEmail,
-      "dateOfBirth": dateOfBirth,
-      "joiningDate": joiningDate,
-      "gender": gender,
+      "contactNumber": contactNumber,
+      "dateOfBirth": dateOfBirth?.toIso8601String(), // Convert DateTime to ISO string
+      "joiningDate": joiningDate?.toIso8601String(), // Convert DateTime to ISO string
+      "residentialAddress": residentialAddress,
+      "gender": gender?.toString(), // Convert Enum to string
       "retirementAge": retirementAge,
-      "joiningUnit": joiningUnit,
-      "skillCategory": skillCategory,
-      "employeeFunction": employeeFunction,
-      "employeeSubFunction": employeeSubFunction,
-      "grade": grade,
+      "joiningUnit": joiningUnit?.toJson(), // Assuming Office has a toJson method
+      "skillCategory": skillCategory?.toString(),
+      "employeeFunction": employeeFunction?.toString(),
+      "employeeSubFunction": employeeSubFunction?.toString(),
+      "grade": grade?.toString(),
       "designation": designation,
-      "maritalStatus": maritalStatus,
-      "religion": religion,
-      "nationality": nationality,
-      "entity": entity,
-      "bloodGroup": bloodGroup,
-      "employeeType": employeeType,
-      "reviewPerson": reviewPerson,
-      "role": role,
+      "maritalStatus": maritalStatus?.toString(),
+      "religion": religion?.toString(),
+      "nationality": nationality?.toString(),
+      "entity": entity?.toString(),
+      "bloodGroup": bloodGroup?.toString(),
+      "employeeType": employeeType?.toString(),
+      "reviewPerson": reviewPerson?.toJson(), // Assuming Employee has toJson for nested obj
+      "role": role?.toString(),
     };
   }
+}
+
+// Helper functions
+
+DateTime? _parseDateTime(String? dateStr) {
+    if (dateStr == null) return null;
+    try {
+        return DateTime.parse(dateStr);
+    } catch (e) {
+        print('Error parsing DateTime: $dateStr, Error: $e'); // Log error
+        return null;
+    }
+}
+
+Gender _parseGender(String? genderStr) {
+  if (genderStr == null) return Gender.Other;
+  return Gender.values.firstWhere((e) => e.toString() == genderStr, orElse: () => Gender.Other);
+}
+
+SkillCategory _parseSkillCategory(String? skillStr) {
+  if (skillStr == null) return SkillCategory.Unskilled; // Default as per original enum
+  return SkillCategory.values.firstWhere((e) => e.toString() == skillStr, orElse: () => SkillCategory.Unskilled);
+}
+
+EmployeeFunction _parseEmployeeFunction(String? str) {
+  if (str == null) return EmployeeFunction.ADD_HERE;
+  return EmployeeFunction.values.firstWhere((e) => e.toString() == str, orElse: () => EmployeeFunction.ADD_HERE);
+}
+
+EmployeeSubFunction _parseEmployeeSubFunction(String? str) {
+  if (str == null) return EmployeeSubFunction.ADD_HERE;
+  return EmployeeSubFunction.values.firstWhere((e) => e.toString() == str, orElse: () => EmployeeSubFunction.ADD_HERE);
+}
+
+Grade _parseGrade(String? str) {
+  if (str == null) return Grade.ADD_HERE;
+  return Grade.values.firstWhere((e) => e.toString() == str, orElse: () => Grade.ADD_HERE);
+}
+
+MaritalStatus _parseMaritalStatus(String? statusStr) {
+  if (statusStr == null) return MaritalStatus.Unmarried;
+  return MaritalStatus.values.firstWhere((e) => e.toString() == statusStr, orElse: () => MaritalStatus.Unmarried);
+}
+
+Religion _parseReligion(String? religionStr) {
+  if (religionStr == null) return Religion.Other;
+  return Religion.values.firstWhere((e) => e.toString() == religionStr, orElse: () => Religion.Other);
+}
+
+Nationality _parseNationality(String? nationStr) {
+  if (nationStr == null) return Nationality.Indian;
+  return Nationality.values.firstWhere((e) => e.toString() == nationStr, orElse: () => Nationality.Indian);
+}
+
+Entity _parseEntity(String? str) {
+  if (str == null) return Entity.ADD_HERE;
+  return Entity.values.firstWhere((e) => e.toString() == str, orElse: () => Entity.ADD_HERE);
+}
+
+BloodGroup _parseBloodGroup(String? bloodGroupStr) {
+  if (bloodGroupStr == null) return BloodGroup.O_positive;
+  return BloodGroup.values.firstWhere((e) => e.toString() == bloodGroupStr, orElse: () => BloodGroup.O_positive);
+}
+
+EmployeeType _parseEmployeeType(String? typeStr) {
+  if (typeStr == null) return EmployeeType.Trainee;
+  return EmployeeType.values.firstWhere((e) => e.toString() == typeStr, orElse: () => EmployeeType.Trainee);
+}
+
+Role _parseRole(String? str) {
+  if (str == null) return Role.ADD_HERE;
+  return Role.values.firstWhere((e) => e.toString() == str, orElse: () => Role.ADD_HERE);
 }

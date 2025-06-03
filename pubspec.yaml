@@ -20,26 +20,26 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.6
   splashscreen: any
-  flutter_sparkline: any
+  # flutter_sparkline: any # Temporarily commented out for model testing
   flutter_staggered_grid_view: any
-  calendarro: ^1.0.0
+  # calendarro: ^1.0.0 # Temporarily commented out for model testing
   firebase_auth: any
-  flutter_screenutil: ^0.4.2
+  flutter_screenutil: ^5.9.3
   table_calendar: any
   firebase_database: any
   google_maps_flutter: ^0.5.21+8
-  device_id: ^0.2.0
-  location: ^2.3.5
-  flutter_spinkit: ^3.1.0
-  flutter_datetime_picker:
-    git:
-      url: https://github.com/derohimat/flutter_datetime_picker.git
-  grouped_buttons: ^1.0.3
-  permission_handler: '^4.0.0'
-  device_info: ^0.4.1+2
-  firebase_messaging: ^6.0.1
+  # device_id: ^0.2.0 # Temporarily commented out for model testing - discontinued
+  location: ^4.4.0 # Updated to null-safe version
+  flutter_spinkit: ^5.2.1
+  # flutter_datetime_picker:
+  #   git:
+  #     url: https://github.com/derohimat/flutter_datetime_picker.git # Temporarily commented out for model testing
+  # grouped_buttons: ^1.0.3 # Temporarily commented out for model testing
+  permission_handler: ^6.0.0 # Updated to null-safe version
+  device_info: ^2.0.3 # Updated to null-safe version
+  firebase_messaging: ^10.0.0 # Updated to null-safe version
   flutter_local_notifications:
 
 
